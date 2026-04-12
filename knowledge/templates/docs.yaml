@@ -1,0 +1,14 @@
+version: 1
+documents:
+  - id: getting-started
+    title: Getting Started
+    path: docs/getting-started.md
+    topics:
+      - setup
+      - bootstrap
+    related_modules:
+      - app-core
+    related_workflows:
+      - bootstrap-project
+    unknowns:
+      - list unresolved document-level uncertainty here

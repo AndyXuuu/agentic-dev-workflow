@@ -1,0 +1,19 @@
+version: 1
+workflows:
+  - id: bootstrap-project
+    goal: understand how to start and inspect the project
+    start_with:
+      - README.md
+      - knowledge/index.yaml
+    inspect:
+      - package.json
+      - src/app/main.ts
+    related_modules:
+      - app-core
+    verify:
+      - run the app locally
+      - confirm main entry works
+    unknowns:
+      - list unresolved workflow uncertainty here
+    missing_evidence:
+      - list concrete missing files or proof here

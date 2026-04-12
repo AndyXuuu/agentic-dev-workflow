@@ -1,0 +1,19 @@
+version: 1
+modules:
+  - id: app-core
+    path: src/app/
+    purpose: core application entry and composition
+    entrypoints:
+      - src/app/main.ts
+      - src/app/router.ts
+    areas:
+      - id: auth
+        path: src/app/auth/
+      - id: user
+        path: src/app/user/
+    related_docs:
+      - getting-started
+    notes:
+      - keep notes stable and navigational
+    unknowns:
+      - list unresolved module-level uncertainty here
