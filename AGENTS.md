@@ -1,3 +1,16 @@
+# Project goal and principles
+
+Ultimate goal:
+
+- optimize for helping AI reach goals faster, more accurately, and more reliably
+- do not optimize for code implementation volume by default
+
+Project principle:
+
+- prefer planning, summarization, navigation, and decision support over code generation
+- avoid writing heavy code when a lighter planning or structure-first solution is sufficient
+- do not add code just to simulate completeness
+
 # Repo-nav-first
 
 Before broad repo search, read:
@@ -11,6 +24,12 @@ Before broad repo search, read:
 Use `.repo-nav/` as navigation only.
 If insufficient or stale, fall back to normal search (`read`, `grep`, `glob`, `LSP`).
 Codebase truth wins over index content.
+
+AI-first repo-nav rule:
+
+- prefer `.repo-nav/` as the first navigation layer for AI search tasks
+- use repo-nav to narrow search scope before broad codebase search
+- do not skip repo-nav unless it is missing, stale, or insufficient
 
 Repo-nav layering rule:
 

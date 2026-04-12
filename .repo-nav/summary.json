@@ -1,14 +1,8 @@
 {
   "version": 1,
-  "updated_at": "2026-04-12T14:48:20.568248+00:00",
-  "added_docs": [
-    "config/README.md",
-    "config/opencode-omo-openai-setup.md"
-  ],
-  "changed_docs": [
-    "README.md",
-    "repo-nav-tooling/REPO_NAV_SCHEMA.md"
-  ],
+  "updated_at": "2026-04-12T14:53:12.923935+00:00",
+  "added_docs": [],
+  "changed_docs": [],
   "removed_docs": [],
   "doc_count": 28,
   "module_count": 4,
