@@ -1,6 +1,6 @@
 version: 1
 project: your-project-name
-type: knowledge-index
+type: repo-nav-index
 
 usage:
   priority: first-stop
@@ -9,9 +9,9 @@ usage:
     fall back to read/grep/glob/LSP when needed.
 
 entrypoints:
-  docs: knowledge/docs.yaml
-  modules: knowledge/modules.yaml
-  workflows: knowledge/workflows.yaml
+  docs: .repo-nav/docs.yaml
+  modules: .repo-nav/modules.yaml
+  workflows: .repo-nav/workflows.yaml
 
 project_entrypoints:
   root-readme: README.md

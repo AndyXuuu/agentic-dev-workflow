@@ -4,7 +4,7 @@ workflows:
     goal: understand how to start and inspect the project
     start_with:
       - README.md
-      - knowledge/index.yaml
+      - .repo-nav/index.yaml
     inspect:
       - package.json
       - src/app/main.ts

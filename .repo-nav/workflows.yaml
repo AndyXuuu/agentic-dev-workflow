@@ -3,7 +3,7 @@ workflows:
   - id: bootstrap-machine
     goal: Reproduce the OpenCode + oMo environment on a new machine
     start_with:
-      - knowledge/opencode-omo-openai-setup.md
+      - .repo-nav/opencode-omo-openai-setup.md
     inspect:
       - config/opencode.json
       - config/oh-my-openagent.json
@@ -19,8 +19,8 @@ workflows:
   - id: configure-frontend-workflow
     goal: Understand or adjust the frontend replacement chain
     start_with:
-      - knowledge/index.yaml
-      - knowledge/modules.yaml
+      - .repo-nav/index.yaml
+      - .repo-nav/modules.yaml
     inspect:
       - config/agents/frontend-builder.md
       - config/agents/frontend-review.md
@@ -33,8 +33,8 @@ workflows:
   - id: inspect-model-routing
     goal: Understand or modify current OpenAI model routing
     start_with:
-      - knowledge/index.yaml
-      - knowledge/modules.yaml
+      - .repo-nav/index.yaml
+      - .repo-nav/modules.yaml
     inspect:
       - config/oh-my-openagent.json
     verify:
@@ -44,8 +44,8 @@ workflows:
   - id: task-handoff-guard-implementation
     goal: Understand or continue the Task Handoff Guard design and MVP implementation
     start_with:
-      - knowledge/index.yaml
-      - knowledge/modules.yaml
+      - .repo-nav/index.yaml
+      - .repo-nav/modules.yaml
       - task-handoff-guard/README.md
     inspect:
       - task-handoff-guard/PLAN.md

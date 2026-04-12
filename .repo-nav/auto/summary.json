@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "updated_at": "2026-04-12T14:14:25.823927+00:00",
+  "added_docs": [
+    "repo-nav-tooling/README.md",
+    "repo-nav-tooling/REPO_NAV_SCHEMA.md"
+  ],
+  "changed_docs": [
+    "AGENTS.md",
+    "README.md"
+  ],
+  "removed_docs": [
+    "repo-nav/README.md",
+    "repo-nav/REPO_NAV_SCHEMA.md",
+    "repo-nav/auto/README.md",
+    "repo-nav/opencode-omo-openai-setup.md"
+  ],
+  "doc_count": 25,
+  "module_count": 5
+}

@@ -1,7 +1,7 @@
 version: 1
 documents:
   - id: getting-started
-    title: Getting Started
+    title: Bootstrap Entry
     path: docs/getting-started.md
     topics:
       - setup

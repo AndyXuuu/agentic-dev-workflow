@@ -2,7 +2,7 @@ version: 1
 documents:
   - id: opencode-omo-openai-setup
     title: OpenCode + oh-my-opencode OpenAI-only Setup Snapshot
-    path: knowledge/opencode-omo-openai-setup.md
+    path: .repo-nav/opencode-omo-openai-setup.md
     topics:
       - opencode
       - oh-my-opencode

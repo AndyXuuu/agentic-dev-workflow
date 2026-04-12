@@ -1,20 +1,20 @@
-# Knowledge-First Schema
+# Repo-Nav-First Schema
 
 This document defines a reusable, project-agnostic knowledge index schema for AI-assisted software engineering.
 
-The goal is not to replace code search. The goal is to provide a stable navigation layer before broad search.
+The goal is not to replace code search. The goal is to provide an AI-first navigation layer that makes search tasks faster, more accurate, and more stable before broad search.
 
 ## Core principle
 
-Use `knowledge/` as a first-stop navigation layer.
+Use `.repo-nav/` as a first-stop navigation layer.
 
 Recommended search order:
 
-1. `knowledge/index.yaml`
+1. `.repo-nav/index.yaml`
 2. Then one of:
-   - `knowledge/docs.yaml`
-   - `knowledge/modules.yaml`
-   - `knowledge/workflows.yaml`
+   - `.repo-nav/docs.yaml`
+   - `.repo-nav/modules.yaml`
+   - `.repo-nav/workflows.yaml`
 3. If insufficient or stale, fall back to normal search:
    - `read`
    - `grep`
@@ -25,7 +25,7 @@ Codebase truth wins over index content.
 
 ## Scope
 
-This schema is designed for stable project knowledge:
+This schema is designed for stable AI navigation knowledge:
 
 - document entrypoints
 - module ownership and entrypoints
@@ -33,12 +33,13 @@ This schema is designed for stable project knowledge:
 - verification paths
 - explicit unknowns and missing evidence
 
+It is not primarily a human-oriented documentation layer.
 It should avoid unstable implementation details that change frequently.
 
 ## Required files
 
 ```text
-knowledge/
+.repo-nav/
   index.yaml
   docs.yaml
   modules.yaml
@@ -48,7 +49,7 @@ knowledge/
 Optional extensions:
 
 ```text
-knowledge/
+.repo-nav/
   glossary.yaml
   decisions.yaml
   entrypoints.yaml
@@ -70,14 +71,14 @@ Should answer:
 
 ### `docs.yaml`
 
-Documentation map.
+AI-facing document and knowledge-entry map.
 
 Should answer:
 
-- which docs exist
-- what each doc is about
-- which modules/workflows each doc is related to
-- which docs are uncertain or temporary
+- which knowledge entries exist
+- what each entry is about
+- which modules/workflows each entry is related to
+- which entries are uncertain or temporary
 
 ### `modules.yaml`
 

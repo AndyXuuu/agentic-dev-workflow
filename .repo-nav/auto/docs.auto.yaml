@@ -1,0 +1,127 @@
+version: 1
+documents:
+  - id: agents
+    title: "Repo-nav-first"
+    path: AGENTS.md
+    sha1: a1012b868baa56b2d36435f8376e80906829b117
+    size: 800
+  - id: readme
+    title: "程序猿 AI 开发专用"
+    path: README.md
+    sha1: 9b217a26daa62b614c15fb2cfea4349926ca4acb
+    size: 1434
+  - id: config-agents-frontend-builder
+    title: "Frontend Builder"
+    path: config/agents/frontend-builder.md
+    sha1: 8abe2176538fea2a21a19bdfdd37c4d52d44dbd1
+    size: 2329
+  - id: config-agents-frontend-polish
+    title: "Frontend Polish"
+    path: config/agents/frontend-polish.md
+    sha1: 8cc11522273d4ac679deb6c04cbd6261a32a261c
+    size: 1249
+  - id: config-agents-frontend-review
+    title: "Frontend Review"
+    path: config/agents/frontend-review.md
+    sha1: dd9493d77bd4e28808fc5f81e47fa61506327e54
+    size: 1038
+  - id: omo-scaffold-agent
+    title: "Adding an Agent"
+    path: omo-scaffold/AGENT.md
+    sha1: f566ce3687fac92b8e955922ce621be1b78ecb17
+    size: 791
+  - id: omo-scaffold-checklist
+    title: "Scaffold Checklist"
+    path: omo-scaffold/CHECKLIST.md
+    sha1: d69d6a8aa515a82b6c8a368dbea734f4a721426c
+    size: 974
+  - id: omo-scaffold-command
+    title: "Adding a Command"
+    path: omo-scaffold/COMMAND.md
+    sha1: 7169e8e69baf22fef3c228b451bf706859b981e5
+    size: 872
+  - id: omo-scaffold-plugin
+    title: "Adding a Plugin"
+    path: omo-scaffold/PLUGIN.md
+    sha1: 3a4f73691a2a301684ffe07a0a5f51afdf31c61f
+    size: 1063
+  - id: omo-scaffold-readme
+    title: "oMo Scaffold"
+    path: omo-scaffold/README.md
+    sha1: b2ad45a517dc4fb99a2ef2289c0d7cc8070d2fc9
+    size: 496
+  - id: omo-scaffold-skill
+    title: "Adding a Skill"
+    path: omo-scaffold/SKILL.md
+    sha1: 4194c8f7d56d7facdf10915a38f57b7c9a780040
+    size: 760
+  - id: repo-nav-tooling-readme
+    title: "Repo Nav Tooling"
+    path: repo-nav-tooling/README.md
+    sha1: c6b7e383ab15f737f8c6ca0d8d10fe1be81770ec
+    size: 421
+  - id: repo-nav-tooling-repo-nav-schema
+    title: "Repo-Nav-First Schema"
+    path: repo-nav-tooling/REPO_NAV_SCHEMA.md
+    sha1: ae5f9b236d34a70fe409891b1e21d1828b7eb3e3
+    size: 4042
+  - id: task-handoff-guard-flow
+    title: "Task Handoff Guard Flow"
+    path: task-handoff-guard/FLOW.md
+    sha1: 24503a7e58a18c52a4e140f8cad48ebde811cf27
+    size: 1955
+  - id: task-handoff-guard-implementation-notes
+    title: "Implementation Notes"
+    path: task-handoff-guard/IMPLEMENTATION_NOTES.md
+    sha1: fea215be351cb4ff7b9ce10699a64c67b1e2c7c2
+    size: 5009
+  - id: task-handoff-guard-incident
+    title: "Task Continuation Incident Notes"
+    path: task-handoff-guard/INCIDENT.md
+    sha1: 2c5baa4f258b80a2f835a0842fcd3271c1a78803
+    size: 1383
+  - id: task-handoff-guard-plan
+    title: "Task Handoff Guard Plan"
+    path: task-handoff-guard/PLAN.md
+    sha1: 2e5db5faf4185b307af18f01a66bc9762b7b4594
+    size: 2696
+  - id: task-handoff-guard-pseudocode
+    title: "Task Handoff Guard Pseudocode"
+    path: task-handoff-guard/PSEUDOCODE.md
+    sha1: 3b38345d7c7a484d86da065133424907c1020ab3
+    size: 2800
+  - id: task-handoff-guard-readme
+    title: "Task Handoff Guard"
+    path: task-handoff-guard/README.md
+    sha1: 48d495eec0a9e4c412dfddc8f7c0931383a1abb4
+    size: 1150
+  - id: task-handoff-guard-state-machine
+    title: "Task Handoff Guard State Machine"
+    path: task-handoff-guard/STATE_MACHINE.md
+    sha1: f2144473905672cdd7cd3d3006e5b2c17e49bde6
+    size: 1879
+  - id: task-handoff-guard-summary
+    title: "Summary"
+    path: task-handoff-guard/SUMMARY.md
+    sha1: 22482cc8867a394544de5e166e80ee185f233bf8
+    size: 1132
+  - id: task-handoff-guard-demo-readme
+    title: "Task Handoff Guard Demo"
+    path: task-handoff-guard/demo/README.md
+    sha1: cd217b3281b430c73373a8bd9c291f27b0fa2a32
+    size: 1433
+  - id: task-handoff-guard-mvp-readme
+    title: "Task Handoff Guard MVP Skeleton"
+    path: task-handoff-guard/mvp/README.md
+    sha1: 25ba7f74668354c01fbc1100b6c6e24b68ed9092
+    size: 980
+  - id: task-handoff-guard-mvp-usage
+    title: "Hook-Ready Usage Sketch"
+    path: task-handoff-guard/mvp/USAGE.md
+    sha1: 94b6c5b82fa1887e60fd2ce93a5ca4875a9117e4
+    size: 1365
+  - id: task-handoff-guard-plugin-readme
+    title: "Task Handoff Guard Plugin Scaffold"
+    path: task-handoff-guard/plugin/README.md
+    sha1: 23815e91408880cd042dbb1ea74833c9f29e86cb
+    size: 1431

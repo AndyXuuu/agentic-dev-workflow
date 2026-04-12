@@ -1,0 +1,221 @@
+{
+  "version": 1,
+  "updated_at": "2026-04-12T14:14:25.824078+00:00",
+  "docs": {
+    "AGENTS.md": {
+      "path": "AGENTS.md",
+      "title": "Repo-nav-first",
+      "sha1": "a1012b868baa56b2d36435f8376e80906829b117",
+      "mtime": 1776003238.380086,
+      "size": 800
+    },
+    "README.md": {
+      "path": "README.md",
+      "title": "程序猿 AI 开发专用",
+      "sha1": "9b217a26daa62b614c15fb2cfea4349926ca4acb",
+      "mtime": 1776003238.3804183,
+      "size": 1434
+    },
+    "config/agents/frontend-builder.md": {
+      "path": "config/agents/frontend-builder.md",
+      "title": "Frontend Builder",
+      "sha1": "8abe2176538fea2a21a19bdfdd37c4d52d44dbd1",
+      "mtime": 1775838556.690986,
+      "size": 2329
+    },
+    "config/agents/frontend-polish.md": {
+      "path": "config/agents/frontend-polish.md",
+      "title": "Frontend Polish",
+      "sha1": "8cc11522273d4ac679deb6c04cbd6261a32a261c",
+      "mtime": 1775838556.6914392,
+      "size": 1249
+    },
+    "config/agents/frontend-review.md": {
+      "path": "config/agents/frontend-review.md",
+      "title": "Frontend Review",
+      "sha1": "dd9493d77bd4e28808fc5f81e47fa61506327e54",
+      "mtime": 1775838556.6912339,
+      "size": 1038
+    },
+    "omo-scaffold/AGENT.md": {
+      "path": "omo-scaffold/AGENT.md",
+      "title": "Adding an Agent",
+      "sha1": "f566ce3687fac92b8e955922ce621be1b78ecb17",
+      "mtime": 1776001193.2275445,
+      "size": 791
+    },
+    "omo-scaffold/CHECKLIST.md": {
+      "path": "omo-scaffold/CHECKLIST.md",
+      "title": "Scaffold Checklist",
+      "sha1": "d69d6a8aa515a82b6c8a368dbea734f4a721426c",
+      "mtime": 1776002267.2183988,
+      "size": 974
+    },
+    "omo-scaffold/COMMAND.md": {
+      "path": "omo-scaffold/COMMAND.md",
+      "title": "Adding a Command",
+      "sha1": "7169e8e69baf22fef3c228b451bf706859b981e5",
+      "mtime": 1776001193.22817,
+      "size": 872
+    },
+    "omo-scaffold/PLUGIN.md": {
+      "path": "omo-scaffold/PLUGIN.md",
+      "title": "Adding a Plugin",
+      "sha1": "3a4f73691a2a301684ffe07a0a5f51afdf31c61f",
+      "mtime": 1776001193.2265828,
+      "size": 1063
+    },
+    "omo-scaffold/README.md": {
+      "path": "omo-scaffold/README.md",
+      "title": "oMo Scaffold",
+      "sha1": "b2ad45a517dc4fb99a2ef2289c0d7cc8070d2fc9",
+      "mtime": 1776001193.225956,
+      "size": 496
+    },
+    "omo-scaffold/SKILL.md": {
+      "path": "omo-scaffold/SKILL.md",
+      "title": "Adding a Skill",
+      "sha1": "4194c8f7d56d7facdf10915a38f57b7c9a780040",
+      "mtime": 1776001193.2278888,
+      "size": 760
+    },
+    "repo-nav-tooling/README.md": {
+      "path": "repo-nav-tooling/README.md",
+      "title": "Repo Nav Tooling",
+      "sha1": "c6b7e383ab15f737f8c6ca0d8d10fe1be81770ec",
+      "mtime": 1776003215.0325682,
+      "size": 421
+    },
+    "repo-nav-tooling/REPO_NAV_SCHEMA.md": {
+      "path": "repo-nav-tooling/REPO_NAV_SCHEMA.md",
+      "title": "Repo-Nav-First Schema",
+      "sha1": "ae5f9b236d34a70fe409891b1e21d1828b7eb3e3",
+      "mtime": 1776003215.0340827,
+      "size": 4042
+    },
+    "task-handoff-guard/FLOW.md": {
+      "path": "task-handoff-guard/FLOW.md",
+      "title": "Task Handoff Guard Flow",
+      "sha1": "24503a7e58a18c52a4e140f8cad48ebde811cf27",
+      "mtime": 1775994430.3746176,
+      "size": 1955
+    },
+    "task-handoff-guard/IMPLEMENTATION_NOTES.md": {
+      "path": "task-handoff-guard/IMPLEMENTATION_NOTES.md",
+      "title": "Implementation Notes",
+      "sha1": "fea215be351cb4ff7b9ce10699a64c67b1e2c7c2",
+      "mtime": 1775995149.197641,
+      "size": 5009
+    },
+    "task-handoff-guard/INCIDENT.md": {
+      "path": "task-handoff-guard/INCIDENT.md",
+      "title": "Task Continuation Incident Notes",
+      "sha1": "2c5baa4f258b80a2f835a0842fcd3271c1a78803",
+      "mtime": 1775994295.1357508,
+      "size": 1383
+    },
+    "task-handoff-guard/PLAN.md": {
+      "path": "task-handoff-guard/PLAN.md",
+      "title": "Task Handoff Guard Plan",
+      "sha1": "2e5db5faf4185b307af18f01a66bc9762b7b4594",
+      "mtime": 1775994295.1353455,
+      "size": 2696
+    },
+    "task-handoff-guard/PSEUDOCODE.md": {
+      "path": "task-handoff-guard/PSEUDOCODE.md",
+      "title": "Task Handoff Guard Pseudocode",
+      "sha1": "3b38345d7c7a484d86da065133424907c1020ab3",
+      "mtime": 1775994430.378271,
+      "size": 2800
+    },
+    "task-handoff-guard/README.md": {
+      "path": "task-handoff-guard/README.md",
+      "title": "Task Handoff Guard",
+      "sha1": "48d495eec0a9e4c412dfddc8f7c0931383a1abb4",
+      "mtime": 1775994295.1341534,
+      "size": 1150
+    },
+    "task-handoff-guard/STATE_MACHINE.md": {
+      "path": "task-handoff-guard/STATE_MACHINE.md",
+      "title": "Task Handoff Guard State Machine",
+      "sha1": "f2144473905672cdd7cd3d3006e5b2c17e49bde6",
+      "mtime": 1775994430.377848,
+      "size": 1879
+    },
+    "task-handoff-guard/SUMMARY.md": {
+      "path": "task-handoff-guard/SUMMARY.md",
+      "title": "Summary",
+      "sha1": "22482cc8867a394544de5e166e80ee185f233bf8",
+      "mtime": 1775994295.1359985,
+      "size": 1132
+    },
+    "task-handoff-guard/demo/README.md": {
+      "path": "task-handoff-guard/demo/README.md",
+      "title": "Task Handoff Guard Demo",
+      "sha1": "cd217b3281b430c73373a8bd9c291f27b0fa2a32",
+      "mtime": 1775999907.0020971,
+      "size": 1433
+    },
+    "task-handoff-guard/mvp/README.md": {
+      "path": "task-handoff-guard/mvp/README.md",
+      "title": "Task Handoff Guard MVP Skeleton",
+      "sha1": "25ba7f74668354c01fbc1100b6c6e24b68ed9092",
+      "mtime": 1775995860.1577613,
+      "size": 980
+    },
+    "task-handoff-guard/mvp/USAGE.md": {
+      "path": "task-handoff-guard/mvp/USAGE.md",
+      "title": "Hook-Ready Usage Sketch",
+      "sha1": "94b6c5b82fa1887e60fd2ce93a5ca4875a9117e4",
+      "mtime": 1775996379.3212426,
+      "size": 1365
+    },
+    "task-handoff-guard/plugin/README.md": {
+      "path": "task-handoff-guard/plugin/README.md",
+      "title": "Task Handoff Guard Plugin Scaffold",
+      "sha1": "23815e91408880cd042dbb1ea74833c9f29e86cb",
+      "mtime": 1776000953.8114302,
+      "size": 1431
+    }
+  },
+  "modules": [
+    {
+      "id": "config",
+      "path": "config/",
+      "entrypoints": []
+    },
+    {
+      "id": "omo-scaffold",
+      "path": "omo-scaffold/",
+      "entrypoints": [
+        "omo-scaffold/README.md",
+        "omo-scaffold/AGENT.md",
+        "omo-scaffold/CHECKLIST.md",
+        "omo-scaffold/COMMAND.md"
+      ]
+    },
+    {
+      "id": "repo-nav",
+      "path": "repo-nav/",
+      "entrypoints": []
+    },
+    {
+      "id": "repo-nav-tooling",
+      "path": "repo-nav-tooling/",
+      "entrypoints": [
+        "repo-nav-tooling/README.md",
+        "repo-nav-tooling/REPO_NAV_SCHEMA.md"
+      ]
+    },
+    {
+      "id": "task-handoff-guard",
+      "path": "task-handoff-guard/",
+      "entrypoints": [
+        "task-handoff-guard/README.md",
+        "task-handoff-guard/FLOW.md",
+        "task-handoff-guard/IMPLEMENTATION_NOTES.md",
+        "task-handoff-guard/INCIDENT.md"
+      ]
+    }
+  ]
+}

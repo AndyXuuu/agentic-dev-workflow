@@ -1,0 +1,29 @@
+version: 1
+modules:
+  - id: config
+    path: config/
+    entrypoints:
+      - <none-detected>
+  - id: omo-scaffold
+    path: omo-scaffold/
+    entrypoints:
+      - omo-scaffold/README.md
+      - omo-scaffold/AGENT.md
+      - omo-scaffold/CHECKLIST.md
+      - omo-scaffold/COMMAND.md
+  - id: repo-nav
+    path: repo-nav/
+    entrypoints:
+      - <none-detected>
+  - id: repo-nav-tooling
+    path: repo-nav-tooling/
+    entrypoints:
+      - repo-nav-tooling/README.md
+      - repo-nav-tooling/REPO_NAV_SCHEMA.md
+  - id: task-handoff-guard
+    path: task-handoff-guard/
+    entrypoints:
+      - task-handoff-guard/README.md
+      - task-handoff-guard/FLOW.md
+      - task-handoff-guard/IMPLEMENTATION_NOTES.md
+      - task-handoff-guard/INCIDENT.md

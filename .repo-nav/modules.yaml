@@ -33,14 +33,14 @@ modules:
       - polish pass
       - browser verification behavior
 
-  - id: knowledge-module
-    path: knowledge/
-    purpose: Project knowledge index and navigation layer
+  - id: repo-nav-artifact
+    path: .repo-nav/
+    purpose: AI-first search navigation artifact for this repository
     entrypoints:
-      - knowledge/index.yaml
-      - knowledge/docs.yaml
-      - knowledge/modules.yaml
-      - knowledge/workflows.yaml
+      - .repo-nav/index.yaml
+      - .repo-nav/docs.yaml
+      - .repo-nav/modules.yaml
+      - .repo-nav/workflows.yaml
 
   - id: task-handoff-guard
     path: task-handoff-guard/
