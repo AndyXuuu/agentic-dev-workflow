@@ -72,3 +72,27 @@
 详细步骤见：
 
 - `knowledge/opencode-omo-openai-setup.md`
+
+## 如何使用 knowledge schema
+
+如果你要在一个新项目里接入这套 knowledge-first 方案，建议顺序如下：
+
+1. 复制 `knowledge/templates/` 下的模板到目标项目的 `knowledge/` 目录
+2. 先填最小信息：
+   - `index.yaml`
+   - `docs.yaml`
+   - `modules.yaml`
+   - `workflows.yaml`
+3. 在项目根目录加入 `AGENTS.md`，可直接参考：
+   - `knowledge/templates/AGENTS.md.template`
+4. 让 AI 先读 `knowledge/index.yaml`，再按需扩展到 `read / grep / glob / LSP`
+5. 如果证据不足：
+   - 显式列 `unknowns`
+   - 显式列 `missing_evidence`
+   - 不要猜
+
+核心原则：
+
+- `knowledge/` 是导航层，不是代码真相
+- 代码现状永远优先于索引描述
+- 先做最小可用索引，不要一开始做成重系统
