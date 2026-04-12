@@ -20,6 +20,7 @@ The purpose is simple:
 - `SKILL.md`
 - `COMMAND.md`
 - `CHECKLIST.md`
+- `FEATURE_BUILD.md`
 
 ## Usage
 
