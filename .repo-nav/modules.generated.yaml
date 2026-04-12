@@ -11,14 +11,11 @@ modules:
       - omo-scaffold/AGENT.md
       - omo-scaffold/CHECKLIST.md
       - omo-scaffold/COMMAND.md
-  - id: repo-nav
-    path: repo-nav/
-    entrypoints:
-      - <none-detected>
   - id: repo-nav-tooling
     path: repo-nav-tooling/
     entrypoints:
       - repo-nav-tooling/README.md
+      - repo-nav-tooling/COMMAND.md
       - repo-nav-tooling/REPO_NAV_SCHEMA.md
   - id: task-handoff-guard
     path: task-handoff-guard/

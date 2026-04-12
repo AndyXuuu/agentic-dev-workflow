@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "updated_at": "2026-04-12T14:38:35.336040+00:00",
+  "added_docs": [],
+  "changed_docs": [
+    "AGENTS.md",
+    "repo-nav-tooling/README.md"
+  ],
+  "removed_docs": [],
+  "doc_count": 26,
+  "module_count": 4,
+  "mode": "rebuild"
+}

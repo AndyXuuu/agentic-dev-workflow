@@ -3,8 +3,8 @@ documents:
   - id: agents
     title: "Repo-nav-first"
     path: AGENTS.md
-    sha1: a1012b868baa56b2d36435f8376e80906829b117
-    size: 800
+    sha1: edbabd16fff32c5a1b8de1867d94efdc06327b73
+    size: 840
   - id: readme
     title: "程序猿 AI 开发专用"
     path: README.md
@@ -33,13 +33,13 @@ documents:
   - id: omo-scaffold-checklist
     title: "Scaffold Checklist"
     path: omo-scaffold/CHECKLIST.md
-    sha1: d69d6a8aa515a82b6c8a368dbea734f4a721426c
-    size: 974
+    sha1: 1b7874498f61b71fc6946022f20e987a95241e54
+    size: 975
   - id: omo-scaffold-command
     title: "Adding a Command"
     path: omo-scaffold/COMMAND.md
-    sha1: 7169e8e69baf22fef3c228b451bf706859b981e5
-    size: 872
+    sha1: c82f40aaa8541aa09a618588ed1cd06baf386e31
+    size: 935
   - id: omo-scaffold-plugin
     title: "Adding a Plugin"
     path: omo-scaffold/PLUGIN.md
@@ -55,11 +55,16 @@ documents:
     path: omo-scaffold/SKILL.md
     sha1: 4194c8f7d56d7facdf10915a38f57b7c9a780040
     size: 760
+  - id: repo-nav-tooling-command
+    title: "/rnt Command"
+    path: repo-nav-tooling/COMMAND.md
+    sha1: 16550cc232120c05fb7bf82ef74250a8b34db66f
+    size: 1032
   - id: repo-nav-tooling-readme
     title: "Repo Nav Tooling"
     path: repo-nav-tooling/README.md
-    sha1: c6b7e383ab15f737f8c6ca0d8d10fe1be81770ec
-    size: 421
+    sha1: 80b0fe7813e5c7a679eaa44e2f164630f0c4252d
+    size: 1060
   - id: repo-nav-tooling-repo-nav-schema
     title: "Repo-Nav-First Schema"
     path: repo-nav-tooling/REPO_NAV_SCHEMA.md

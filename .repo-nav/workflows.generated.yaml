@@ -1,0 +1,12 @@
+version: 1
+workflows:
+  - id: bootstrap-navigation
+    goal: find the first useful repository entrypoints for AI search
+    start_with:
+      - .repo-nav/index.generated.yaml
+    inspect:
+      - .repo-nav/docs.generated.yaml
+      - .repo-nav/modules.generated.yaml
+    verify:
+      - generated files exist
+      - summary.json exists

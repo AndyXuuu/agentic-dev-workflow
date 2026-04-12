@@ -2,11 +2,11 @@
 
 Before broad repo search, read:
 
-1. `.repo-nav/index.yaml`
+1. `.repo-nav/index.generated.yaml`
 2. Then one of:
-   - `.repo-nav/docs.yaml`
-   - `.repo-nav/modules.yaml`
-   - `.repo-nav/workflows.yaml`
+   - `.repo-nav/docs.generated.yaml`
+   - `.repo-nav/modules.generated.yaml`
+   - `.repo-nav/workflows.generated.yaml`
 
 Use `.repo-nav/` as navigation only.
 If insufficient or stale, fall back to normal search (`read`, `grep`, `glob`, `LSP`).

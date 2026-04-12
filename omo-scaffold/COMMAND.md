@@ -10,6 +10,7 @@ Use this when behavior should be invoked through a deliberate command boundary s
 - explicit task handoff
 - explicit cleanup / stop behavior
 - explicit initialization / generation
+- explicit navigation artifact management (example: `/rnt -r`)
 
 ## Questions to answer
 

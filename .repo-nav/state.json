@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "updated_at": "2026-04-12T14:14:25.824078+00:00",
+  "updated_at": "2026-04-12T14:38:35.336212+00:00",
   "docs": {
     "AGENTS.md": {
       "path": "AGENTS.md",
       "title": "Repo-nav-first",
-      "sha1": "a1012b868baa56b2d36435f8376e80906829b117",
-      "mtime": 1776003238.380086,
-      "size": 800
+      "sha1": "edbabd16fff32c5a1b8de1867d94efdc06327b73",
+      "mtime": 1776004696.270109,
+      "size": 840
     },
     "README.md": {
       "path": "README.md",
@@ -47,16 +47,16 @@
     "omo-scaffold/CHECKLIST.md": {
       "path": "omo-scaffold/CHECKLIST.md",
       "title": "Scaffold Checklist",
-      "sha1": "d69d6a8aa515a82b6c8a368dbea734f4a721426c",
-      "mtime": 1776002267.2183988,
-      "size": 974
+      "sha1": "1b7874498f61b71fc6946022f20e987a95241e54",
+      "mtime": 1776003294.6977265,
+      "size": 975
     },
     "omo-scaffold/COMMAND.md": {
       "path": "omo-scaffold/COMMAND.md",
       "title": "Adding a Command",
-      "sha1": "7169e8e69baf22fef3c228b451bf706859b981e5",
-      "mtime": 1776001193.22817,
-      "size": 872
+      "sha1": "c82f40aaa8541aa09a618588ed1cd06baf386e31",
+      "mtime": 1776003984.0724914,
+      "size": 935
     },
     "omo-scaffold/PLUGIN.md": {
       "path": "omo-scaffold/PLUGIN.md",
@@ -79,12 +79,19 @@
       "mtime": 1776001193.2278888,
       "size": 760
     },
+    "repo-nav-tooling/COMMAND.md": {
+      "path": "repo-nav-tooling/COMMAND.md",
+      "title": "/rnt Command",
+      "sha1": "16550cc232120c05fb7bf82ef74250a8b34db66f",
+      "mtime": 1776003984.072041,
+      "size": 1032
+    },
     "repo-nav-tooling/README.md": {
       "path": "repo-nav-tooling/README.md",
       "title": "Repo Nav Tooling",
-      "sha1": "c6b7e383ab15f737f8c6ca0d8d10fe1be81770ec",
-      "mtime": 1776003215.0325682,
-      "size": 421
+      "sha1": "80b0fe7813e5c7a679eaa44e2f164630f0c4252d",
+      "mtime": 1776004696.270377,
+      "size": 1060
     },
     "repo-nav-tooling/REPO_NAV_SCHEMA.md": {
       "path": "repo-nav-tooling/REPO_NAV_SCHEMA.md",
@@ -195,15 +202,11 @@
       ]
     },
     {
-      "id": "repo-nav",
-      "path": "repo-nav/",
-      "entrypoints": []
-    },
-    {
       "id": "repo-nav-tooling",
       "path": "repo-nav-tooling/",
       "entrypoints": [
         "repo-nav-tooling/README.md",
+        "repo-nav-tooling/COMMAND.md",
         "repo-nav-tooling/REPO_NAV_SCHEMA.md"
       ]
     },
