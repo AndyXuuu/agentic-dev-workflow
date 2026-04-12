@@ -16,13 +16,17 @@
 
 OpenCode 与 oMo 的本地配置快照。
 
-- [查看模块 README / 入口说明](config/opencode.json)
+- [查看模块 README](config/README.md)
 
 ### `.repo-nav/`
 
 项目本地的 AI-first 仓库导航产物，用于让 AI 在搜索任务里更快、更准、更稳地找到入口。
 
-- [查看模块 README](.repo-nav/README.md)
+- 主要入口：
+  - `.repo-nav/index.generated.yaml`
+  - `.repo-nav/docs.generated.yaml`
+  - `.repo-nav/modules.generated.yaml`
+  - `.repo-nav/workflows.generated.yaml`
 
 ### `repo-nav-tooling/`
 
@@ -45,7 +49,6 @@ OpenCode 与 oMo 的本地配置快照。
 
 ## 推荐阅读顺序
 
-1. [.repo-nav/README.md](.repo-nav/README.md)
-2. [repo-nav-tooling/README.md](repo-nav-tooling/README.md)
-3. [task-handoff-guard/README.md](task-handoff-guard/README.md)
-4. [omo-scaffold/README.md](omo-scaffold/README.md)
+1. [repo-nav-tooling/README.md](repo-nav-tooling/README.md)
+2. [task-handoff-guard/README.md](task-handoff-guard/README.md)
+3. [omo-scaffold/README.md](omo-scaffold/README.md)
