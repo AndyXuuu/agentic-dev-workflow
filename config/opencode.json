@@ -22,6 +22,17 @@
     }
   },
   "$schema": "https://opencode.ai/config.json",
+  "lsp": {
+    "markdown": {
+      "command": [
+        "marksman"
+      ],
+      "extensions": [
+        ".md",
+        ".mdx"
+      ]
+    }
+  },
   "mcp": {
     "playwright": {
       "type": "local",

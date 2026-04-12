@@ -7,6 +7,7 @@
 - 固定 `oh-my-opencode@3.16.0`
 - 只使用 OpenAI 模型
 - 移除 Pencil
+- 启用 Marksman Markdown LSP
 - 接入 Playwright MCP 作为 browser verification
 - 提供一套前端替代链：
   - `frontend-builder`
@@ -28,6 +29,7 @@
 ## 特点
 
 - OpenAI-only 模型路由
+- 增加 Marksman，提升 Markdown/MDX 编辑体验
 - Spark 只用于轻量任务，避免主链路不稳
 - 前端任务有实现、审查、精修三层分工
 - Playwright 用于真实页面验证，而不是只看代码猜 UI
@@ -48,6 +50,7 @@
 - 安装 OpenCode
 - 登录 OpenAI
 - 确保 `gh` / `npx` / Node.js 可用
+- 安装 `marksman`
 
 详细步骤见：
 
