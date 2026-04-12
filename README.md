@@ -40,6 +40,8 @@
 - `config/agents/frontend-builder.md`
 - `config/agents/frontend-review.md`
 - `config/agents/frontend-polish.md`
+- `task-handoff-guard/`
+  - continuation 冲突与任务交接防护设计模块
 
 ## 特点
 
@@ -50,6 +52,7 @@
 - 前端任务有实现、审查、精修三层分工
 - Playwright 用于真实页面验证，而不是只看代码猜 UI
 - 知识文档集中在 `knowledge/` 模块内，便于 agent 先导航再搜索
+- `task-handoff-guard/` 用于设计如何避免旧任务意外复活并覆盖新任务
 - 不包含 API Key、OAuth token、auth.json 等敏感文件
 
 ## 适合谁
@@ -96,3 +99,21 @@
 - `knowledge/` 是导航层，不是代码真相
 - 代码现状永远优先于索引描述
 - 先做最小可用索引，不要一开始做成重系统
+
+## 如何理解 task-handoff-guard
+
+`task-handoff-guard/` 不是新的任务系统，而是一个薄的 continuation 冲突防护层设计。
+
+它的目标是：
+
+- 在开始新任务前发现旧任务是否仍可恢复
+- 展示旧任务摘要给用户确认
+- 允许用户选择：
+  - 继续旧任务
+  - 停止旧任务并开始新任务
+  - 高风险保留旧任务状态
+
+它和 `knowledge/` 的关系是：
+
+- `knowledge/` 解决“先去哪里找”
+- `task-handoff-guard/` 解决“旧任务和新任务如何安全交接”
