@@ -10,11 +10,11 @@ Use `.repo-nav/` as a first-stop navigation layer.
 
 Recommended search order:
 
-1. `.repo-nav/index.yaml`
+1. `.repo-nav/index.generated.yaml`
 2. Then one of:
-   - `.repo-nav/docs.yaml`
-   - `.repo-nav/modules.yaml`
-   - `.repo-nav/workflows.yaml`
+   - `.repo-nav/docs.generated.yaml`
+   - `.repo-nav/modules.generated.yaml`
+   - `.repo-nav/workflows.generated.yaml`
 3. If insufficient or stale, fall back to normal search:
    - `read`
    - `grep`
@@ -40,25 +40,23 @@ It should avoid unstable implementation details that change frequently.
 
 ```text
 .repo-nav/
-  index.yaml
-  docs.yaml
-  modules.yaml
-  workflows.yaml
+  index.generated.yaml
+  docs.generated.yaml
+  modules.generated.yaml
+  workflows.generated.yaml
 ```
 
 Optional extensions:
 
 ```text
 .repo-nav/
-  glossary.yaml
-  decisions.yaml
-  entrypoints.yaml
-  templates/
+  state.json
+  summary.json
 ```
 
 ## File responsibilities
 
-### `index.yaml`
+### `index.generated.yaml`
 
 Top-level navigation entry.
 
@@ -69,7 +67,7 @@ Should answer:
 - which sub-index files exist
 - what the current unknowns are
 
-### `docs.yaml`
+### `docs.generated.yaml`
 
 AI-facing document and knowledge-entry map.
 
@@ -80,7 +78,7 @@ Should answer:
 - which modules/workflows each entry is related to
 - which entries are uncertain or temporary
 
-### `modules.yaml`
+### `modules.generated.yaml`
 
 Code/module map.
 
@@ -92,7 +90,7 @@ Should answer:
 - which areas inside a module matter
 - what is still unclear
 
-### `workflows.yaml`
+### `workflows.generated.yaml`
 
 Task navigation map.
 
@@ -113,7 +111,7 @@ Should answer:
 - use `missing_evidence` whenever a conclusion is partial
 - do not guess
 
-## `index.yaml` schema
+## `index.generated.yaml` schema
 
 Required:
 
@@ -128,7 +126,7 @@ Recommended:
 - `project_entrypoints`
 - `unknowns`
 
-## `docs.yaml` schema
+## `docs.generated.yaml` schema
 
 Each document item should prefer:
 
@@ -144,7 +142,7 @@ Optional:
 - `unknowns`
 - `notes`
 
-## `modules.yaml` schema
+## `modules.generated.yaml` schema
 
 Each module item should prefer:
 
@@ -162,7 +160,7 @@ Optional:
 
 Use `areas` as the general nested field instead of hard-coding names like `subdomains` or `submodules`.
 
-## `workflows.yaml` schema
+## `workflows.generated.yaml` schema
 
 Each workflow item should prefer:
 

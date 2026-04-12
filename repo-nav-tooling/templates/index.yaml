@@ -9,9 +9,9 @@ usage:
     fall back to read/grep/glob/LSP when needed.
 
 entrypoints:
-  docs: .repo-nav/docs.yaml
-  modules: .repo-nav/modules.yaml
-  workflows: .repo-nav/workflows.yaml
+  docs: .repo-nav/docs.generated.yaml
+  modules: .repo-nav/modules.generated.yaml
+  workflows: .repo-nav/workflows.generated.yaml
 
 project_entrypoints:
   root-readme: README.md
