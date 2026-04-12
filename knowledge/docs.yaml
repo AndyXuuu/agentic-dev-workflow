@@ -1,0 +1,20 @@
+version: 1
+documents:
+  - id: opencode-omo-openai-setup
+    title: OpenCode + oh-my-opencode OpenAI-only Setup Snapshot
+    path: knowledge/opencode-omo-openai-setup.md
+    topics:
+      - opencode
+      - oh-my-opencode
+      - openai-only
+      - playwright
+      - marksman
+      - yaml-ls
+      - frontend-agents
+    related_modules:
+      - opencode-config
+      - omo-routing
+      - frontend-agent-workflow
+    related_workflows:
+      - bootstrap-machine
+      - configure-frontend-workflow

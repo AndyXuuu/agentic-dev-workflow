@@ -1,0 +1,42 @@
+version: 1
+workflows:
+  - id: bootstrap-machine
+    goal: Reproduce the OpenCode + oMo environment on a new machine
+    start_with:
+      - knowledge/opencode-omo-openai-setup.md
+    inspect:
+      - config/opencode.json
+      - config/oh-my-openagent.json
+      - config/agents/frontend-builder.md
+      - config/agents/frontend-review.md
+      - config/agents/frontend-polish.md
+    verify:
+      - OpenCode loads plugin pinning
+      - Marksman is available in PATH
+      - YAML LSP is enabled
+      - Playwright MCP is enabled
+
+  - id: configure-frontend-workflow
+    goal: Understand or adjust the frontend replacement chain
+    start_with:
+      - knowledge/index.yaml
+      - knowledge/modules.yaml
+    inspect:
+      - config/agents/frontend-builder.md
+      - config/agents/frontend-review.md
+      - config/agents/frontend-polish.md
+      - config/opencode.json
+    verify:
+      - frontend-* task permissions exist
+      - browser verification path exists
+
+  - id: inspect-model-routing
+    goal: Understand or modify current OpenAI model routing
+    start_with:
+      - knowledge/index.yaml
+      - knowledge/modules.yaml
+    inspect:
+      - config/oh-my-openagent.json
+    verify:
+      - agent routes match intended cost/stability split
+      - category routes match intended task profile

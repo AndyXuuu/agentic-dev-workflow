@@ -1,0 +1,13 @@
+# Knowledge-first
+
+Before broad repo search, read:
+
+1. `knowledge/index.yaml`
+2. Then one of:
+   - `knowledge/docs.yaml`
+   - `knowledge/modules.yaml`
+   - `knowledge/workflows.yaml`
+
+Use `knowledge/` as navigation only.
+If insufficient or stale, fall back to normal search (`read`, `grep`, `glob`, `LSP`).
+Codebase truth wins over index content.

@@ -1,0 +1,33 @@
+version: 1
+module: knowledge
+purpose: project knowledge index and navigation layer
+
+usage:
+  priority: first-stop
+  instruction: >-
+    Read this index before broad repository search. Use it to narrow the search
+    space, then fall back to grep, glob, read, and LSP when needed.
+
+entrypoints:
+  readme: knowledge/README.md
+  docs: knowledge/docs.yaml
+  modules: knowledge/modules.yaml
+  workflows: knowledge/workflows.yaml
+
+policy:
+  role: navigation-not-replacement
+  fallback: code-and-doc search wins when the index is stale or incomplete
+
+areas:
+  - name: setup
+    file: knowledge/opencode-omo-openai-setup.md
+    description: End-to-end environment setup and reproduction guide
+  - name: documentation-index
+    file: knowledge/docs.yaml
+    description: Index of knowledge documents and their relationships
+  - name: module-index
+    file: knowledge/modules.yaml
+    description: High-level ownership and entrypoint map for repository modules
+  - name: workflow-index
+    file: knowledge/workflows.yaml
+    description: Common workflows, starting points, and verification routes

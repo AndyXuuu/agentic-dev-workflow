@@ -1,0 +1,43 @@
+version: 1
+modules:
+  - id: opencode-config
+    path: config/opencode.json
+    purpose: Global OpenCode configuration
+    entrypoints:
+      - config/opencode.json
+    includes:
+      - plugin pinning
+      - lsp configuration
+      - playwright mcp
+      - task permissions
+
+  - id: omo-routing
+    path: config/oh-my-openagent.json
+    purpose: Model routing for oh-my-opencode / oh-my-openagent
+    entrypoints:
+      - config/oh-my-openagent.json
+    includes:
+      - agent model mapping
+      - category model mapping
+
+  - id: frontend-agent-workflow
+    path: config/agents/
+    purpose: Frontend replacement workflow without Pencil
+    entrypoints:
+      - config/agents/frontend-builder.md
+      - config/agents/frontend-review.md
+      - config/agents/frontend-polish.md
+    includes:
+      - implementation pass
+      - review pass
+      - polish pass
+      - browser verification behavior
+
+  - id: knowledge-module
+    path: knowledge/
+    purpose: Project knowledge index and navigation layer
+    entrypoints:
+      - knowledge/index.yaml
+      - knowledge/docs.yaml
+      - knowledge/modules.yaml
+      - knowledge/workflows.yaml

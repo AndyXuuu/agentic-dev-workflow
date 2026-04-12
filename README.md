@@ -17,7 +17,21 @@
 
 ## 仓库内容
 
-- `docs/OPENCODE_OMO_OPENAI_SETUP.md`
+- `knowledge/`
+  - 独立的知识索引模块
+- `knowledge/index.yaml`
+  - 知识入口，总导航层
+- `knowledge/docs.yaml`
+  - 文档索引
+- `knowledge/modules.yaml`
+  - 模块索引
+- `knowledge/workflows.yaml`
+  - 工作流索引
+- `knowledge/KNOWLEDGE_SCHEMA.md`
+  - 通用 knowledge-first schema 规范
+- `knowledge/templates/`
+  - 可复用模板（index/docs/modules/workflows/AGENTS）
+- `knowledge/opencode-omo-openai-setup.md`
   - 完整安装与复现文档
 - `config/opencode.json`
   - OpenCode 全局配置
@@ -35,6 +49,7 @@
 - Spark 只用于轻量任务，避免主链路不稳
 - 前端任务有实现、审查、精修三层分工
 - Playwright 用于真实页面验证，而不是只看代码猜 UI
+- 知识文档集中在 `knowledge/` 模块内，便于 agent 先导航再搜索
 - 不包含 API Key、OAuth token、auth.json 等敏感文件
 
 ## 适合谁
@@ -56,4 +71,4 @@
 
 详细步骤见：
 
-- `docs/OPENCODE_OMO_OPENAI_SETUP.md`
+- `knowledge/opencode-omo-openai-setup.md`
