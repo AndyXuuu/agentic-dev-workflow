@@ -31,6 +31,7 @@ Short flags:
 See also:
 
 - `repo-nav-tooling/COMMAND.md`
+- `repo-nav-tooling/ROADMAP.md`
 
 ## The actual project artifact
 
