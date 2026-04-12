@@ -31,7 +31,8 @@
         ".md",
         ".mdx"
       ]
-    }
+    },
+    "yaml-ls": {}
   },
   "mcp": {
     "playwright": {
