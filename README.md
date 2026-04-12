@@ -1,119 +1,51 @@
-# 程序猿AI开发专用
+# 程序猿 AI 开发专用
 
-这是一个面向 **OpenCode + oh-my-opencode + OpenAI-only** 的个人开发环境配置快照仓库。
+这是一个面向 **OpenCode + oh-my-opencode + OpenAI-only** 的个人 AI 开发环境与方法仓库。
 
-目标：
+## 用途
 
-- 固定 `oh-my-opencode@3.16.0`
-- 只使用 OpenAI 模型
-- 移除 Pencil
-- 启用 Marksman Markdown LSP
-- 启用 YAML LSP
-- 接入 Playwright MCP 作为 browser verification
-- 提供一套前端替代链：
-  - `frontend-builder`
-  - `frontend-review`
-  - `frontend-polish`
+这个仓库主要用于沉淀三类内容：
 
-## 仓库内容
+- OpenCode / oMo 的本地配置基线
+- 面向 AI 搜索任务的仓库导航层
+- 与任务交接、插件扩展相关的方法与实现草案
 
-- `knowledge/`
-  - 独立的知识索引模块
-- `knowledge/index.yaml`
-  - 知识入口，总导航层
-- `knowledge/docs.yaml`
-  - 文档索引
-- `knowledge/modules.yaml`
-  - 模块索引
-- `knowledge/workflows.yaml`
-  - 工作流索引
-- `knowledge/KNOWLEDGE_SCHEMA.md`
-  - 通用 knowledge-first schema 规范
-- `knowledge/templates/`
-  - 可复用模板（index/docs/modules/workflows/AGENTS）
-- `knowledge/opencode-omo-openai-setup.md`
-  - 完整安装与复现文档
-- `config/opencode.json`
-  - OpenCode 全局配置
-- `config/oh-my-openagent.json`
-  - oMo / oh-my-openagent 模型编排
-- `config/agents/frontend-builder.md`
-- `config/agents/frontend-review.md`
-- `config/agents/frontend-polish.md`
-- `task-handoff-guard/`
-  - continuation 冲突与任务交接防护设计模块
+## 模块说明
 
-## 特点
+### `config/`
 
-- OpenAI-only 模型路由
-- 增加 Marksman，提升 Markdown/MDX 编辑体验
-- 增加 YAML LSP，提升配置文件编辑体验
-- Spark 只用于轻量任务，避免主链路不稳
-- 前端任务有实现、审查、精修三层分工
-- Playwright 用于真实页面验证，而不是只看代码猜 UI
-- 知识文档集中在 `knowledge/` 模块内，便于 agent 先导航再搜索
-- `task-handoff-guard/` 用于设计如何避免旧任务意外复活并覆盖新任务
-- 不包含 API Key、OAuth token、auth.json 等敏感文件
+OpenCode 与 oMo 的本地配置快照。
 
-## 适合谁
+- [查看模块 README / 入口说明](config/opencode.json)
 
-- 想把 OpenCode + oMo 调成更稳的程序员
-- 想保留多 agent 工作流，但尽量减少“玄学配置”的人
-- 不想依赖 Pencil，又想提高前端实现质量的人
+### `.repo-nav/`
 
-## 注意
+项目本地的 AI-first 仓库导航产物，用于让 AI 在搜索任务里更快、更准、更稳地找到入口。
 
-这个仓库是 **脱敏后的配置快照**，不是完整用户目录备份。
+- [查看模块 README](.repo-nav/README.md)
 
-你仍然需要在新机器上：
+### `repo-nav-tooling/`
 
-- 安装 OpenCode
-- 登录 OpenAI
-- 确保 `gh` / `npx` / Node.js 可用
-- 安装 `marksman`
+`repo-nav` 的工具模块，负责 schema、模板和增量更新命令。
 
-详细步骤见：
+- [查看模块 README](repo-nav-tooling/README.md)
+- [查看 schema](repo-nav-tooling/REPO_NAV_SCHEMA.md)
 
-- `knowledge/opencode-omo-openai-setup.md`
+### `task-handoff-guard/`
 
-## 如何使用 knowledge schema
+旧任务恢复冲突与任务交接防护的设计、MVP 骨架、demo 与插件脚手架。
 
-如果你要在一个新项目里接入这套 knowledge-first 方案，建议顺序如下：
+- [查看模块 README](task-handoff-guard/README.md)
 
-1. 复制 `knowledge/templates/` 下的模板到目标项目的 `knowledge/` 目录
-2. 先填最小信息：
-   - `index.yaml`
-   - `docs.yaml`
-   - `modules.yaml`
-   - `workflows.yaml`
-3. 在项目根目录加入 `AGENTS.md`，可直接参考：
-   - `knowledge/templates/AGENTS.md.template`
-4. 让 AI 先读 `knowledge/index.yaml`，再按需扩展到 `read / grep / glob / LSP`
-5. 如果证据不足：
-   - 显式列 `unknowns`
-   - 显式列 `missing_evidence`
-   - 不要猜
+### `omo-scaffold/`
 
-核心原则：
+新增 plugin / agent / skill / command 时的固定接入入口。
 
-- `knowledge/` 是导航层，不是代码真相
-- 代码现状永远优先于索引描述
-- 先做最小可用索引，不要一开始做成重系统
+- [查看模块 README](omo-scaffold/README.md)
 
-## 如何理解 task-handoff-guard
+## 推荐阅读顺序
 
-`task-handoff-guard/` 不是新的任务系统，而是一个薄的 continuation 冲突防护层设计。
-
-它的目标是：
-
-- 在开始新任务前发现旧任务是否仍可恢复
-- 展示旧任务摘要给用户确认
-- 允许用户选择：
-  - 继续旧任务
-  - 停止旧任务并开始新任务
-  - 高风险保留旧任务状态
-
-它和 `knowledge/` 的关系是：
-
-- `knowledge/` 解决“先去哪里找”
-- `task-handoff-guard/` 解决“旧任务和新任务如何安全交接”
+1. [.repo-nav/README.md](.repo-nav/README.md)
+2. [repo-nav-tooling/README.md](repo-nav-tooling/README.md)
+3. [task-handoff-guard/README.md](task-handoff-guard/README.md)
+4. [omo-scaffold/README.md](omo-scaffold/README.md)
