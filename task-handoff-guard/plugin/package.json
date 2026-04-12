@@ -1,0 +1,10 @@
+{
+  "name": "task-handoff-guard-plugin",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Scaffold for a Task Handoff Guard plugin that integrates with oMo/OpenCode continuation flow.",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}
