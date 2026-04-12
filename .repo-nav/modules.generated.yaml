@@ -3,7 +3,8 @@ modules:
   - id: config
     path: config/
     entrypoints:
-      - <none-detected>
+      - config/README.md
+      - config/opencode-omo-openai-setup.md
   - id: omo-scaffold
     path: omo-scaffold/
     entrypoints:

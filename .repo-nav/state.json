@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-04-12T14:38:35.336212+00:00",
+  "updated_at": "2026-04-12T14:48:20.568397+00:00",
   "docs": {
     "AGENTS.md": {
       "path": "AGENTS.md",
@@ -12,9 +12,16 @@
     "README.md": {
       "path": "README.md",
       "title": "程序猿 AI 开发专用",
-      "sha1": "9b217a26daa62b614c15fb2cfea4349926ca4acb",
-      "mtime": 1776003238.3804183,
-      "size": 1434
+      "sha1": "9e010aa5ece26852c96f21837e91dd5bbc15d224",
+      "mtime": 1776005255.427981,
+      "size": 1495
+    },
+    "config/README.md": {
+      "path": "config/README.md",
+      "title": "Config Module",
+      "sha1": "b88872c9ab8c7b380c5038e6a1e37fc8425ff28c",
+      "mtime": 1776005147.964299,
+      "size": 287
     },
     "config/agents/frontend-builder.md": {
       "path": "config/agents/frontend-builder.md",
@@ -36,6 +43,13 @@
       "sha1": "dd9493d77bd4e28808fc5f81e47fa61506327e54",
       "mtime": 1775838556.6912339,
       "size": 1038
+    },
+    "config/opencode-omo-openai-setup.md": {
+      "path": "config/opencode-omo-openai-setup.md",
+      "title": "OpenCode + oh-my-opencode OpenAI-only Setup Snapshot",
+      "sha1": "e599d3c8002180f9008ad57df55c59abd573d405",
+      "mtime": 1776005147.9636438,
+      "size": 3465
     },
     "omo-scaffold/AGENT.md": {
       "path": "omo-scaffold/AGENT.md",
@@ -96,9 +110,9 @@
     "repo-nav-tooling/REPO_NAV_SCHEMA.md": {
       "path": "repo-nav-tooling/REPO_NAV_SCHEMA.md",
       "title": "Repo-Nav-First Schema",
-      "sha1": "ae5f9b236d34a70fe409891b1e21d1828b7eb3e3",
-      "mtime": 1776003215.0340827,
-      "size": 4042
+      "sha1": "3c3550362f7ff90592ab1d3cb726ec9710aad5eb",
+      "mtime": 1776005255.4285405,
+      "size": 4165
     },
     "task-handoff-guard/FLOW.md": {
       "path": "task-handoff-guard/FLOW.md",
@@ -189,7 +203,10 @@
     {
       "id": "config",
       "path": "config/",
-      "entrypoints": []
+      "entrypoints": [
+        "config/README.md",
+        "config/opencode-omo-openai-setup.md"
+      ]
     },
     {
       "id": "omo-scaffold",

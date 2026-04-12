@@ -8,8 +8,13 @@ documents:
   - id: readme
     title: "程序猿 AI 开发专用"
     path: README.md
-    sha1: 9b217a26daa62b614c15fb2cfea4349926ca4acb
-    size: 1434
+    sha1: 9e010aa5ece26852c96f21837e91dd5bbc15d224
+    size: 1495
+  - id: config-readme
+    title: "Config Module"
+    path: config/README.md
+    sha1: b88872c9ab8c7b380c5038e6a1e37fc8425ff28c
+    size: 287
   - id: config-agents-frontend-builder
     title: "Frontend Builder"
     path: config/agents/frontend-builder.md
@@ -25,6 +30,11 @@ documents:
     path: config/agents/frontend-review.md
     sha1: dd9493d77bd4e28808fc5f81e47fa61506327e54
     size: 1038
+  - id: config-opencode-omo-openai-setup
+    title: "OpenCode + oh-my-opencode OpenAI-only Setup Snapshot"
+    path: config/opencode-omo-openai-setup.md
+    sha1: e599d3c8002180f9008ad57df55c59abd573d405
+    size: 3465
   - id: omo-scaffold-agent
     title: "Adding an Agent"
     path: omo-scaffold/AGENT.md
@@ -68,8 +78,8 @@ documents:
   - id: repo-nav-tooling-repo-nav-schema
     title: "Repo-Nav-First Schema"
     path: repo-nav-tooling/REPO_NAV_SCHEMA.md
-    sha1: ae5f9b236d34a70fe409891b1e21d1828b7eb3e3
-    size: 4042
+    sha1: 3c3550362f7ff90592ab1d3cb726ec9710aad5eb
+    size: 4165
   - id: task-handoff-guard-flow
     title: "Task Handoff Guard Flow"
     path: task-handoff-guard/FLOW.md
