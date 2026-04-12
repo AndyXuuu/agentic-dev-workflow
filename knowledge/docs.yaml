@@ -18,3 +18,16 @@ documents:
     related_workflows:
       - bootstrap-machine
       - configure-frontend-workflow
+
+  - id: task-handoff-guard-summary
+    title: Task Handoff Guard Summary
+    path: task-handoff-guard/SUMMARY.md
+    topics:
+      - continuation
+      - task-handoff
+      - overlap-guard
+      - resume-control
+    related_modules:
+      - task-handoff-guard
+    related_workflows:
+      - task-handoff-guard-implementation

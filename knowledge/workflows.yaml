@@ -40,3 +40,21 @@ workflows:
     verify:
       - agent routes match intended cost/stability split
       - category routes match intended task profile
+
+  - id: task-handoff-guard-implementation
+    goal: Understand or continue the Task Handoff Guard design and MVP implementation
+    start_with:
+      - knowledge/index.yaml
+      - knowledge/modules.yaml
+      - task-handoff-guard/README.md
+    inspect:
+      - task-handoff-guard/PLAN.md
+      - task-handoff-guard/FLOW.md
+      - task-handoff-guard/STATE_MACHINE.md
+      - task-handoff-guard/PSEUDOCODE.md
+      - task-handoff-guard/IMPLEMENTATION_NOTES.md
+      - task-handoff-guard/mvp/
+      - task-handoff-guard/demo/
+    verify:
+      - handoff preflight flow remains aligned with design
+      - resume guard behavior remains aligned with state machine

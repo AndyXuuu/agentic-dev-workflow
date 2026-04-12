@@ -41,3 +41,17 @@ modules:
       - knowledge/docs.yaml
       - knowledge/modules.yaml
       - knowledge/workflows.yaml
+
+  - id: task-handoff-guard
+    path: task-handoff-guard/
+    purpose: Continuation conflict prevention and task handoff guard design/workbench
+    entrypoints:
+      - task-handoff-guard/README.md
+      - task-handoff-guard/PLAN.md
+      - task-handoff-guard/mvp/README.md
+    includes:
+      - incident notes
+      - design documents
+      - MVP skeleton
+      - hook-ready sketches
+      - runnable demos
