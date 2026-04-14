@@ -1,14 +1,14 @@
 version: 1
 documents:
   - id: agents
-    title: "Repo-nav-first"
+    title: "Project goal and principles"
     path: AGENTS.md
-    sha1: edbabd16fff32c5a1b8de1867d94efdc06327b73
-    size: 840
+    sha1: bb7c9ddc67c3725f63176ec42c020919ff577e08
+    size: 1512
   - id: readme
     title: "程序猿 AI 开发专用"
     path: README.md
-    sha1: 9e010aa5ece26852c96f21837e91dd5bbc15d224
+    sha1: 3bbd8590919edeba783c96620bca1d7643994968
     size: 1495
   - id: config-readme
     title: "Config Module"
@@ -35,6 +35,31 @@ documents:
     path: config/opencode-omo-openai-setup.md
     sha1: e599d3c8002180f9008ad57df55c59abd573d405
     size: 3465
+  - id: continuation-switch-guard-flow
+    title: "Continuation Switch Flow"
+    path: continuation-switch-guard/FLOW.md
+    sha1: 37e68c74eed74df7cd6099f35d62894bbe5763c0
+    size: 662
+  - id: continuation-switch-guard-incident
+    title: "Task Continuation Incident Notes"
+    path: continuation-switch-guard/INCIDENT.md
+    sha1: 2c5baa4f258b80a2f835a0842fcd3271c1a78803
+    size: 1383
+  - id: continuation-switch-guard-plan
+    title: "Task Handoff Guard Plan"
+    path: continuation-switch-guard/PLAN.md
+    sha1: 7b16d4b9201d8ea37ca58479b2c2f6ea02e3812a
+    size: 1086
+  - id: continuation-switch-guard-readme
+    title: "Task Handoff Guard"
+    path: continuation-switch-guard/README.md
+    sha1: cfa5770941987474c77e9ef38ee1c285584e81b5
+    size: 913
+  - id: continuation-switch-guard-summary
+    title: "Summary"
+    path: continuation-switch-guard/SUMMARY.md
+    sha1: 12bda3d0915c971644ddd30c35e0a1b75b35d993
+    size: 814
   - id: omo-scaffold-agent
     title: "Adding an Agent"
     path: omo-scaffold/AGENT.md
@@ -50,6 +75,11 @@ documents:
     path: omo-scaffold/COMMAND.md
     sha1: c82f40aaa8541aa09a618588ed1cd06baf386e31
     size: 935
+  - id: omo-scaffold-feature-build
+    title: "Building an oMo Feature"
+    path: omo-scaffold/FEATURE_BUILD.md
+    sha1: 421a40a6a30d83001238060c2cf3de990135ac7b
+    size: 2586
   - id: omo-scaffold-plugin
     title: "Adding a Plugin"
     path: omo-scaffold/PLUGIN.md
@@ -58,8 +88,8 @@ documents:
   - id: omo-scaffold-readme
     title: "oMo Scaffold"
     path: omo-scaffold/README.md
-    sha1: b2ad45a517dc4fb99a2ef2289c0d7cc8070d2fc9
-    size: 496
+    sha1: b78245c86c5555e77ea973489f8eeccede0a9128
+    size: 517
   - id: omo-scaffold-skill
     title: "Adding a Skill"
     path: omo-scaffold/SKILL.md
@@ -73,70 +103,15 @@ documents:
   - id: repo-nav-tooling-readme
     title: "Repo Nav Tooling"
     path: repo-nav-tooling/README.md
-    sha1: 80b0fe7813e5c7a679eaa44e2f164630f0c4252d
-    size: 1060
+    sha1: 0f6dd9d072897fa4b8d0c5c4b37ebf01fca6563f
+    size: 1092
   - id: repo-nav-tooling-repo-nav-schema
     title: "Repo-Nav-First Schema"
     path: repo-nav-tooling/REPO_NAV_SCHEMA.md
     sha1: 3c3550362f7ff90592ab1d3cb726ec9710aad5eb
     size: 4165
-  - id: task-handoff-guard-flow
-    title: "Task Handoff Guard Flow"
-    path: task-handoff-guard/FLOW.md
-    sha1: 24503a7e58a18c52a4e140f8cad48ebde811cf27
-    size: 1955
-  - id: task-handoff-guard-implementation-notes
-    title: "Implementation Notes"
-    path: task-handoff-guard/IMPLEMENTATION_NOTES.md
-    sha1: fea215be351cb4ff7b9ce10699a64c67b1e2c7c2
-    size: 5009
-  - id: task-handoff-guard-incident
-    title: "Task Continuation Incident Notes"
-    path: task-handoff-guard/INCIDENT.md
-    sha1: 2c5baa4f258b80a2f835a0842fcd3271c1a78803
-    size: 1383
-  - id: task-handoff-guard-plan
-    title: "Task Handoff Guard Plan"
-    path: task-handoff-guard/PLAN.md
-    sha1: 2e5db5faf4185b307af18f01a66bc9762b7b4594
-    size: 2696
-  - id: task-handoff-guard-pseudocode
-    title: "Task Handoff Guard Pseudocode"
-    path: task-handoff-guard/PSEUDOCODE.md
-    sha1: 3b38345d7c7a484d86da065133424907c1020ab3
-    size: 2800
-  - id: task-handoff-guard-readme
-    title: "Task Handoff Guard"
-    path: task-handoff-guard/README.md
-    sha1: 48d495eec0a9e4c412dfddc8f7c0931383a1abb4
-    size: 1150
-  - id: task-handoff-guard-state-machine
-    title: "Task Handoff Guard State Machine"
-    path: task-handoff-guard/STATE_MACHINE.md
-    sha1: f2144473905672cdd7cd3d3006e5b2c17e49bde6
-    size: 1879
-  - id: task-handoff-guard-summary
-    title: "Summary"
-    path: task-handoff-guard/SUMMARY.md
-    sha1: 22482cc8867a394544de5e166e80ee185f233bf8
-    size: 1132
-  - id: task-handoff-guard-demo-readme
-    title: "Task Handoff Guard Demo"
-    path: task-handoff-guard/demo/README.md
-    sha1: cd217b3281b430c73373a8bd9c291f27b0fa2a32
-    size: 1433
-  - id: task-handoff-guard-mvp-readme
-    title: "Task Handoff Guard MVP Skeleton"
-    path: task-handoff-guard/mvp/README.md
-    sha1: 25ba7f74668354c01fbc1100b6c6e24b68ed9092
-    size: 980
-  - id: task-handoff-guard-mvp-usage
-    title: "Hook-Ready Usage Sketch"
-    path: task-handoff-guard/mvp/USAGE.md
-    sha1: 94b6c5b82fa1887e60fd2ce93a5ca4875a9117e4
-    size: 1365
-  - id: task-handoff-guard-plugin-readme
-    title: "Task Handoff Guard Plugin Scaffold"
-    path: task-handoff-guard/plugin/README.md
-    sha1: 23815e91408880cd042dbb1ea74833c9f29e86cb
-    size: 1431
+  - id: repo-nav-tooling-roadmap
+    title: "Repo Nav Tooling Roadmap"
+    path: repo-nav-tooling/ROADMAP.md
+    sha1: a693cbcc2e0c809dc2553eed451b3ecfe7ad77e1
+    size: 2601

@@ -1,10 +1,36 @@
 {
   "version": 1,
-  "updated_at": "2026-04-12T14:53:12.923935+00:00",
-  "added_docs": [],
-  "changed_docs": [],
-  "removed_docs": [],
-  "doc_count": 28,
-  "module_count": 4,
+  "updated_at": "2026-04-14T14:09:04.006461+00:00",
+  "added_docs": [
+    "continuation-switch-guard/FLOW.md",
+    "continuation-switch-guard/INCIDENT.md",
+    "continuation-switch-guard/PLAN.md",
+    "continuation-switch-guard/README.md",
+    "continuation-switch-guard/SUMMARY.md",
+    "omo-scaffold/FEATURE_BUILD.md",
+    "repo-nav-tooling/ROADMAP.md"
+  ],
+  "changed_docs": [
+    "AGENTS.md",
+    "README.md",
+    "omo-scaffold/README.md",
+    "repo-nav-tooling/README.md"
+  ],
+  "removed_docs": [
+    "task-handoff-guard/FLOW.md",
+    "task-handoff-guard/IMPLEMENTATION_NOTES.md",
+    "task-handoff-guard/INCIDENT.md",
+    "task-handoff-guard/PLAN.md",
+    "task-handoff-guard/PSEUDOCODE.md",
+    "task-handoff-guard/README.md",
+    "task-handoff-guard/STATE_MACHINE.md",
+    "task-handoff-guard/SUMMARY.md",
+    "task-handoff-guard/demo/README.md",
+    "task-handoff-guard/mvp/README.md",
+    "task-handoff-guard/mvp/USAGE.md",
+    "task-handoff-guard/plugin/README.md"
+  ],
+  "doc_count": 23,
+  "module_count": 5,
   "mode": "update"
 }

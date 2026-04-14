@@ -35,11 +35,11 @@ OpenCode 与 oMo 的本地配置快照。
 - [查看模块 README](repo-nav-tooling/README.md)
 - [查看 schema](repo-nav-tooling/REPO_NAV_SCHEMA.md)
 
-### `task-handoff-guard/`
+### `continuation-switch-guard/`
 
-旧任务恢复冲突与任务交接防护的设计、MVP 骨架、demo 与插件脚手架。
+oMo 协程/任务切换冲突问题的项目特定问题模块。
 
-- [查看模块 README](task-handoff-guard/README.md)
+- [查看模块 README](continuation-switch-guard/README.md)
 
 ### `omo-scaffold/`
 
@@ -50,5 +50,5 @@ OpenCode 与 oMo 的本地配置快照。
 ## 推荐阅读顺序
 
 1. [repo-nav-tooling/README.md](repo-nav-tooling/README.md)
-2. [task-handoff-guard/README.md](task-handoff-guard/README.md)
+2. [continuation-switch-guard/README.md](continuation-switch-guard/README.md)
 3. [omo-scaffold/README.md](omo-scaffold/README.md)

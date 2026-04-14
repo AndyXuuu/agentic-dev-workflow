@@ -5,6 +5,13 @@ modules:
     entrypoints:
       - config/README.md
       - config/opencode-omo-openai-setup.md
+  - id: continuation-switch-guard
+    path: continuation-switch-guard/
+    entrypoints:
+      - continuation-switch-guard/README.md
+      - continuation-switch-guard/FLOW.md
+      - continuation-switch-guard/INCIDENT.md
+      - continuation-switch-guard/PLAN.md
   - id: omo-scaffold
     path: omo-scaffold/
     entrypoints:
@@ -21,7 +28,4 @@ modules:
   - id: task-handoff-guard
     path: task-handoff-guard/
     entrypoints:
-      - task-handoff-guard/README.md
-      - task-handoff-guard/FLOW.md
-      - task-handoff-guard/IMPLEMENTATION_NOTES.md
-      - task-handoff-guard/INCIDENT.md
+      - <none-detected>

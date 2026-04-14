@@ -1,19 +1,19 @@
 {
   "version": 1,
-  "updated_at": "2026-04-12T14:53:12.924095+00:00",
+  "updated_at": "2026-04-14T14:09:04.006645+00:00",
   "docs": {
     "AGENTS.md": {
       "path": "AGENTS.md",
-      "title": "Repo-nav-first",
-      "sha1": "edbabd16fff32c5a1b8de1867d94efdc06327b73",
-      "mtime": 1776004696.270109,
-      "size": 840
+      "title": "Project goal and principles",
+      "sha1": "bb7c9ddc67c3725f63176ec42c020919ff577e08",
+      "mtime": 1776006339.0177107,
+      "size": 1512
     },
     "README.md": {
       "path": "README.md",
       "title": "程序猿 AI 开发专用",
-      "sha1": "9e010aa5ece26852c96f21837e91dd5bbc15d224",
-      "mtime": 1776005255.427981,
+      "sha1": "3bbd8590919edeba783c96620bca1d7643994968",
+      "mtime": 1776175711.2083488,
       "size": 1495
     },
     "config/README.md": {
@@ -51,6 +51,41 @@
       "mtime": 1776005147.9636438,
       "size": 3465
     },
+    "continuation-switch-guard/FLOW.md": {
+      "path": "continuation-switch-guard/FLOW.md",
+      "title": "Continuation Switch Flow",
+      "sha1": "37e68c74eed74df7cd6099f35d62894bbe5763c0",
+      "mtime": 1776175711.207864,
+      "size": 662
+    },
+    "continuation-switch-guard/INCIDENT.md": {
+      "path": "continuation-switch-guard/INCIDENT.md",
+      "title": "Task Continuation Incident Notes",
+      "sha1": "2c5baa4f258b80a2f835a0842fcd3271c1a78803",
+      "mtime": 1776175711.2072077,
+      "size": 1383
+    },
+    "continuation-switch-guard/PLAN.md": {
+      "path": "continuation-switch-guard/PLAN.md",
+      "title": "Task Handoff Guard Plan",
+      "sha1": "7b16d4b9201d8ea37ca58479b2c2f6ea02e3812a",
+      "mtime": 1776175711.2075386,
+      "size": 1086
+    },
+    "continuation-switch-guard/README.md": {
+      "path": "continuation-switch-guard/README.md",
+      "title": "Task Handoff Guard",
+      "sha1": "cfa5770941987474c77e9ef38ee1c285584e81b5",
+      "mtime": 1776175711.2065904,
+      "size": 913
+    },
+    "continuation-switch-guard/SUMMARY.md": {
+      "path": "continuation-switch-guard/SUMMARY.md",
+      "title": "Summary",
+      "sha1": "12bda3d0915c971644ddd30c35e0a1b75b35d993",
+      "mtime": 1776175711.2081468,
+      "size": 814
+    },
     "omo-scaffold/AGENT.md": {
       "path": "omo-scaffold/AGENT.md",
       "title": "Adding an Agent",
@@ -72,6 +107,13 @@
       "mtime": 1776003984.0724914,
       "size": 935
     },
+    "omo-scaffold/FEATURE_BUILD.md": {
+      "path": "omo-scaffold/FEATURE_BUILD.md",
+      "title": "Building an oMo Feature",
+      "sha1": "421a40a6a30d83001238060c2cf3de990135ac7b",
+      "mtime": 1776007983.4866183,
+      "size": 2586
+    },
     "omo-scaffold/PLUGIN.md": {
       "path": "omo-scaffold/PLUGIN.md",
       "title": "Adding a Plugin",
@@ -82,9 +124,9 @@
     "omo-scaffold/README.md": {
       "path": "omo-scaffold/README.md",
       "title": "oMo Scaffold",
-      "sha1": "b2ad45a517dc4fb99a2ef2289c0d7cc8070d2fc9",
-      "mtime": 1776001193.225956,
-      "size": 496
+      "sha1": "b78245c86c5555e77ea973489f8eeccede0a9128",
+      "mtime": 1776007983.4872031,
+      "size": 517
     },
     "omo-scaffold/SKILL.md": {
       "path": "omo-scaffold/SKILL.md",
@@ -103,9 +145,9 @@
     "repo-nav-tooling/README.md": {
       "path": "repo-nav-tooling/README.md",
       "title": "Repo Nav Tooling",
-      "sha1": "80b0fe7813e5c7a679eaa44e2f164630f0c4252d",
-      "mtime": 1776004696.270377,
-      "size": 1060
+      "sha1": "0f6dd9d072897fa4b8d0c5c4b37ebf01fca6563f",
+      "mtime": 1776007098.7051115,
+      "size": 1092
     },
     "repo-nav-tooling/REPO_NAV_SCHEMA.md": {
       "path": "repo-nav-tooling/REPO_NAV_SCHEMA.md",
@@ -114,89 +156,12 @@
       "mtime": 1776005255.4285405,
       "size": 4165
     },
-    "task-handoff-guard/FLOW.md": {
-      "path": "task-handoff-guard/FLOW.md",
-      "title": "Task Handoff Guard Flow",
-      "sha1": "24503a7e58a18c52a4e140f8cad48ebde811cf27",
-      "mtime": 1775994430.3746176,
-      "size": 1955
-    },
-    "task-handoff-guard/IMPLEMENTATION_NOTES.md": {
-      "path": "task-handoff-guard/IMPLEMENTATION_NOTES.md",
-      "title": "Implementation Notes",
-      "sha1": "fea215be351cb4ff7b9ce10699a64c67b1e2c7c2",
-      "mtime": 1775995149.197641,
-      "size": 5009
-    },
-    "task-handoff-guard/INCIDENT.md": {
-      "path": "task-handoff-guard/INCIDENT.md",
-      "title": "Task Continuation Incident Notes",
-      "sha1": "2c5baa4f258b80a2f835a0842fcd3271c1a78803",
-      "mtime": 1775994295.1357508,
-      "size": 1383
-    },
-    "task-handoff-guard/PLAN.md": {
-      "path": "task-handoff-guard/PLAN.md",
-      "title": "Task Handoff Guard Plan",
-      "sha1": "2e5db5faf4185b307af18f01a66bc9762b7b4594",
-      "mtime": 1775994295.1353455,
-      "size": 2696
-    },
-    "task-handoff-guard/PSEUDOCODE.md": {
-      "path": "task-handoff-guard/PSEUDOCODE.md",
-      "title": "Task Handoff Guard Pseudocode",
-      "sha1": "3b38345d7c7a484d86da065133424907c1020ab3",
-      "mtime": 1775994430.378271,
-      "size": 2800
-    },
-    "task-handoff-guard/README.md": {
-      "path": "task-handoff-guard/README.md",
-      "title": "Task Handoff Guard",
-      "sha1": "48d495eec0a9e4c412dfddc8f7c0931383a1abb4",
-      "mtime": 1775994295.1341534,
-      "size": 1150
-    },
-    "task-handoff-guard/STATE_MACHINE.md": {
-      "path": "task-handoff-guard/STATE_MACHINE.md",
-      "title": "Task Handoff Guard State Machine",
-      "sha1": "f2144473905672cdd7cd3d3006e5b2c17e49bde6",
-      "mtime": 1775994430.377848,
-      "size": 1879
-    },
-    "task-handoff-guard/SUMMARY.md": {
-      "path": "task-handoff-guard/SUMMARY.md",
-      "title": "Summary",
-      "sha1": "22482cc8867a394544de5e166e80ee185f233bf8",
-      "mtime": 1775994295.1359985,
-      "size": 1132
-    },
-    "task-handoff-guard/demo/README.md": {
-      "path": "task-handoff-guard/demo/README.md",
-      "title": "Task Handoff Guard Demo",
-      "sha1": "cd217b3281b430c73373a8bd9c291f27b0fa2a32",
-      "mtime": 1775999907.0020971,
-      "size": 1433
-    },
-    "task-handoff-guard/mvp/README.md": {
-      "path": "task-handoff-guard/mvp/README.md",
-      "title": "Task Handoff Guard MVP Skeleton",
-      "sha1": "25ba7f74668354c01fbc1100b6c6e24b68ed9092",
-      "mtime": 1775995860.1577613,
-      "size": 980
-    },
-    "task-handoff-guard/mvp/USAGE.md": {
-      "path": "task-handoff-guard/mvp/USAGE.md",
-      "title": "Hook-Ready Usage Sketch",
-      "sha1": "94b6c5b82fa1887e60fd2ce93a5ca4875a9117e4",
-      "mtime": 1775996379.3212426,
-      "size": 1365
-    },
-    "task-handoff-guard/plugin/README.md": {
-      "path": "task-handoff-guard/plugin/README.md",
-      "title": "Task Handoff Guard Plugin Scaffold",
-      "sha1": "23815e91408880cd042dbb1ea74833c9f29e86cb",
-      "mtime": 1776000953.8114302,
-      "size": 1431
+    "repo-nav-tooling/ROADMAP.md": {
+      "path": "repo-nav-tooling/ROADMAP.md",
+      "title": "Repo Nav Tooling Roadmap",
+      "sha1": "a693cbcc2e0c809dc2553eed451b3ecfe7ad77e1",
+      "mtime": 1776175711.2085133,
+      "size": 2601
     }
   },
   "modules": [
@@ -206,6 +171,16 @@
       "entrypoints": [
         "config/README.md",
         "config/opencode-omo-openai-setup.md"
+      ]
+    },
+    {
+      "id": "continuation-switch-guard",
+      "path": "continuation-switch-guard/",
+      "entrypoints": [
+        "continuation-switch-guard/README.md",
+        "continuation-switch-guard/FLOW.md",
+        "continuation-switch-guard/INCIDENT.md",
+        "continuation-switch-guard/PLAN.md"
       ]
     },
     {
@@ -230,12 +205,7 @@
     {
       "id": "task-handoff-guard",
       "path": "task-handoff-guard/",
-      "entrypoints": [
-        "task-handoff-guard/README.md",
-        "task-handoff-guard/FLOW.md",
-        "task-handoff-guard/IMPLEMENTATION_NOTES.md",
-        "task-handoff-guard/INCIDENT.md"
-      ]
+      "entrypoints": []
     }
   ]
 }

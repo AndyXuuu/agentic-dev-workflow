@@ -93,7 +93,7 @@ Only add richer summaries when they remain stable and low-risk.
 
 Delay direct OpenCode/oMo integration until local command semantics are stable.
 
-### 4. Integration with task-handoff-guard
+### 4. Integration with continuation-switch-guard
 
 Keep this as a later cross-module optimization, not a first-order requirement.
 
