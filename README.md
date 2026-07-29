@@ -54,8 +54,6 @@ skills/
   ax-project-adapter/
   ax-structure-review/
   tapd-query/
-state/
-  project-adapter-registry.json
 templates/
   PRD.md
   DESIGN.md
@@ -146,9 +144,11 @@ The generated adapter should contain only project navigation and project-specifi
 constraints. Global engineering gates and reusable domain workflows stay in this
 directory's global rules and Skills.
 
-Adapted repositories and their top-level standard revision status are recorded in
-`state/project-adapter-registry.json`. Update that single local registry whenever an
-adapter is created, moved, refreshed, or reviewed after a global rule change.
+Project adapter targets are discovered from the active repository or paths explicitly
+provided for the current task. This repository does not persist machine-specific project
+paths or synchronization status. When a request such as “sync all adapters” has no
+unambiguous target set, provide the repository paths or a bounded parent directory when
+prompted.
 
 All AX Skills use lowercase hyphenated names. The installer removes obsolete
 underscore-named symlinks; update saved prompts to use names such as

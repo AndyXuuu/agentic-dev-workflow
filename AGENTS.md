@@ -10,7 +10,7 @@ These rules are for personal Codex behavior across software engineering projects
 
 ## Global and Project Boundaries
 
-- Repository-local boundary: only when the active project or working directory is `$HOME/Documents/codex/engineering`, limit work to the AI software-engineering framework: project-independent Agent rules, reusable workflows, Skills, templates, profiles, installers, and local adapter-instance metadata. Do not handle a concrete product project's requirements, architecture, code, tests, deployment, operations, or troubleshooting from this repository; perform that work in the concrete project's repository under its own `AGENTS.md`. This boundary does not prohibit concrete project work when the active project is that project's own repository.
+- Repository-local boundary: only when the active project is the repository containing this `AGENTS.md`, limit work to the AI software-engineering framework: project-independent Agent rules, reusable workflows, Skills, templates, profiles, and installers. Do not handle a concrete product project's requirements, architecture, code, tests, deployment, operations, or troubleshooting from this repository; perform that work in the concrete project's repository under its own `AGENTS.md`. This boundary does not prohibit concrete project work when the active project is that project's own repository.
 - This global engineering directory owns only project-independent rules, role workflows, domain workflows, and reusable templates.
 - Never place a specific project's framework choices, paths, commands, endpoints, credentials, deployment topology, or business rules into global `AGENTS.md` or global Skills.
 - Role Skills (`ax-pipeline`, `ax-prd`, `ax-arch`, `ax-dev`, `ax-test`, `ax-review`) own delivery stages.
