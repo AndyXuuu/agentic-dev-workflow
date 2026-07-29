@@ -2,6 +2,8 @@
 
 中文手册：[使用手册.md](./使用手册.md)
 
+能力路线图：[ROADMAP.md](./ROADMAP.md)
+
 > A project-independent engineering governance and delivery framework for AI coding agents.
 
 This repository turns Codex from an isolated code generator into an accountable participant
