@@ -39,11 +39,17 @@ for profile in arch dev test review; do
   fi
 done
 
-agent_dst="$HOME/.codex/AGENTS.engineering.md"
+old_agent_dst="$HOME/.codex/AGENTS.engineering.md"
+if [ -L "$old_agent_dst" ]; then
+  rm -f "$old_agent_dst"
+  echo "removed old project AGENTS link: $old_agent_dst"
+fi
+
+agent_dst="$HOME/.codex/AGENTS.agentic-dev-workflow.md"
 if [ -L "$agent_dst" ] || [ ! -e "$agent_dst" ]; then
   rm -f "$agent_dst"
   ln -s "$ROOT/AGENTS.md" "$agent_dst"
-  echo "linked engineering AGENTS: $agent_dst -> $ROOT/AGENTS.md"
+  echo "linked project AGENTS: $agent_dst -> $ROOT/AGENTS.md"
 else
   echo "skip existing non-symlink: $agent_dst"
 fi

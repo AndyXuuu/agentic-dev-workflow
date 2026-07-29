@@ -1,4 +1,4 @@
-# Personal Engineering Rules
+# Agentic Development Workflow Rules
 
 These rules are for personal Codex behavior across software engineering projects.
 

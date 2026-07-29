@@ -1,4 +1,4 @@
-# Personal Software Engineering Agent Environment
+# Agentic Development Workflow
 
 中文手册：[使用手册.md](./使用手册.md)
 
@@ -71,7 +71,7 @@ bin/
 Run:
 
 ```bash
-$HOME/Documents/codex/engineering/bin/install.sh
+$HOME/Documents/codex/agentic-dev-workflow/bin/install.sh
 ```
 
 This creates symlinks for the Skills listed in `bin/install.sh`:
@@ -85,7 +85,7 @@ This creates symlinks for the Skills listed in `bin/install.sh`:
 It does not overwrite `~/.codex/AGENTS.md`. Instead, it installs:
 
 ```text
-~/.codex/AGENTS.engineering.md
+~/.codex/AGENTS.agentic-dev-workflow.md
 ```
 
 If you want these rules globally, merge that file into `~/.codex/AGENTS.md`.
@@ -93,7 +93,7 @@ If you want these rules globally, merge that file into `~/.codex/AGENTS.md`.
 To keep the global rules synchronized with this repository, run:
 
 ```bash
-$HOME/Documents/codex/engineering/bin/apply-global-agent.sh
+$HOME/Documents/codex/agentic-dev-workflow/bin/apply-global-agent.sh
 ```
 
 The script links `~/.codex/AGENTS.md` to this repository's `AGENTS.md`. An
@@ -158,7 +158,7 @@ For read-only TAPD story and bug queries, install the MCP server from an
 interactive terminal:
 
 ```bash
-$HOME/Documents/codex/engineering/bin/install-tapd-mcp.sh
+$HOME/Documents/codex/agentic-dev-workflow/bin/install-tapd-mcp.sh
 ```
 
 If `TAPD_KEY` exists in `~/.zprofile`, the MCP loads it dynamically and does not

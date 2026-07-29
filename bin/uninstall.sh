@@ -17,10 +17,11 @@ for profile in arch dev test review; do
   fi
 done
 
-agent_dst="$HOME/.codex/AGENTS.engineering.md"
-if [ -L "$agent_dst" ]; then
-  rm -f "$agent_dst"
-  echo "removed engineering AGENTS link: $agent_dst"
-fi
+for agent_dst in "$HOME/.codex/AGENTS.agentic-dev-workflow.md" "$HOME/.codex/AGENTS.engineering.md"; do
+  if [ -L "$agent_dst" ]; then
+    rm -f "$agent_dst"
+    echo "removed project AGENTS link: $agent_dst"
+  fi
+done
 
 echo "Uninstalled symlinks. Restart Codex to refresh."
