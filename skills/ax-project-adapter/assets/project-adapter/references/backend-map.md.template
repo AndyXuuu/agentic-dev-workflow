@@ -1,0 +1,14 @@
+## 后端 Owner
+
+| 职责 | Owner | 边界/复用规则 |
+| --- | --- | --- |
+| HTTP/RPC/event 入口 | {{backend-entry-owner}} | {{backend-entry-boundary}} |
+| Domain/application service | {{backend-domain-owner}} | {{backend-domain-boundary}} |
+| Repository/model/migration | {{backend-data-owner}} | {{backend-data-boundary}} |
+| Queue/cache/worker | {{backend-async-owner}} | {{backend-async-boundary}} |
+| Auth/permission/billing/error | {{backend-policy-owner}} | {{backend-policy-boundary}} |
+| External client/adapter | {{backend-integration-owner}} | {{backend-integration-boundary}} |
+| Logging/metrics/tracing | {{backend-observability-owner}} | {{backend-observability-boundary}} |
+| 后端测试 | {{backend-test-owner}} | {{backend-test-boundary}} |
+
+删除不存在的职责，不保留空 Owner。

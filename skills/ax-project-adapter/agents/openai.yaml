@@ -1,0 +1,4 @@
+interface:
+  display_name: "AX Project Adapter"
+  short_description: "按仓库属性生成前端、后端、全栈或多仓项目的精简适配 Skill"
+  default_prompt: "使用 $ax-project-adapter 检查当前项目形态并生成对应的项目适配 Skill。"

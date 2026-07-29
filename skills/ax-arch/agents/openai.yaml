@@ -1,0 +1,4 @@
+interface:
+  display_name: "AX Architecture"
+  short_description: "基于现有代码设计模块边界、数据流、接口契约、迁移与回滚方案"
+  default_prompt: "使用 $ax-arch 基于现有代码为这个改动设计架构方案。"

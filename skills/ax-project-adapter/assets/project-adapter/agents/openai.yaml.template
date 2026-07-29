@@ -1,0 +1,4 @@
+interface:
+  display_name: "{{display-name}}"
+  short_description: "{{short-description-25-to-64-characters}}"
+  default_prompt: "使用 ${{adapter-name}} 按项目规则处理这个改动。"

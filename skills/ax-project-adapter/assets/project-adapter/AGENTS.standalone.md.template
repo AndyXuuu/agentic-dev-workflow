@@ -1,0 +1,12 @@
+<!-- Merge only missing rules into an existing AGENTS.md. Never replace the file or duplicate equivalent rules. -->
+
+## Standalone Minimum Gate
+
+This repository must remain usable without personal global Agent rules or optional global Skills:
+
+1. Before editing, summarize the goal, in/out of scope, acceptance criteria, affected modules/files, and ambiguities/risks. Ask before editing when ambiguity changes behavior, contracts, data, permissions, billing, security, or workflow.
+2. Inspect the existing Owner, similar implementations, reusable modules, dependency boundaries, test locations, generators, and verification commands. Do not add parallel logic without justification.
+3. For bugs, reproduce or explain why reproduction is unavailable, add a regression test that would fail before the fix, then verify it passes. For features, cover the happy path, invalid input, edge cases, relevant permission/state boundaries, and nearby regressions.
+4. Before delivery, report requirement match, design/reuse decisions, changed and generated files, commands and results, remaining risks, and rollback/recovery notes when relevant.
+
+Optional global rules may provide stricter or more detailed guidance when installed; this section is the repository-local fallback, not a second full engineering standard.

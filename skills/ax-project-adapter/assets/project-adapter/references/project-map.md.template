@@ -1,0 +1,55 @@
+# {{project-name}} 项目地图
+
+## 权威来源
+
+| 主题 | Owner | 何时读取/更新 |
+| --- | --- | --- |
+| 工程与交付规则 | {{rules-owner}} | {{rules-usage}} |
+| 产品行为 | {{product-owner}} | {{product-usage}} |
+| 架构 | {{architecture-owner}} | {{architecture-usage}} |
+| API 契约 | {{api-contract-owner}} | {{api-contract-usage}} |
+| 设计系统 | {{design-owner}} | {{design-usage}} |
+
+## 架构与 Owner
+
+| 职责 | Owner | 边界/复用规则 |
+| --- | --- | --- |
+| 入口与编排 | {{entry-owner}} | {{entry-boundary}} |
+| 业务逻辑 | {{business-owner}} | {{business-boundary}} |
+| API/外部服务 | {{integration-owner}} | {{integration-boundary}} |
+| 持久化/状态 | {{state-owner}} | {{state-boundary}} |
+| UI/展示 | {{ui-owner}} | {{ui-boundary}} |
+| 测试 | {{test-owner}} | {{test-boundary}} |
+
+删除不适用于目标项目的行，不要保留空 Owner。
+
+## 生成与受保护区域
+
+- {{protected-area-1}}
+- {{protected-area-2}}
+
+## 验证命令
+
+| 目的 | 命令 | 适用条件 |
+| --- | --- | --- |
+| 最小相关测试 | `{{focused-test-command}}` | {{focused-test-condition}} |
+| 全量测试 | `{{test-command}}` | {{test-condition}} |
+| Lint/静态检查 | `{{lint-command}}` | {{lint-condition}} |
+| 类型检查 | `{{typecheck-command}}` | {{typecheck-condition}} |
+| 生产构建 | `{{build-command}}` | {{build-condition}} |
+| 本地预览 | `{{preview-command}}` | {{preview-condition}} |
+
+删除不存在的命令，不自行发明替代命令。
+
+## 项目特有风险
+
+- {{project-risk-1}}
+- {{project-risk-2}}
+
+## 已知例外与缺口
+
+- {{verified-owner-exception}}
+- {{cross-repository-contract}}
+- {{missing-canonical-or-verification-gap}}
+
+只保留已验证的例外和缺口。若项目没有测试、CI、部署或某类 canonical owner，明确写“未发现”，不要发明命令、目录或规则。

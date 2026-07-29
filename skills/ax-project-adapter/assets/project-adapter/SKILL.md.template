@@ -1,0 +1,34 @@
+---
+name: {{adapter-name}}
+description: 按 {{project-name}} 的项目架构、Owner、权威文档和验证命令导航 {{task-domain}} 任务。用于在 {{project-scope}} 中实施或审查相关改动，并把通用工程流程映射到本项目；不保存跨项目通用规则。
+---
+
+# {{project-name}} 项目适配
+
+本 Skill 只提供项目导航与差异。若当前环境提供通用 Skill 或全局规则，按其完整门禁执行；否则以仓库 `AGENTS.md` 的最小工作门禁完成需求、Owner、验证和交付闭环。
+
+## 必读入口
+
+1. 若仓库存在 `AGENTS.md` 或子目录规则，完整读取；若不存在，在项目地图中保留规则缺口，不假设项目约束。
+2. 按任务维度读取 [references/project-map.md](references/project-map.md) 中对应 Owner。
+3. 检查相关源码、相似实现和测试，不根据模板猜测项目结构。
+
+若 canonical owner 缺失或来源冲突，把事实记录到项目地图并暂停依赖该结论的生成；不要用模板补造规则。
+
+## 项目特有路由
+
+- {{routing-rule-1}}
+- {{routing-rule-2}}
+- {{routing-rule-3}}
+
+## 不可违反的项目边界
+
+- {{project-boundary-1}}
+- {{project-boundary-2}}
+- {{project-boundary-3}}
+
+## 验证入口
+
+按 `references/project-map.md` 运行最小相关检查，再运行项目要求的完整验证。只报告真实结果；环境阻塞时列出未验证范围。
+
+行为、契约、页面、架构或公开组件变化时，更新项目既有 canonical document，不创建重复说明。

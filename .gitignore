@@ -1,18 +1,2 @@
-# Secrets and local state
-auth.json
-mcp-auth.json
-*.key
-*.pem
-*.p12
-*.env
-.env*
-
-# OpenCode runtime state
-storage/
-log/
-logs/
-project/
-.cache/
-
-# OS noise
 .DS_Store
+**/.DS_Store

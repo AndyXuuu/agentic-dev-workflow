@@ -1,0 +1,13 @@
+## 前端 Owner
+
+| 职责 | Owner | 边界/复用规则 |
+| --- | --- | --- |
+| 路由与页面编排 | {{frontend-route-owner}} | {{frontend-route-boundary}} |
+| Feature/UI primitives | {{frontend-component-owner}} | {{frontend-component-boundary}} |
+| 设计系统/Token/主题 | {{frontend-design-owner}} | {{frontend-design-boundary}} |
+| Server/global/local/URL state | {{frontend-state-owner}} | {{frontend-state-boundary}} |
+| API client/adapter | {{frontend-api-owner}} | {{frontend-api-boundary}} |
+| 资产/字体/i18n | {{frontend-asset-owner}} | {{frontend-asset-boundary}} |
+| 前端测试 | {{frontend-test-owner}} | {{frontend-test-boundary}} |
+
+删除不存在的职责，不保留空 Owner。

@@ -1,9 +1,0 @@
-version: 1
-artifact: .repo-nav
-purpose: generated AI-first repository navigation artifact
-entrypoints:
-  docs: .repo-nav/docs.generated.yaml
-  modules: .repo-nav/modules.generated.yaml
-  workflows: .repo-nav/workflows.generated.yaml
-  summary: .repo-nav/summary.json
-  state: .repo-nav/state.json

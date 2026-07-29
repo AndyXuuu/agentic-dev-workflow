@@ -1,0 +1,16 @@
+interface:
+  display_name: "TAPD Query"
+  short_description: "查询并汇总指定 TAPD 工作区中的需求与缺陷列表信息"
+  default_prompt: "Use $tapd-query to list stories and bugs for a TAPD workspace."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "tapd"
+      description: "TAPD MCP server for read-only project, story, and bug queries"
+      transport: "stdio"
+      command: "/bin/zsh"
+      args:
+        - "-lc"
+        - "TAPD_ACCESS_TOKEN=\"$TAPD_KEY\" TAPD_API_BASE_URL=\"https://api.tapd.cn\" TAPD_BASE_URL=\"https://www.tapd.cn\" exec /usr/local/bin/uvx mcp-server-tapd"
+policy:
+  allow_implicit_invocation: true

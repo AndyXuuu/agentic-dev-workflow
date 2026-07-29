@@ -1,54 +1,179 @@
-# 程序猿 AI 开发专用
+# Personal Software Engineering Agent Environment
 
-这是一个面向 **OpenCode + oh-my-opencode + OpenAI-only** 的个人 AI 开发环境与方法仓库。
+中文手册：[使用手册.md](./使用手册.md)
 
-## 用途
+This directory contains a personal Codex setup for disciplined software engineering work. It is intentionally outside project repositories and should not be committed to product code.
 
-这个仓库主要用于沉淀三类内容：
+## Purpose
 
-- OpenCode / oMo 的本地配置基线
-- 面向 AI 搜索任务的仓库导航层
-- 与任务交接、插件扩展相关的方法与实现草案
+The environment separates software work into clear roles:
 
-## 模块说明
+- PRD / requirement analysis
+- Architecture and design
+- Development
+- Testing and regression verification
+- Delivery review
 
-### `config/`
+The global environment is project-independent. Role Skills own delivery stages,
+domain Skills own reusable frontend/backend practices, and each target project's
+`AGENTS.md` plus thin adapter Skills own project-specific stacks, paths, commands,
+contracts, and business constraints.
 
-OpenCode 与 oMo 的本地配置快照。
+Each project repository should remain independently usable: its `AGENTS.md` keeps
+a minimal requirement, ownership, verification, and delivery loop for environments
+where these personal global rules and `ax-*` Skills are not installed. The project
+adapter remains navigation-only and must not copy the full global workflow.
+When a repository already has an `AGENTS.md`, adaptation is additive only: preserve
+its structure, language, project rules, and uncommitted changes, merge only missing
+fallback clauses, and never replace the whole file from a template.
 
-- [查看模块 README](config/README.md)
+The intended model split is:
 
-### `.repo-nav/`
+- `gpt-5.6-sol`: high-risk judgment, architecture, final review
+- `gpt-5.6-terra`: default implementation and normal debugging
+- `gpt-5.6-luna`: fast repeatable work, test scaffolding, docs, cleanup
 
-项目本地的 AI-first 仓库导航产物，用于让 AI 在搜索任务里更快、更准、更稳地找到入口。
+## Layout
 
-- 主要入口：
-  - `.repo-nav/index.generated.yaml`
-  - `.repo-nav/docs.generated.yaml`
-  - `.repo-nav/modules.generated.yaml`
-  - `.repo-nav/workflows.generated.yaml`
+```text
+AGENTS.md
+profiles/
+  arch.config.toml
+  dev.config.toml
+  test.config.toml
+  review.config.toml
+skills/
+  ax-pipeline/
+  ax-prd/
+  ax-arch/
+  ax-dev/
+  ax-test/
+  ax-review/
+  ax-frontend/
+  ax-backend/
+  ax-project-adapter/
+  ax-structure-review/
+  tapd-query/
+state/
+  project-adapter-registry.json
+templates/
+  PRD.md
+  DESIGN.md
+  TEST_PLAN.md
+  DELIVERY.md
+bin/
+  install.sh
+  install-tapd-mcp.sh
+  apply-global-agent.sh
+  uninstall.sh
+```
 
-### `repo-nav-tooling/`
+## Install
 
-`repo-nav` 的工具模块，负责 schema、模板和增量更新命令。
+Run:
 
-- [查看模块 README](repo-nav-tooling/README.md)
-- [查看 schema](repo-nav-tooling/REPO_NAV_SCHEMA.md)
+```bash
+$HOME/Documents/codex/engineering/bin/install.sh
+```
 
-### `continuation-switch-guard/`
+This creates symlinks for the Skills listed in `bin/install.sh`:
 
-oMo 协程/任务切换冲突问题的项目特定问题模块。
+- `~/.agents/skills/*` -> this directory's skills
+- `~/.codex/arch.config.toml`
+- `~/.codex/dev.config.toml`
+- `~/.codex/test.config.toml`
+- `~/.codex/review.config.toml`
 
-- [查看模块 README](continuation-switch-guard/README.md)
+It does not overwrite `~/.codex/AGENTS.md`. Instead, it installs:
 
-### `omo-scaffold/`
+```text
+~/.codex/AGENTS.engineering.md
+```
 
-新增 plugin / agent / skill / command 时的固定接入入口。
+If you want these rules globally, merge that file into `~/.codex/AGENTS.md`.
 
-- [查看模块 README](omo-scaffold/README.md)
+To keep the global rules synchronized with this repository, run:
 
-## 推荐阅读顺序
+```bash
+$HOME/Documents/codex/engineering/bin/apply-global-agent.sh
+```
 
-1. [repo-nav-tooling/README.md](repo-nav-tooling/README.md)
-2. [continuation-switch-guard/README.md](continuation-switch-guard/README.md)
-3. [omo-scaffold/README.md](omo-scaffold/README.md)
+The script links `~/.codex/AGENTS.md` to this repository's `AGENTS.md`. An
+existing non-empty file or different symlink is backed up before replacement.
+Afterwards, edit this repository's `AGENTS.md` and restart Codex / ChatGPT to
+reload the rules.
+
+To roll back, remove the symlink and restore the backup reported by the script,
+if one was created.
+
+## Usage
+
+From any project:
+
+```bash
+codex -p arch --cd /path/to/project
+codex -p dev --cd /path/to/project
+codex -p test --cd /path/to/project
+codex -p review --cd /path/to/project
+```
+
+For explicit skill use:
+
+```text
+$ax-pipeline Analyze this feature and create PRD, design, implementation plan, tests, and delivery checklist.
+```
+
+Common flow:
+
+```text
+1. $ax-prd
+2. $ax-arch
+3. $ax-dev
+4. $ax-frontend and/or $ax-backend (by affected domain)
+5. $ax-test
+6. $ax-structure-review (optional structure audit)
+7. $ax-review
+```
+
+To generate or refresh a thin project-specific adapter skill from a repository's
+actual architecture, owners, canonical documents, and verification commands:
+
+```text
+$ax-project-adapter Inspect this repository and generate its project adapter skill.
+```
+
+The generated adapter should contain only project navigation and project-specific
+constraints. Global engineering gates and reusable domain workflows stay in this
+directory's global rules and Skills.
+
+Adapted repositories and their top-level standard revision status are recorded in
+`state/project-adapter-registry.json`. Update that single local registry whenever an
+adapter is created, moved, refreshed, or reviewed after a global rule change.
+
+All AX Skills use lowercase hyphenated names. The installer removes obsolete
+underscore-named symlinks; update saved prompts to use names such as
+`$ax-pipeline`, `$ax-frontend`, and `$ax-project-adapter`.
+
+For read-only TAPD story and bug queries, install the MCP server from an
+interactive terminal:
+
+```bash
+$HOME/Documents/codex/engineering/bin/install-tapd-mcp.sh
+```
+
+If `TAPD_KEY` exists in `~/.zprofile`, the MCP loads it dynamically and does not
+copy the token into the Codex configuration. Otherwise, the token is entered
+without terminal echo and stored only in the Codex user MCP configuration. Then
+restart Codex / ChatGPT and use:
+
+```text
+$tapd-query List stories and bugs for workspace 123456.
+```
+
+## Operating Rule
+
+Use the Fast Path in `AGENTS.md` for explicit, localized, low-risk changes. Use PRD and
+design gates for work that does not meet every Fast Path condition, and escalate
+immediately when a risk boundary appears. Decide this before loading optional role or
+domain Skills; an eligible Fast Path change uses project instructions and local Owner
+navigation without loading the full `ax-dev`, `ax-frontend`, or `ax-backend` workflow.

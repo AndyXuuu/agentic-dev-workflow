@@ -1,0 +1,12 @@
+## 跨端/跨仓契约链路
+
+| 层级 | Owner | 生成/同步方式 | 可否手改 |
+| --- | --- | --- | --- |
+| 源契约 | {{contract-source-owner}} | {{contract-source-change-flow}} | 是，按项目门禁 |
+| Provider 投影 | {{provider-contract-projection}} | `{{provider-generation-command}}` | 否 |
+| Consumer 副本 | {{consumer-contract-copy}} | `{{consumer-sync-command}}` | 否 |
+| Consumer client/types | {{consumer-generated-client}} | `{{consumer-generation-command}}` | 否 |
+
+兼容性 Owner：{{contract-compatibility-owner}}
+
+若某层不存在，删除对应行；不要把生成投影或消费者副本写成源契约。

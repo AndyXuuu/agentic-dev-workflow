@@ -1,0 +1,4 @@
+interface:
+  display_name: "AX PRD"
+  short_description: "把模糊需求整理为范围、用户流程、验收标准、风险与待确认问题"
+  default_prompt: "使用 $ax-prd 将这个想法整理为可验证的需求和验收标准。"

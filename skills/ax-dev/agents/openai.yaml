@@ -1,0 +1,4 @@
+interface:
+  display_name: "AX Development"
+  short_description: "基于确认需求和设计实施并验证非平凡代码改动"
+  default_prompt: "使用 $ax-dev 按已确认的需求和设计实现并验证这个非 Fast Path 改动。"

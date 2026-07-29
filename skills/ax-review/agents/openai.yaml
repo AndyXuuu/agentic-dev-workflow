@@ -1,0 +1,4 @@
+interface:
+  display_name: "AX Delivery Review"
+  short_description: "交付前检查需求匹配、架构质量、测试覆盖、发布风险与回滚方案"
+  default_prompt: "使用 $ax-review 对这个改动执行交付前审查并评估剩余风险。"

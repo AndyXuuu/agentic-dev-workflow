@@ -1,0 +1,4 @@
+interface:
+  display_name: "AX 代码结构审核"
+  short_description: "审核职责边界、依赖方向、巨型文件与人机协作下的局部可维护性"
+  default_prompt: "使用 $ax-structure-review 审核当前项目的代码结构并按优先级给出证据和最小改进建议。"
