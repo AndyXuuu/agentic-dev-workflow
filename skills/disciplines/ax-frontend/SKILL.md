@@ -1,6 +1,6 @@
 ---
 name: ax-frontend
-description: 跨项目的前端实现与审查流程。用于非平凡的 Web 页面、组件、交互、响应式布局、设计系统、Token、前端状态或 UI Bug 改动，以及把 Figma、截图、TypeUI、DESIGN.md 和品牌参考转换为项目设计语言；覆盖前端职责边界、完整状态、可访问性和验证。不用于仅需按 AGENTS.md Fast Path 处理的明确、局部、低风险小改动。
+description: 项目无关的通用前端实现与审查流程。用于非平凡的 Web 页面、组件、交互、响应式布局、设计系统、Token、前端状态或 UI Bug 改动，以及把 Figma、截图、TypeUI、DESIGN.md 和品牌参考转换为项目设计语言；覆盖前端职责边界、完整状态、可访问性和验证。不用于仅需按 AGENTS.md Fast Path 处理的明确、局部、低风险小改动。
 ---
 
 # Frontend Engineering

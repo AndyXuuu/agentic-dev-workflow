@@ -13,8 +13,10 @@ These rules are for personal Codex behavior across software engineering projects
 - Repository-local boundary: only when the active project is the repository containing this `AGENTS.md`, limit work to the AI software-engineering framework: project-independent Agent rules, reusable workflows, Skills, templates, profiles, and installers. Do not handle a concrete product project's requirements, architecture, code, tests, deployment, operations, or troubleshooting from this repository; perform that work in the concrete project's repository under its own `AGENTS.md`. This boundary does not prohibit concrete project work when the active project is that project's own repository.
 - This global engineering directory owns only project-independent rules, role workflows, domain workflows, and reusable templates.
 - Never place a specific project's framework choices, paths, commands, endpoints, credentials, deployment topology, or business rules into global `AGENTS.md` or global Skills.
-- Role Skills (`ax-pipeline`, `ax-prd`, `ax-arch`, `ax-dev`, `ax-test`, `ax-review`) own delivery stages.
-- Domain Skills (`ax-frontend`, `ax-backend`) own reusable frontend/backend engineering practices.
+- Lifecycle Skills (`ax-pipeline`, `ax-prd`, `ax-arch`, `ax-dev`, `ax-test`, `ax-review`) own delivery stages.
+- Discipline Skills (`ax-frontend`, `ax-backend`, `ax-structure-review`) own reusable engineering practices and structural quality.
+- Repository Skills (`git-workflow`, `ax-project-adapter`) own source-control and project-adoption workflows.
+- Integration Skills (`tapd-query`) own external tool access and must keep credentials outside the repository.
 - A project's `AGENTS.md` owns its stack, commands, hard constraints, and canonical sources.
 - A project adapter Skill only maps global workflows to verified project owners and entry points; it must not copy global gates or become a second project rule source.
 - For cross-repository contracts, record one source contract owner and keep provider projections and consumer copies/generated clients explicitly derived.

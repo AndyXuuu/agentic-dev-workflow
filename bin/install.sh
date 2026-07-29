@@ -7,6 +7,14 @@ ROOT=$(dirname "$SCRIPT_DIR")
 mkdir -p "$HOME/.agents/skills"
 mkdir -p "$HOME/.codex"
 
+SKILL_CATALOG="$ROOT/skills/catalog.tsv"
+if [ ! -f "$SKILL_CATALOG" ]; then
+  echo "missing skill catalog: $SKILL_CATALOG" >&2
+  exit 1
+fi
+
+sh "$ROOT/bin/validate-skills.sh"
+
 for old_skill in ax_pipeline ax_prd ax_arch ax_dev ax_test ax_review software-engineering-pipeline prd-analyst architect developer tester delivery-reviewer; do
   old_dst="$HOME/.agents/skills/$old_skill"
   if [ -L "$old_dst" ]; then
@@ -15,8 +23,20 @@ for old_skill in ax_pipeline ax_prd ax_arch ax_dev ax_test ax_review software-en
   fi
 done
 
-for skill in ax-pipeline ax-prd ax-arch ax-dev ax-test ax-review ax-frontend ax-backend ax-project-adapter ax-structure-review tapd-query; do
-  src="$ROOT/skills/$skill"
+catalog_separator=$(printf '\t')
+while IFS="$catalog_separator" read -r skill category relative_path; do
+  case "$skill" in
+    ''|'#'*) continue ;;
+  esac
+  if [ -z "$category" ] || [ -z "$relative_path" ]; then
+    echo "invalid skill catalog entry: $skill" >&2
+    exit 1
+  fi
+  src="$ROOT/skills/$relative_path"
+  if [ ! -f "$src/SKILL.md" ]; then
+    echo "missing skill entrypoint: $src/SKILL.md" >&2
+    exit 1
+  fi
   dst="$HOME/.agents/skills/$skill"
   if [ -L "$dst" ] || [ ! -e "$dst" ]; then
     rm -f "$dst"
@@ -25,7 +45,7 @@ for skill in ax-pipeline ax-prd ax-arch ax-dev ax-test ax-review ax-frontend ax-
   else
     echo "skip existing non-symlink skill: $dst"
   fi
-done
+done < "$SKILL_CATALOG"
 
 for profile in arch dev test review; do
   src="$ROOT/profiles/$profile.config.toml"

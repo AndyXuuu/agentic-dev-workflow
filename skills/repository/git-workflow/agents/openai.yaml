@@ -1,0 +1,4 @@
+interface:
+  display_name: "Git Workflow"
+  short_description: "安全执行本地 Git 提交、远程同步、分叉判断与冲突停机流程"
+  default_prompt: "使用 $git-workflow 检查当前改动，创建准确的本地提交并安全同步远程。"

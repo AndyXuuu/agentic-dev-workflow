@@ -1,6 +1,6 @@
 ---
 name: {{adapter-name}}
-description: 按 {{project-name}} 的项目架构、Owner、权威文档和验证命令导航 {{task-domain}} 任务。用于在 {{project-scope}} 中实施或审查相关改动，并把通用工程流程映射到本项目；不保存跨项目通用规则。
+description: 按 {{project-name}} 的项目架构、Owner、权威文档和验证命令导航 {{task-domain}} 任务。用于在 {{project-scope}} 中实施或审查相关改动，并把通用工程流程映射到本项目；不保存项目无关的通用规则。
 ---
 
 # {{project-name}} 项目适配
