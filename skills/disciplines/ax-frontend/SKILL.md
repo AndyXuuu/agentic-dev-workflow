@@ -1,6 +1,6 @@
 ---
 name: ax-frontend
-description: 项目无关的通用前端实现与审查流程。用于非平凡的 Web 页面、组件、交互、响应式布局、设计系统、Token、前端状态或 UI Bug 改动，以及把 Figma、截图、TypeUI、DESIGN.md 和品牌参考转换为项目设计语言；覆盖前端职责边界、完整状态、可访问性和验证。不用于仅需按 AGENTS.md Fast Path 处理的明确、局部、低风险小改动。
+description: 项目无关的通用前端实现与审查流程。用于非平凡的 Web 页面、组件、交互、响应式布局、设计系统、Token、设计系统治理与采用检查、前端状态或 UI Bug 改动，以及把 Figma、截图、TypeUI、DESIGN.md 和品牌参考转换为项目设计语言；覆盖前端职责边界、完整状态、可访问性和验证。不用于仅需按 AGENTS.md Fast Path 处理的明确、局部、低风险小改动。
 ---
 
 # Frontend Engineering
@@ -73,10 +73,11 @@ description: 项目无关的通用前端实现与审查流程。用于非平凡�
 - 超阈值时检查 UI 编排、业务状态、数据转换、API、权限和浏览器副作用是否混合，以及一次局部修改需要追踪多少 Owner；只在存在独立职责、状态、复用或测试边界时拆分。
 - 生成页面、第三方代码、SVG/Schema/静态数据及实质为声明式的模板先分类再判断。历史巨型文件采用基线只降不升和逐边界提取，不做无测试的大爆炸重写。
 
-## 5. 应用项目设计系统
+## 5. 治理并应用项目设计系统
 
 执行 UI 改动时读取 [references/frontend-quality-checklist.md](references/frontend-quality-checklist.md)。核心规则：
 
+- 把 Token 源码、组件实现、权威展示/文档和生产消费视为同一套设计契约；权威声明不能替代一致性证据。
 - 优先复用项目组件、语义 Token、主题、字体和资产管线。
 - 不把一次性视觉数值散落在组件；若项目禁止 raw/arbitrary values，严格遵守。
 - 新 Token 或组件变体必须表达跨场景语义，并同步设计系统的权威展示或文档。
@@ -85,7 +86,9 @@ description: 项目无关的通用前端实现与审查流程。用于非平凡�
 - 非语义交互门禁以最终渲染 DOM 为判定对象；不得仅因 React 组件接收 `onClick` 就判违规。组件调用点、原生元素和无法静态确认的多态组件按检查表中的定义分别处理。
 - 从最窄受支持视口开始，验证内容膨胀、触控、键盘、焦点、对比度、Reduced Motion 和 Overlay 行为。
 
-若输入是 Figma、截图、TypeUI、DESIGN.md 或外部品牌规范，先读取 [references/design-reference-adapter.md](references/design-reference-adapter.md)。外部参考只提供设计意图，不能覆盖项目设计系统、业务流程或资产授权。
+当任务涉及设计系统、Token、共享 UI 组件、全局样式，或用户报告“设计标准与页面表现不一致”时，读取 [references/design-system-governance.md](references/design-system-governance.md)，先验证设计契约自身，再检查生产页面采用情况。审查/诊断任务使用其中的只读审计模式，不运行会写报告、缓存或构建产物的命令。分别报告设计契约、采用实现和自动化门禁的问题，不用一类问题替代另一类结论。
+
+若输入是 Figma、截图、TypeUI、DESIGN.md 或外部品牌规范，先读取 [references/design-reference-adapter.md](references/design-reference-adapter.md)。外部大厂规范只用于校准适用于目标平台的原则，不能覆盖项目设计系统、业务流程、资产授权或无障碍硬约束。
 
 ## 6. 验证行为
 

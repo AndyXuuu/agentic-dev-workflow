@@ -11,11 +11,13 @@
 | Agent/开发规则 | `AGENTS.md`、贡献指南、workspace instructions | 语言、门禁、禁止事项、交付格式 |
 | 产品行为 | PRD、route/page docs、acceptance tests | 当前行为与计划是否区分 |
 | 架构 | architecture/design docs、目录说明 | 模块边界和依赖方向 |
-| UI 视觉标准 | Storybook、design page、design tokens、Figma/library | 唯一视觉 owner 和更新方式 |
+| UI 视觉标准 | Storybook、design page、design tokens、Figma/library | Token、组件、展示和生产消费各自的 owner、同步方式与验证入口 |
 | API 契约 | OpenAPI/GraphQL/schema/generated clients | 生成目录、同步和验证命令 |
 | 文档索引 | docs index | 每个主题的 canonical document |
 
 若同一主题有多份说明，找出权威来源并报告冲突；不要通过新增第三份文档绕开冲突。
+
+视觉标准的“权威”表示变更归属，不自动表示内容已经正确。接入时确认 Token 定义、组件实现、展示/文档和生产页面能否相互追踪，并确认设计系统目录是否受自动化质量门禁保护。需要审计设计系统或页面采用时读取 `design-system-governance.md`。
 
 ## 2. 代码 Owner
 
@@ -47,6 +49,7 @@
 
 从 package scripts、workspace config、CI 和项目文档中确认：
 
+- 纯只读检查与会写报告、缓存、快照、生成源码或构建产物的命令边界
 - 最小相关测试
 - 全量测试
 - Lint/formatter
@@ -54,7 +57,7 @@
 - 生产构建
 - 本地预览或端到端测试
 
-优先运行项目定义的命令，不自行发明替代命令。若命令互相冲突或 CI 与文档不一致，先报告。
+优先运行项目定义的命令，不自行发明替代命令。审查/诊断任务先检查脚本副作用，未获得修改授权时不运行会落盘的命令。若命令互相冲突或 CI 与文档不一致，先报告。
 
 ## 5. 接入结果
 
@@ -65,3 +68,4 @@
 3. 新逻辑应该落在哪一层，为什么？
 4. 哪些文件和流程明确不应修改？
 5. 哪些测试和手动验证能证明需求成立？
+6. 哪些证据证明设计系统自身完整，并被目标页面正确采用？
