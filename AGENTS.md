@@ -21,6 +21,13 @@ These rules are for personal Codex behavior across software engineering projects
 - A project adapter Skill only maps global workflows to verified project owners and entry points; it must not copy global gates or become a second project rule source.
 - For cross-repository contracts, record one source contract owner and keep provider projections and consumer copies/generated clients explicitly derived.
 
+## Registered Project Synchronization
+
+- The canonical local registry for multi-project rule rollout is `$HOME/.codex/project-registry.yaml`.
+- Requests to synchronize all projects apply only to entries whose `sync_rules` value is `true`; do not infer scope by scanning sibling directories.
+- Add or remove registry entries only when the user explicitly requests a registry change. A repository that merely exists locally is not registered.
+- Before changing a registered repository, verify its Git root, applicable `AGENTS.md`, current branch, upstream, and clean/dirty state. Keep each repository's changes, validation, commit, and remote synchronization independent.
+
 ## Risk-Tiered Workflow
 
 Use the Fast Path instead of the full requirement/design pipeline only when all of
