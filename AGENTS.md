@@ -165,6 +165,29 @@ If architecture changes during implementation:
 
 Tests must verify expected behavior, not mirror current implementation.
 
+### Test Admission Gate
+
+Before adding a permanent automated test, identify:
+
+- the observable behavior, stable contract, invariant, boundary, or known regression it protects;
+- an independent oracle from requirements, protocol, domain rules, standards, or an established
+  public interface—not expected values copied from the implementation;
+- a credible defect that would make the test fail while the code still compiles;
+- why existing tests at the same or a more stable boundary do not already protect that risk.
+
+Do not create a test solely because a new method, helper, hook, class, or component was added.
+Direct method-level tests are appropriate only when that unit is itself a stable owner of
+non-trivial behavior and testing it gives clearer, cheaper evidence than a public-boundary test.
+Prefer testing through the narrowest stable public interface. Trivial getters, delegation,
+framework wiring, private helpers, type-level guarantees, and implementation details already
+covered by an owner-level behavior test normally do not justify permanent tests.
+
+A test written after implementation can still be valuable, but it must use requirement-derived
+cases, boundaries, counterexamples, or a known failure mode rather than translate the method's
+branches into assertions. Exploratory probes need not become permanent suite entries. Keep a test
+only when its regression value and failure localization justify its runtime and maintenance cost;
+rewrite or remove tests that fail under valid internal refactoring without behavior change.
+
 For bug fixes:
 
 1. Reproduce the bug or describe why reproduction cannot be automated.
@@ -181,6 +204,28 @@ For features, cover:
 - Nearby regression risk
 
 Do not make tests pass by changing expectations to match broken behavior.
+
+### Verification Layers
+
+Choose the verification layer before running commands. Project rules and CI configuration own
+the actual commands; do not infer that every available command belongs in every local iteration.
+
+1. **Focused behavior checks**: run the smallest unit, component, regression, contract, or scoped
+   static check that proves the changed behavior and its nearest regression risk. This is the
+   default local feedback loop for both Fast Path and standard work.
+2. **Broader integration checks**: run module, package, workspace, or repository-wide suites when
+   the change crosses Owners or contracts, has high fan-out or risk, completes a coherent delivery
+   packet, or when project rules explicitly require them. For batch work, run them once at the
+   defined wave/close boundary rather than after each file.
+3. **CI/release gates**: let CI own repository-wide coverage, audit, E2E, build, packaging,
+   deployment, and environment-specific checks when the project defines those gates. Do not
+   repeat the same full commands locally merely because CI will run them; run them locally when
+   CI is unavailable, the change is high-risk, or a CI failure needs diagnosis.
+
+Focused local checks and CI are complementary: CI does not replace change-specific behavioral
+or manual evidence, and a local pass must not be reported as CI/release success. If a project has
+no CI or release gate, identify that gap and follow its documented local pre-release equivalent;
+do not silently omit broader verification.
 
 For Fast Path documentation, formatting, comments, or low-risk configuration changes,
 run only the narrowest relevant validation; do not require unrelated full test suites.

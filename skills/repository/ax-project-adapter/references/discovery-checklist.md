@@ -6,7 +6,7 @@
 - 将适配模式标记为 frontend、backend、fullstack/monorepo 或 multi-repo。
 - 契约或运行时是否依赖父目录、兄弟仓库、子模块或外部服务。
 - 语言、框架、运行时、包管理器和 workspace 边界。
-- 本地开发、测试、构建、预览、部署和 CI 的真实命令。
+- 本地 focused 测试、整体/集成测试、构建、预览、部署和 CI/发布门禁的真实命令、Owner 与触发条件。
 - 应用是否允许 Docker 构建或只允许原生命令。
 
 ## 权威来源
