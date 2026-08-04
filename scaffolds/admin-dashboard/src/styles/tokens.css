@@ -1,0 +1,36 @@
+:root {
+  --app-shell-sidebar-width: 17rem;
+  --app-shell-header-height: 4.5rem;
+  --app-content-max-width: 100rem;
+  --app-radius-surface: 1rem;
+  --app-radius-overlay: 1.25rem;
+  --app-radius-control: 0.75rem;
+  --app-border-subtle: color-mix(in oklab, var(--color-base-content) 9%, transparent);
+  --app-border-muted: color-mix(in oklab, var(--color-base-content) 6%, transparent);
+  --app-surface-hover: color-mix(in oklab, var(--color-base-content) 3.5%, transparent);
+  --app-table-header: color-mix(in oklab, var(--color-base-content) 3%, transparent);
+  --app-table-toolbar: color-mix(in oklab, var(--color-base-content) 1.5%, transparent);
+  --app-shadow-surface: 0 1px 2px color-mix(in oklab, var(--color-neutral) 8%, transparent);
+  --app-shadow-overlay: 0 24px 64px color-mix(in oklab, var(--color-neutral) 24%, transparent);
+  --app-motion-fast: 160ms;
+  --app-motion-standard: 220ms;
+  --app-chart-series-1: rgb(79, 70, 229);
+  --app-chart-series-2: rgb(13, 148, 136);
+  --app-chart-series-3: rgb(2, 132, 199);
+  --app-chart-series-4: rgb(217, 119, 6);
+  --app-chart-series-5: rgb(124, 58, 237);
+  --app-chart-grid: rgba(15, 23, 42, 0.1);
+  --app-chart-label: rgb(100, 116, 139);
+  --app-chart-tooltip: rgb(15, 23, 42);
+}
+
+[data-theme='business'] {
+  --app-chart-series-1: rgb(129, 140, 248);
+  --app-chart-series-2: rgb(45, 212, 191);
+  --app-chart-series-3: rgb(56, 189, 248);
+  --app-chart-series-4: rgb(251, 191, 36);
+  --app-chart-series-5: rgb(192, 132, 252);
+  --app-chart-grid: rgba(203, 213, 225, 0.12);
+  --app-chart-label: rgb(148, 163, 184);
+  --app-chart-tooltip: rgb(17, 24, 39);
+}

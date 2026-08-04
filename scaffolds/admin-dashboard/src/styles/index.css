@@ -1,0 +1,245 @@
+@import 'tailwindcss';
+@import './tokens.css';
+@plugin 'daisyui' {
+  themes: corporate --default, business --prefersdark;
+}
+
+:root {
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  min-width: 320px;
+  background: var(--color-base-200);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+body[data-overlay-open='true'] {
+  overflow: hidden;
+}
+
+button,
+a,
+input,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  border-radius: 0.75rem;
+  background: var(--color-primary);
+  color: var(--color-primary-content);
+  padding: 0.7rem 1rem;
+  font-weight: 700;
+  transition: top 160ms ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+.surface-card {
+  overflow: hidden;
+  border: 1px solid var(--app-border-subtle);
+  border-radius: var(--app-radius-surface);
+  background: var(--color-base-100);
+  box-shadow: var(--app-shadow-surface);
+}
+
+.app-shell-sidebar {
+  width: var(--app-shell-sidebar-width);
+}
+
+.app-shell-header {
+  height: var(--app-shell-header-height);
+}
+
+.app-content {
+  max-width: var(--app-content-max-width);
+}
+
+.data-table-shell {
+  min-width: 0;
+}
+
+.list-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--app-border-muted);
+  background: var(--app-table-toolbar);
+  padding: 1rem;
+}
+
+.list-toolbar-controls {
+  display: grid;
+  min-width: 0;
+  gap: 0.75rem;
+}
+
+.data-table-region {
+  contain: inline-size layout paint;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--color-base-content);
+}
+
+.data-table--standard {
+  min-width: 44rem;
+}
+
+.data-table--wide {
+  min-width: 52rem;
+}
+
+.data-table :where(th, td) {
+  border-bottom: 1px solid var(--app-border-muted);
+  padding: 0.8rem 1rem;
+  vertical-align: middle;
+}
+
+.data-table th {
+  background: var(--app-table-header);
+  color: color-mix(in oklab, var(--color-base-content) 58%, transparent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+}
+
+.data-table tbody tr {
+  transition: background-color var(--app-motion-fast) ease;
+}
+
+.data-table tbody tr:hover {
+  background: var(--app-surface-hover);
+}
+
+.data-table tbody tr:last-child > td {
+  border-bottom: 0;
+}
+
+.data-table-footer {
+  border-top: 1px solid var(--app-border-muted);
+  padding: 1rem 1.25rem;
+}
+
+.app-dialog {
+  width: min(34rem, calc(100% - 2rem));
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+  border: 0;
+  border-radius: var(--app-radius-overlay);
+  background: transparent;
+  color: var(--color-base-content);
+  padding: 0;
+  box-shadow: var(--app-shadow-overlay);
+}
+
+.app-dialog::backdrop {
+  background: color-mix(in oklab, var(--color-neutral) 52%, transparent);
+  backdrop-filter: blur(2px);
+}
+
+.app-dialog-panel {
+  overflow: hidden;
+  border: 1px solid var(--app-border-subtle);
+  border-radius: inherit;
+  background: var(--color-base-100);
+}
+
+.mobile-nav-dialog {
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.mobile-nav-dialog::backdrop {
+  background: color-mix(in oklab, var(--color-neutral) 52%, transparent);
+  backdrop-filter: blur(2px);
+}
+
+.app-chart {
+  min-width: 0;
+}
+
+.app-chart .apexcharts-canvas,
+.app-chart .apexcharts-svg {
+  max-width: 100%;
+}
+
+.app-chart .apexcharts-tooltip,
+.app-chart .apexcharts-xaxistooltip {
+  border: 1px solid var(--app-border-subtle);
+  border-radius: var(--app-radius-control);
+  background: var(--app-chart-tooltip);
+  box-shadow: var(--app-shadow-overlay);
+}
+
+.app-chart .apexcharts-tooltip-title {
+  border-bottom-color: var(--app-border-subtle);
+  background: transparent;
+}
+
+.chart-state {
+  display: grid;
+  min-height: 17.5rem;
+  place-items: center;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+*:focus-visible {
+  outline: 3px solid color-mix(in oklab, var(--color-primary) 60%, transparent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: 用户的减少动态效果偏好必须覆盖所有组件动效。 */
+    scroll-behavior: auto !important;
+    /* biome-ignore lint/complexity/noImportantStyles: 用户的减少动态效果偏好必须覆盖所有组件动效。 */
+    transition-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: 用户的减少动态效果偏好必须覆盖所有组件动效。 */
+    animation-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: 用户的减少动态效果偏好必须覆盖所有组件动效。 */
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media (min-width: 64rem) {
+  .app-shell-main {
+    padding-left: var(--app-shell-sidebar-width);
+  }
+}
+
+@media (min-width: 40rem) {
+  .list-toolbar-controls {
+    grid-template-columns: minmax(14rem, 1fr) 12rem auto;
+    align-items: center;
+  }
+}

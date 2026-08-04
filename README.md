@@ -92,6 +92,10 @@ templates/
   DESIGN.md
   TEST_PLAN.md
   DELIVERY.md
+scaffolds/
+  admin-dashboard/
+    AGENTS.md
+    README.md
 bin/
   install.sh
   validate-skills.sh
@@ -99,6 +103,10 @@ bin/
   apply-global-agent.sh
   uninstall.sh
 ```
+
+## Standalone Scaffolds
+
+- [Admin Dashboard Scaffold](./scaffolds/admin-dashboard/README.md) — independently installable React administration workspace with responsive navigation, dashboard analytics, resource-list patterns, theme support, and replaceable mock data boundaries.
 
 ## Install
 

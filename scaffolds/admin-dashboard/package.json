@@ -1,0 +1,41 @@
+{
+  "name": "admin-dashboard-scaffold",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "check:design": "node scripts/check-design-system.mjs",
+    "create": "node scripts/create-admin-dashboard.mjs",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "biome lint . && npm run check:design",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "verify": "npm run lint && npm test && npm run build"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "apexcharts": "^6.7.0",
+    "daisyui": "^5.7.15",
+    "lucide-react": "^1.28.0",
+    "react": "^19.2.8",
+    "react-apexcharts": "^2.1.1",
+    "react-dom": "^19.2.8",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.11",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.3",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "jsdom": "^30.0.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.0",
+    "vitest": "^4.1.10"
+  }
+}
