@@ -10,10 +10,10 @@
 - ApexCharts 共享图表体系，统一面积图、柱状图、环图、主题、Tooltip、Legend 和数据状态
 - Orders、Products、Customers、Settings 管理页面骨架，以及统一的列表搜索、状态筛选、重置、导出和创建操作
 - Loading、Empty、Error 演示状态
-- 语义 Token、可访问焦点、Reduced Motion 与窄屏适配
+- 统一排版、双主题 AA 文本角色与紧凑密度 Token、柔和可访问焦点、Reduced Motion 与窄屏适配
 - Mock repository 边界，便于替换为真实 API client
 - 独立 `AGENTS.md` AI 开发闭环，覆盖风险分流、Owner、设计、测试与交付规则
-- `DESIGN.md`、真实组件 Catalog 与设计系统静态门禁
+- `DESIGN.md`、完整 Token/真实组件 Catalog 与设计系统静态门禁
 - 安全生成入口：目标存在即拒绝，临时目录验证通过后才交付
 
 ## 独立运行
@@ -52,9 +52,14 @@ npm run create -- /path/to/new-admin-project
 - 权威契约：`DESIGN.md`
 - Foundation Token：`src/styles/tokens.css`
 - 共享组件：`src/components/ui`
+- 公开组件清单：`src/components/design-system/publicComponentCatalog.ts`
 - 真实组件 Catalog：应用内 `/design-system`
+- Token Catalog：顶部吸顶分类导航，列举全部项目与主题语义 Token、当前主题计算值、用途和视觉预览，并由静态门禁防止注册表漂移
 - 表格：统一使用 `DataTable`，由 Surface 圆角、低对比度分隔线和局部横向滚动共同构成视觉契约
 - 列表工具：统一使用 `ListToolbar`，页面仅持有搜索值、筛选值和业务过滤规则
+- 状态标签：统一使用 `StatusBadge`，其 success、warning、error、info、neutral 组合均由共享组件持有并按双主题验证
+- 进度反馈：统一使用原生语义 `ProgressBar`，覆盖确定/不确定状态、可见状态值、数值边界与语义色调，业务任务状态仍由消费页面持有
+- 图表运行时：通过 ApexCharts 官方 tree-shaking 入口按需加载 core、面积图、柱状图、环图及必要交互功能，不打包未使用图表类型
 
 ## 接入真实项目
 

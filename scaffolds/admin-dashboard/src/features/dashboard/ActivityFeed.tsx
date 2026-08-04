@@ -10,7 +10,7 @@ const tones = {
 
 export function ActivityFeed() {
   return (
-    <div className="p-5">
+    <div className="p-4">
       <ul className="space-y-0">
         {activities.map((activity, index) => (
           <li className="relative grid grid-cols-[1.75rem_1fr] gap-3 pb-5 last:pb-0" key={activity.title}>
@@ -18,10 +18,10 @@ export function ActivityFeed() {
             <span className={`relative mt-1 size-3.5 rounded-full border-[3px] border-base-100 ${tones[activity.tone]}`} />
             <div>
               <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                <p className="text-sm font-semibold">{activity.title}</p>
-                <time className="text-xs text-base-content/42">{activity.time}</time>
+                <p className="app-body font-semibold">{activity.title}</p>
+                <time className="app-caption app-text-muted">{activity.time}</time>
               </div>
-              <p className="mt-1 text-sm leading-5 text-base-content/55">{activity.description}</p>
+              <p className="app-body app-text-secondary mt-1">{activity.description}</p>
             </div>
           </li>
         ))}

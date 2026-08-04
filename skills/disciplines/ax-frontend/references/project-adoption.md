@@ -31,6 +31,9 @@
 - server state/query clients
 - global state/context/store
 - form, validation, permission, billing, analytics, error handling
+- untrusted content/sanitization, URL navigation, cross-window messaging and client storage boundaries
+- supported browsers, WebView/extension/embedded hosts, polyfills and progressive enhancement
+- performance budgets, runtime monitoring, image/font loading and large-list/rendering strategies
 - browser-safe utilities and side-effect hooks
 - i18n messages and routing
 - adjacent tests, fixtures and test setup
@@ -39,11 +42,13 @@
 
 ## 3. 技术栈适配
 
-- React/Next/Vue/Svelte 等只影响实现手段，不改变需求、设计和测试门禁。
+- React/Next/Vue/Nuxt/Svelte/Angular/Web Components 等只影响实现手段，不改变需求、设计和测试门禁；微前端、组件库、嵌入式 Widget 和无路由应用遵循其真实入口与宿主边界，不强行套页面分层。
 - Tailwind、CSS Modules、CSS-in-JS 或原生 CSS 都优先使用项目已有 Token 与组合方式。
 - TanStack Query、SWR、Redux、Zustand、Pinia 或 Context 都必须先识别现有状态 owner，避免双写。
 - REST、GraphQL、RPC 或 SDK 都通过项目现有 client/adapter 边界进入 UI。
-- SSR/SSG/CSR 项目分别验证 hydration、server-only/client-only 边界和浏览器 API 使用。
+- SSR/SSG/CSR/Islands 项目分别验证 hydration、server-only/client-only 边界和浏览器 API 使用。
+- 从 Browserslist、构建配置、兼容文档、宿主声明和真实流量确认浏览器/运行时范围；新增平台 API 或 CSS 能力时遵循项目 polyfill、fallback 和 progressive-enhancement 策略。
+- 从性能预算、RUM/Lighthouse/Web Vitals、Bundle 分析和项目文档确认性能 Owner；只在改动影响启动、渲染、交互、资源或大数据量时运行相关门禁。
 
 ## 4. 验证命令
 
@@ -53,6 +58,7 @@
 - 本地最小单元/组件/回归测试与 scoped Lint/类型检查
 - 跨 Owner、模块、package/workspace 或仓库级整体测试的触发条件
 - CI/发布持有的覆盖率、审计、E2E、全量 Lint、构建、打包、部署和环境验证
+- 项目已有的浏览器兼容、安全扫描、性能预算、Bundle 或 Web Vitals 门禁及其触发条件
 - 本地预览、人工验证和会启动服务或写产物的命令
 
 优先运行项目定义的命令，不自行发明替代命令。记录每层的 Owner、触发条件与是否需要本地重复；不要把所有可用命令拼成每次开发都执行的固定清单。审查/诊断任务先检查脚本副作用，未获得修改授权时不运行会落盘的命令。若命令互相冲突或 CI 与文档不一致，先报告。
@@ -61,9 +67,10 @@
 
 编辑前应能简短回答：
 
-1. 哪个模块拥有页面和业务行为？
+1. 哪个模块拥有目标界面、应用入口或宿主集成及其业务行为？
 2. 哪些组件、规则、Token、状态和 API 可以复用？
 3. 新逻辑应该落在哪一层，为什么？
 4. 哪些文件和流程明确不应修改？
 5. 哪些测试和手动验证能证明需求成立？
 6. 哪些证据证明设计系统自身完整，并被目标页面正确采用？
+7. 目标浏览器/宿主、安全边界和性能预算中，哪些与本次改动相关？

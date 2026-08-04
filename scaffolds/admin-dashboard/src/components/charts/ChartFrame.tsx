@@ -24,7 +24,7 @@ export function ChartFrame({
       <div aria-live="polite" className="chart-state" role="status">
         <div>
           <span aria-hidden className="loading loading-spinner loading-lg text-primary" />
-          <p className="mt-3 text-sm text-base-content/58">正在加载图表</p>
+          <p className="app-body app-text-secondary mt-3">正在加载图表</p>
         </div>
       </div>
     )
@@ -35,7 +35,7 @@ export function ChartFrame({
       <div className="chart-state" role="status">
         <div>
           <p className="font-semibold">暂无图表数据</p>
-          <p className="mt-1 text-sm text-base-content/58">调整筛选条件或稍后重试。</p>
+          <p className="app-body app-text-secondary mt-1">调整筛选条件或稍后重试。</p>
         </div>
       </div>
     )
@@ -46,7 +46,7 @@ export function ChartFrame({
       <div className="chart-state" role="alert">
         <div>
           <p className="font-semibold">图表加载失败</p>
-          <p className="mt-1 text-sm text-base-content/58">{errorDescription}</p>
+          <p className="app-body app-text-secondary mt-1">{errorDescription}</p>
           {onRetry && <button className="btn btn-outline btn-sm mt-4" onClick={onRetry} type="button">重新加载</button>}
         </div>
       </div>

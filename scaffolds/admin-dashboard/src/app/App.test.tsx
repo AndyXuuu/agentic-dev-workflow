@@ -104,6 +104,36 @@ describe('admin dashboard scaffold', () => {
     expect(screen.getByText('有尚未保存的更改')).toBeVisible()
   })
 
+  it('associates an actionable error with an invalid settings field', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const navigation = screen.getByRole('navigation', { name: '主导航' })
+    await user.click(within(navigation).getByRole('link', { name: '设置' }))
+    const nameInput = screen.getByRole('textbox', { name: '工作区名称' })
+    await user.clear(nameInput)
+    await user.click(screen.getByRole('button', { name: '保存设置' }))
+
+    expect(nameInput).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByText('请输入工作区名称。')).toBeVisible()
+  })
+
+  it('rejects a whitespace-only workspace name', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const navigation = screen.getByRole('navigation', { name: '主导航' })
+    await user.click(within(navigation).getByRole('link', { name: '设置' }))
+    const nameInput = screen.getByRole('textbox', { name: '工作区名称' })
+    await user.clear(nameInput)
+    await user.type(nameInput, '   ')
+    await user.click(screen.getByRole('button', { name: '保存设置' }))
+
+    expect(nameInput).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByText('请输入工作区名称。')).toBeVisible()
+    expect(screen.queryByText('设置已保存')).not.toBeInTheDocument()
+  })
+
   it('recovers a resource list from its error state', async () => {
     const user = userEvent.setup()
     render(<App />)
@@ -131,5 +161,31 @@ describe('admin dashboard scaffold', () => {
     render(<App />)
 
     expect(screen.getByRole('button', { name: '搜索订单、商品或客户' })).toBeVisible()
+  })
+
+  it('keeps the public component catalog complete and renders the modal contract', async () => {
+    const user = userEvent.setup()
+    window.history.replaceState({}, '', '/design-system')
+    render(<App />)
+
+    const catalog = await screen.findByRole('table', { name: '共享组件清单' })
+    for (const component of [
+      'AreaChart',
+      'BarChart',
+      'DataTable',
+      'DesignTokenCatalog',
+      'DonutChart',
+      'ListToolbar',
+      'Modal',
+      'PageHeader',
+      'PageState',
+      'Panel',
+      'StatusBadge',
+    ]) {
+      expect(within(catalog).getByRole('cell', { name: component })).toBeVisible()
+    }
+
+    await user.click(screen.getByRole('button', { name: '预览 Modal' }))
+    expect(screen.getByRole('dialog', { name: 'Modal 交互契约' })).toBeVisible()
   })
 })

@@ -15,13 +15,13 @@ export function TransactionsTable() {
       header: '客户',
       cell: (row) => (
         <div className="flex items-center gap-3">
-          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-base-200 text-xs font-bold text-base-content/65">{row.initials}</span>
-          <span><span className="block font-medium">{row.customer}</span><span className="block text-xs text-base-content/45">{row.email}</span></span>
+          <span className="app-caption app-text-secondary grid size-9 shrink-0 place-items-center rounded-xl bg-base-200 font-bold">{row.initials}</span>
+          <span><span className="block font-medium">{row.customer}</span><span className="app-caption app-text-muted block">{row.email}</span></span>
         </div>
       ),
     },
-    { id: 'date', header: '日期', cell: (row) => row.date, className: 'text-base-content/62' },
-    { id: 'payment', header: '支付方式', cell: (row) => row.payment, className: 'text-base-content/62' },
+    { id: 'date', header: '日期', cell: (row) => row.date, className: 'app-text-secondary' },
+    { id: 'payment', header: '支付方式', cell: (row) => row.payment, className: 'app-text-secondary' },
     { id: 'amount', header: '金额', cell: (row) => <span className="font-semibold tabular-nums">{row.amount}</span> },
     { id: 'status', header: '状态', cell: (row) => <StatusBadge label={row.status} tone={row.tone} /> },
     {
@@ -41,12 +41,12 @@ export function TransactionsTable() {
       <DataTable ariaLabel="最近交易" columns={columns} minimumWidth="wide" rowKey={(row) => row.id} rows={transactions} />
       <Modal onClose={() => setSelected(null)} open={selected !== null} title={selected ? `${selected.id} 发票摘要` : '发票摘要'}>
         {selected && (
-          <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-3 text-sm">
-            <dt className="text-base-content/55">客户</dt><dd className="font-medium">{selected.customer}</dd>
-            <dt className="text-base-content/55">日期</dt><dd>{selected.date}</dd>
-            <dt className="text-base-content/55">支付</dt><dd>{selected.payment}</dd>
-            <dt className="text-base-content/55">金额</dt><dd className="font-semibold">{selected.amount}</dd>
-            <dt className="text-base-content/55">状态</dt><dd><StatusBadge label={selected.status} tone={selected.tone} /></dd>
+          <dl className="app-body grid grid-cols-[auto_1fr] gap-x-6 gap-y-3">
+            <dt className="app-text-muted">客户</dt><dd className="font-medium">{selected.customer}</dd>
+            <dt className="app-text-muted">日期</dt><dd>{selected.date}</dd>
+            <dt className="app-text-muted">支付</dt><dd>{selected.payment}</dd>
+            <dt className="app-text-muted">金额</dt><dd className="font-semibold">{selected.amount}</dd>
+            <dt className="app-text-muted">状态</dt><dd><StatusBadge label={selected.status} tone={selected.tone} /></dd>
           </dl>
         )}
       </Modal>

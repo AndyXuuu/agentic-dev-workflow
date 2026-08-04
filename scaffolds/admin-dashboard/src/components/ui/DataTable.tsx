@@ -11,7 +11,7 @@ export type DataTableColumn<Row> = {
 type DataTableProps<Row> = {
   ariaLabel: string
   columns: DataTableColumn<Row>[]
-  rows: Row[]
+  rows: readonly Row[]
   rowKey: (row: Row) => Key
   footer?: ReactNode
   minimumWidth?: 'standard' | 'wide'

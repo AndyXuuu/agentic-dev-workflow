@@ -34,7 +34,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           onMenu={() => setMobileOpen(true)}
           onToggleTheme={toggleTheme}
         />
-        <main id="main-content" className="app-content mx-auto w-full p-4 sm:p-6 lg:p-8">
+        <main id="main-content" className="app-content mx-auto w-full">
           {children}
         </main>
       </div>

@@ -14,7 +14,7 @@ export function Topbar({ theme, onMenu, onSearch, onToggleTheme }: TopbarProps) 
 
   return (
     <header className="sticky top-0 z-30 border-b border-base-300/80 bg-base-100/90 backdrop-blur-xl">
-      <div className="app-shell-header flex items-center gap-2 px-4 sm:px-6 lg:px-8">
+      <div className="app-shell-header flex items-center gap-2 px-4 sm:px-5 lg:px-6">
         <button className="btn btn-ghost btn-square lg:hidden" onClick={onMenu} type="button">
           <span className="sr-only">打开导航</span>
           <Menu aria-hidden size={21} />
@@ -22,7 +22,7 @@ export function Topbar({ theme, onMenu, onSearch, onToggleTheme }: TopbarProps) 
 
         <button
           aria-label="搜索订单、商品或客户"
-          className="btn btn-ghost min-w-0 justify-start px-3 text-base-content/55 sm:w-64"
+          className="btn btn-ghost app-text-secondary min-w-0 justify-start px-3 sm:w-64"
           onClick={onSearch}
           type="button"
         >
@@ -40,19 +40,19 @@ export function Topbar({ theme, onMenu, onSearch, onToggleTheme }: TopbarProps) 
           >
             {dark ? <Sun aria-hidden size={20} /> : <Moon aria-hidden size={20} />}
           </button>
-          <span aria-label="没有新通知" className="indicator grid size-11 place-items-center text-base-content/55" role="status">
+          <span aria-label="没有新通知" className="indicator app-text-muted grid size-9 place-items-center" role="status">
             <span className="indicator-item badge badge-primary badge-xs right-2 top-2" />
             <Bell aria-hidden size={20} />
           </span>
-          <div className="ml-1 flex h-11 items-center gap-3 rounded-xl px-2">
+          <div className="ml-1 flex h-9 items-center gap-2 rounded-xl px-2">
             <span className="avatar placeholder">
-              <span className="grid size-8 place-items-center rounded-lg bg-primary/12 text-xs font-bold text-primary">
+              <span className="app-caption app-text-accent grid size-8 place-items-center rounded-lg bg-primary/12 font-bold">
                 DA
               </span>
             </span>
             <span className="hidden text-left md:block">
-              <span className="block text-sm font-semibold leading-4">Demo Admin</span>
-              <span className="block text-xs text-base-content/50">Administrator</span>
+              <span className="app-control-text block font-semibold">Demo Admin</span>
+              <span className="app-caption app-text-muted block">Administrator</span>
             </span>
           </div>
         </div>

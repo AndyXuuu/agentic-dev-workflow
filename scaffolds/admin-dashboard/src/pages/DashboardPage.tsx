@@ -27,7 +27,7 @@ export function DashboardPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="app-page-stack">
       <PageHeader
         actions={
           <>
@@ -49,7 +49,7 @@ export function DashboardPage() {
         {dashboardStats.map((stat) => <StatCard key={stat.label} stat={stat} />)}
       </section>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(19rem,1fr)]">
+      <div className="app-layout-gap grid xl:grid-cols-[minmax(0,2fr)_minmax(19rem,1fr)]">
         <Panel description="年度收入与净利润趋势，单位为万元" title="销售表现">
           <SalesChart />
         </Panel>
@@ -58,7 +58,7 @@ export function DashboardPage() {
         </Panel>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(19rem,1fr)]">
+      <div className="app-layout-gap grid xl:grid-cols-[minmax(0,2fr)_minmax(19rem,1fr)]">
         <Panel description="最近进入交易系统的五笔订单" title="最近交易">
           <TransactionsTable />
         </Panel>

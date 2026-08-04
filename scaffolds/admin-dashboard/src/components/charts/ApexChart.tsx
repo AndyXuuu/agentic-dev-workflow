@@ -1,13 +1,35 @@
 import type { ApexOptions } from 'apexcharts'
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 
-const ReactApexChart = lazy(() => import('react-apexcharts'))
+type ChartType = 'area' | 'bar' | 'donut'
+
+async function loadChartRenderer(type: ChartType) {
+  const chartType = type === 'area'
+    ? import('apexcharts/area')
+    : type === 'bar'
+      ? import('apexcharts/bar')
+      : import('apexcharts/donut')
+
+  await Promise.all([
+    chartType,
+    import('apexcharts/features/keyboard'),
+    import('apexcharts/features/legend'),
+  ])
+
+  return import('react-apexcharts/core')
+}
+
+const chartRenderers = {
+  area: lazy(() => loadChartRenderer('area')),
+  bar: lazy(() => loadChartRenderer('bar')),
+  donut: lazy(() => loadChartRenderer('donut')),
+}
 
 type ApexChartProps = {
   height: number
   options: ApexOptions
   series: ApexOptions['series']
-  type: 'area' | 'bar' | 'donut'
+  type: ChartType
 }
 
 function useReducedMotion() {
@@ -26,6 +48,7 @@ function useReducedMotion() {
 
 export function ApexChart({ height, options, series, type }: ApexChartProps) {
   const reducedMotion = useReducedMotion()
+  const ReactApexChart = chartRenderers[type]
   const resolvedOptions = useMemo<ApexOptions>(() => ({
     ...options,
     chart: {

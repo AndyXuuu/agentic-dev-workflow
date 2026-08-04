@@ -12,16 +12,16 @@ type PageStateProps = {
 
 export function PageState(props: PageStateProps) {
   const Icon = props.state === 'loading' ? LoaderCircle : props.state === 'empty' ? Inbox : AlertTriangle
-  const className = `${props.surface === false ? '' : 'surface-card '}grid min-h-72 place-items-center p-6 text-center`
+  const className = `${props.surface === false ? '' : 'surface-card '}app-surface-body grid min-h-60 place-items-center text-center`
 
   return (
     <div aria-live="polite" className={className} role={props.state === 'error' ? 'alert' : 'status'}>
       <div className="max-w-sm">
-        <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-base-200 text-base-content/55">
+        <span className="app-text-muted mx-auto grid size-12 place-items-center rounded-2xl bg-base-200">
           <Icon aria-hidden className={props.state === 'loading' ? 'animate-spin' : undefined} size={23} />
         </span>
-        <h2 className="mt-4 text-lg font-semibold">{props.title}</h2>
-        <p className="mt-2 text-sm leading-6 text-base-content/55">{props.description}</p>
+        <h2 className="app-section-title mt-4">{props.title}</h2>
+        <p className="app-section-description mt-1.5">{props.description}</p>
         {props.state === 'error' && (
           <button className="btn btn-primary btn-sm mt-5" onClick={props.onRetry} type="button">
             重新加载

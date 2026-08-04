@@ -61,8 +61,8 @@ export function ResourceListPage({ resource }: ResourceListPageProps) {
 
   const columns = useMemo<DataTableColumn<ResourceRow>[]>(() => [
     { id: 'id', header: '编号', cell: (row) => <span className="font-semibold">{row.id}</span> },
-    { id: 'name', header: '名称', cell: (row) => <span><span className="block font-medium">{row.title}</span><span className="text-xs text-base-content/48">{row.subtitle}</span></span> },
-    { id: 'meta', header: '信息', cell: (row) => row.meta, className: 'text-base-content/60' },
+    { id: 'name', header: '名称', cell: (row) => <span><span className="block font-medium">{row.title}</span><span className="app-caption app-text-muted">{row.subtitle}</span></span> },
+    { id: 'meta', header: '信息', cell: (row) => row.meta, className: 'app-text-secondary' },
     { id: 'value', header: '价值', cell: (row) => <span className="font-semibold tabular-nums">{row.value}</span> },
     { id: 'status', header: '状态', cell: (row) => <StatusBadge label={row.status} tone={row.tone} /> },
     { id: 'actions', header: <span className="sr-only">操作</span>, align: 'right', cell: (row) => <button className="btn btn-ghost btn-sm" onClick={() => setSelected(row)} type="button">查看</button> },
@@ -99,7 +99,7 @@ export function ResourceListPage({ resource }: ResourceListPageProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="app-page-stack">
       <PageHeader
         actions={
           <>
@@ -144,7 +144,7 @@ export function ResourceListPage({ resource }: ResourceListPageProps) {
               ariaLabel={`${config.title}列表`}
               columns={columns}
               footer={
-                <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-base-content/52">
+                <div className="app-body app-text-muted flex flex-wrap items-center justify-between gap-3">
                   <span>显示 {rows.length} 条演示记录</span>
                   <button className="link link-hover" onClick={() => setLoadState('error')} type="button">预览错误状态</button>
                 </div>
@@ -171,11 +171,11 @@ export function ResourceListPage({ resource }: ResourceListPageProps) {
 
       <Modal onClose={() => setSelected(null)} open={selected !== null} title={selected?.title ?? '记录详情'}>
         {selected && (
-          <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-3 text-sm">
-            <dt className="text-base-content/55">编号</dt><dd className="font-medium">{selected.id}</dd>
-            <dt className="text-base-content/55">信息</dt><dd>{selected.meta}</dd>
-            <dt className="text-base-content/55">价值</dt><dd>{selected.value}</dd>
-            <dt className="text-base-content/55">状态</dt><dd><StatusBadge label={selected.status} tone={selected.tone} /></dd>
+          <dl className="app-body grid grid-cols-[auto_1fr] gap-x-6 gap-y-3">
+            <dt className="app-text-muted">编号</dt><dd className="font-medium">{selected.id}</dd>
+            <dt className="app-text-muted">信息</dt><dd>{selected.meta}</dd>
+            <dt className="app-text-muted">价值</dt><dd>{selected.value}</dd>
+            <dt className="app-text-muted">状态</dt><dd><StatusBadge label={selected.status} tone={selected.tone} /></dd>
           </dl>
         )}
       </Modal>

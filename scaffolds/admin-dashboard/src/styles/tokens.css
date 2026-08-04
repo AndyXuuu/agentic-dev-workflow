@@ -1,19 +1,47 @@
 :root {
-  --app-shell-sidebar-width: 17rem;
-  --app-shell-header-height: 4.5rem;
+  --app-shell-sidebar-width: 15rem;
+  --app-shell-header-height: 4rem;
   --app-content-max-width: 100rem;
+  --app-font-size-page-title: 1.5rem;
+  --app-font-size-metric: 1.5rem;
+  --app-font-size-section-title: 1rem;
+  --app-font-size-body: 0.875rem;
+  --app-font-size-control: 0.8125rem;
+  --app-font-size-caption: 0.75rem;
+  --app-line-height-page-title: 2rem;
+  --app-line-height-metric: 2rem;
+  --app-line-height-section-title: 1.5rem;
+  --app-line-height-body: 1.25rem;
+  --app-line-height-caption: 1rem;
+  --app-text-secondary: color-mix(in oklab, var(--color-base-content) 76%, transparent);
+  --app-text-muted: color-mix(in oklab, var(--color-base-content) 68%, transparent);
+  --app-text-accent: color-mix(in oklab, var(--color-primary) 45%, var(--color-base-content));
+  --app-text-error: color-mix(in oklab, var(--color-error) 55%, var(--color-base-content));
+  --app-space-page-gap: 1.25rem;
+  --app-space-panel: 1rem;
+  --app-space-toolbar: 0.75rem;
+  --app-space-control-gap: 0.5rem;
+  --app-control-height: 2.25rem;
+  --app-control-height-sm: 2rem;
+  --app-control-padding-inline: 0.75rem;
   --app-radius-surface: 1rem;
   --app-radius-overlay: 1.25rem;
   --app-radius-control: 0.75rem;
+  --app-focus-ring: color-mix(in oklab, var(--color-primary) 42%, transparent);
+  --app-focus-control-border: color-mix(in oklab, var(--color-primary) 58%, var(--app-border-subtle));
+  --app-focus-control-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary) 14%, transparent);
   --app-border-subtle: color-mix(in oklab, var(--color-base-content) 9%, transparent);
   --app-border-muted: color-mix(in oklab, var(--color-base-content) 6%, transparent);
   --app-surface-hover: color-mix(in oklab, var(--color-base-content) 3.5%, transparent);
   --app-table-header: color-mix(in oklab, var(--color-base-content) 3%, transparent);
   --app-table-toolbar: color-mix(in oklab, var(--color-base-content) 1.5%, transparent);
+  --app-table-cell-padding-block: 0.625rem;
+  --app-table-cell-padding-inline: 0.875rem;
   --app-shadow-surface: 0 1px 2px color-mix(in oklab, var(--color-neutral) 8%, transparent);
   --app-shadow-overlay: 0 24px 64px color-mix(in oklab, var(--color-neutral) 24%, transparent);
   --app-motion-fast: 160ms;
-  --app-motion-standard: 220ms;
+  --app-primary-action-background: color-mix(in oklab, var(--color-primary) 78%, var(--color-base-content));
+  --app-primary-action-content: var(--color-primary-content);
   --app-chart-series-1: rgb(79, 70, 229);
   --app-chart-series-2: rgb(13, 148, 136);
   --app-chart-series-3: rgb(2, 132, 199);
@@ -24,7 +52,14 @@
   --app-chart-tooltip: rgb(15, 23, 42);
 }
 
+@media (pointer: coarse) {
+  :root {
+    --app-control-height: 2.5rem;
+  }
+}
+
 [data-theme='business'] {
+  --app-primary-action-background: var(--color-primary);
   --app-chart-series-1: rgb(129, 140, 248);
   --app-chart-series-2: rgb(45, 212, 191);
   --app-chart-series-3: rgb(56, 189, 248);

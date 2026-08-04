@@ -21,9 +21,10 @@
 - 应用壳位于 `src/layouts`，共享原语位于 `src/components/ui`。
 - Dashboard 业务展示位于 `src/features/dashboard`，Mock 数据只由该 feature 的 data 文件提供。
 - `DESIGN.md` 是设计契约 Owner，Foundation Token 由 `src/styles/tokens.css` 持有，主题接线与跨场景样式位于 `src/styles/index.css`。
+- `src/components/design-system/publicComponentCatalog.ts` 是公开共享组件清单；Catalog 必须直接渲染清单中的真实组件，内部 Helper 通过文档明确豁免。
 - 所有数据表格通过 `src/components/ui/DataTable.tsx` 渲染；页面只提供列定义和业务单元格内容。
 - 所有资源列表通过 `src/components/ui/ListToolbar.tsx` 组合搜索、筛选、重置与结果摘要；页面拥有查询状态和业务过滤规则。
-- 所有数据图表通过 `src/components/charts` 渲染；`ApexChart.tsx` 与 `apex.options.ts` 构成内部供应商适配层，公开组件和页面不得导入 `apexcharts`、`react-apexcharts` 或传递 `ApexOptions`。
+- 所有数据图表通过 `src/components/charts` 渲染；`ApexChart.tsx`、`apex.options.ts` 与 `apexcharts.modules.d.ts` 构成内部供应商适配层，公开组件和页面不得导入 `apexcharts`、`react-apexcharts` 或传递 `ApexOptions`。
 - 真实 API、认证、权限和业务规则不属于本脚手架。接入项目时通过新的 service/adapter Owner 替换 Mock 数据。
 
 页面只负责编排，场景组件负责领域展示，共享 UI 保持纯粹。不要在视图中复制 formatter、validator、权限判断、请求封装或业务状态机；新增逻辑前先搜索现有 Owner。
@@ -31,6 +32,8 @@
 ## Design and Interaction Contract
 
 - `src/styles/tokens.css` 是项目 Token 源码 Owner；组件优先消费 daisyUI 语义类和项目 Token，不散落品牌色、固定外部视觉值或无语义的一次性样式。
+- 页面标题、正文、辅助信息、Surface 间距、控件高度和焦点反馈必须消费 `--app-font-*`、`--app-line-*`、`--app-space-*`、`--app-control-*` 与 `--app-focus-*` 契约；页面不得用组件库默认尺寸建立平行密度体系。
+- 有意义文本必须使用 `app-text-secondary`、`app-text-muted`、`app-text-accent` 等已验证角色，不使用 `text-base-content/<opacity>` 自行调低对比度；语义状态统一通过 `StatusBadge` 渲染。
 - 外部设计参考只用于提取信息层级、密度、响应式和交互意图，不复制 Logo、品牌资产、商业文案或源代码，也不能覆盖本项目的可访问性与业务边界。
 - 数据界面按相关性覆盖 Loading、Data、Empty、Error 和恢复操作；交互覆盖键盘、焦点、禁用、等待与错误反馈。
 - 从 320 CSS px 等效宽度开始验证。页面不得产生整体横向滚动；宽表和图表可在自身有名称、可聚焦的容器内滚动。
@@ -52,7 +55,7 @@
 - 静态与设计契约：`npm run lint`
 - 类型与生产构建：`npm run build`
 - 完整本地门禁：`npm run verify`
-- 人工检查：亮/暗主题、320px 等效窄屏、键盘导航、表格横向滚动和浏览器控制台。
+- 人工检查：亮/暗主题、320px 等效窄屏、键盘导航、表格横向滚动和浏览器控制台；触达 Overlay 时必须真实打开并检查居中或锚定位置、视口包含、安全边距、Backdrop、层级和滚动。
 
 先运行能证明改动的最窄检查；跨 Owner 或共享契约变化后再运行全部行为测试和构建。不要在每次局部编辑后机械重复全量检查，也不要把未运行的 CI/发布门禁写成已经通过。
 

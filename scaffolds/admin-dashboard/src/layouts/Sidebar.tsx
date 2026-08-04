@@ -38,13 +38,13 @@ function SidebarContent({ mobile, onClose }: { mobile: boolean; onClose?: () => 
 
   return (
     <aside className="app-shell-sidebar flex h-full flex-col border-r border-base-300 bg-base-100">
-      <div className="app-shell-header flex items-center gap-3 border-b border-base-300 px-5">
-        <div className="grid size-10 place-items-center rounded-xl bg-primary text-primary-content shadow-sm">
-          <Boxes aria-hidden size={22} />
+      <div className="app-shell-header flex items-center gap-3 border-b border-base-300 px-4">
+        <div className="grid size-9 place-items-center rounded-xl bg-primary text-primary-content shadow-sm">
+          <Boxes aria-hidden size={20} />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-base font-bold tracking-tight">Admin Workspace</p>
-          <p className="truncate text-xs text-base-content/55">Operations workspace</p>
+          <p className="app-section-title truncate font-bold tracking-tight">Admin Workspace</p>
+          <p className="app-caption app-text-muted truncate">Operations workspace</p>
         </div>
         {mobile && (
           <button aria-label="关闭导航" className="btn btn-ghost btn-square btn-sm" data-autofocus onClick={onClose} type="button">
@@ -53,8 +53,8 @@ function SidebarContent({ mobile, onClose }: { mobile: boolean; onClose?: () => 
         )}
       </div>
 
-      <nav aria-label="主导航" className="flex-1 overflow-y-auto p-4">
-        <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-widest text-base-content/45">Workspace</p>
+      <nav aria-label="主导航" className="flex-1 overflow-y-auto p-3">
+        <p className="app-caption app-text-muted mb-2 px-3 font-semibold uppercase tracking-widest">Workspace</p>
         <ul className="menu w-full gap-1 p-0">
           {navigation.map((item) => {
             const Icon = item.icon
@@ -62,7 +62,7 @@ function SidebarContent({ mobile, onClose }: { mobile: boolean; onClose?: () => 
               <li key={item.path}>
                 <Link
                   aria-current={currentPath === item.path ? 'page' : undefined}
-                  className={`group min-h-11 rounded-xl px-3 ${currentPath === item.path ? 'active font-semibold' : ''}`}
+                  className={`app-nav-item group rounded-xl px-3 ${currentPath === item.path ? 'active font-semibold' : ''}`}
                   onNavigate={mobile ? onClose : undefined}
                   to={item.path}
                 >
@@ -76,10 +76,10 @@ function SidebarContent({ mobile, onClose }: { mobile: boolean; onClose?: () => 
         </ul>
       </nav>
 
-      <div className="border-t border-base-300 p-4">
+      <div className="border-t border-base-300 p-3">
         <div className="rounded-2xl bg-base-200 p-3">
-          <p className="text-sm font-semibold">演示工作区</p>
-          <p className="mt-1 text-xs leading-5 text-base-content/55">替换 Mock repository 后即可接入真实服务。</p>
+          <p className="app-body font-semibold">演示工作区</p>
+          <p className="app-caption app-text-muted mt-1">替换 Mock repository 后即可接入真实服务。</p>
         </div>
       </div>
     </aside>

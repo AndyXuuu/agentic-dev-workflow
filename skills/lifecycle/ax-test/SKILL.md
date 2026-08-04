@@ -28,6 +28,11 @@ when it protects behavior with an independent oracle and a credible future failu
 | Private helper, trivial getter/setter, delegation, framework wiring, type guarantee | Do not add a direct test; validate through compilation, static checks, or the public owner |
 | Visual/interaction detail not reliable in the current automated environment | Use targeted browser/manual/visual evidence; automate only when repeat risk justifies maintenance |
 
+Do not assert layout geometry such as centering, anchoring, viewport containment, or overlay
+stacking in JSDOM-style environments that do not perform real layout. Use browser-computed
+geometry or visual evidence; add maintained E2E/visual regression coverage only when the public
+contract and repeat risk justify it.
+
 For a method-level unit test, require all of the following:
 
 - The method is a stable behavioral boundary or the unique owner of a non-trivial rule.

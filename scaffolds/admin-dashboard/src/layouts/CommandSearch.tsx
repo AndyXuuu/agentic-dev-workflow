@@ -35,8 +35,8 @@ export function CommandSearch({ open, onClose }: CommandSearchProps) {
 
   return (
     <Modal description="搜索并打开脚手架中的页面。" onClose={onClose} open={open} title="快速导航">
-      <label className="input input-bordered flex min-h-11 items-center gap-2 bg-base-100">
-        <Search aria-hidden size={18} />
+      <label className="input input-bordered flex items-center gap-2 bg-base-100">
+        <Search aria-hidden size={16} />
         <span className="sr-only">搜索页面</span>
         <input aria-label="搜索页面" data-autofocus="primary" className="grow" onChange={(event) => setQuery(event.target.value)} placeholder="输入页面名称" type="search" value={query} />
       </label>
@@ -44,14 +44,14 @@ export function CommandSearch({ open, onClose }: CommandSearchProps) {
         <ul className="mt-4 space-y-1">
           {results.map((item) => (
             <li key={item.path}>
-              <button className="btn btn-ghost h-auto w-full justify-start px-3 py-3 text-left" onClick={() => select(item.path)} type="button">
-                <span><span className="block font-semibold">{item.label}</span><span className="mt-1 block text-xs font-normal text-base-content/55">{item.description}</span></span>
+              <button className="btn btn-ghost h-auto min-h-0 w-full justify-start px-3 py-2 text-left" onClick={() => select(item.path)} type="button">
+                <span><span className="block font-semibold">{item.label}</span><span className="app-caption app-text-muted mt-1 block font-normal">{item.description}</span></span>
               </button>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="mt-6 text-center text-sm text-base-content/58">没有匹配页面</p>
+        <p className="app-body app-text-secondary mt-6 text-center">没有匹配页面</p>
       )}
     </Modal>
   )

@@ -60,17 +60,17 @@ export function Modal({ children, description, footer, open, title, onClose }: M
       ref={dialogRef}
     >
       <div className="app-dialog-panel">
-        <header className="flex items-start gap-4 border-b border-base-300/70 p-5">
+        <header className="app-surface-body flex items-start gap-3 border-b border-base-300/70">
           <div className="min-w-0 flex-1">
-            <h2 className="text-lg font-semibold" id={titleId}>{title}</h2>
-            {description && <p className="mt-1 text-sm leading-6 text-base-content/58" id={descriptionId}>{description}</p>}
+            <h2 className="app-section-title" id={titleId}>{title}</h2>
+            {description && <p className="app-section-description mt-1" id={descriptionId}>{description}</p>}
           </div>
           <button aria-label="关闭" className="btn btn-ghost btn-square btn-sm" data-autofocus type="button" onClick={onClose}>
             <X aria-hidden size={18} />
           </button>
         </header>
-        <div className="p-5">{children}</div>
-        {footer && <footer className="flex flex-wrap justify-end gap-2 border-t border-base-300/70 p-4">{footer}</footer>}
+        <div className="app-surface-body">{children}</div>
+        {footer && <footer className="app-control-gap app-surface-footer flex flex-wrap justify-end border-t border-base-300/70">{footer}</footer>}
       </div>
     </dialog>
   )

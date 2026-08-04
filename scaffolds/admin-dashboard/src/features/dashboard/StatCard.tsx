@@ -1,5 +1,6 @@
 import { CircleDollarSign, CreditCard, ShoppingBag, TrendingUp } from 'lucide-react'
 
+import { StatusBadge } from '../../components/ui/StatusBadge'
 import type { DashboardStat } from './dashboard.data'
 
 const icons = {
@@ -14,24 +15,21 @@ export function StatCard({ stat }: { stat: DashboardStat }) {
   const positive = stat.change >= 0
 
   return (
-    <article className="surface-card p-5">
-      <div className="flex items-start gap-4">
+    <article className="surface-card app-surface-body">
+      <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-base-content/62">{stat.label}</p>
-          <div className="mt-2 flex flex-wrap items-baseline gap-2">
-            <p className="text-2xl font-bold tracking-tight">{stat.value}</p>
-            <span className={`badge badge-soft badge-sm ${positive ? 'badge-success' : 'badge-error'}`}>
-              {positive ? '+' : ''}
-              {stat.change}%
-            </span>
+          <p className="app-body app-text-secondary font-medium">{stat.label}</p>
+          <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+            <p className="app-metric-value font-bold tracking-tight">{stat.value}</p>
+            <StatusBadge label={`${positive ? '+' : ''} ${stat.change}%`} tone={positive ? 'success' : 'error'} />
           </div>
         </div>
-        <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-base-200 text-base-content/72">
+        <span className="app-text-secondary grid size-10 shrink-0 place-items-center rounded-xl bg-base-200">
           <Icon aria-hidden size={21} />
         </span>
       </div>
-      <p className="mt-4 text-xs text-base-content/48">
-        上期 <span className="font-semibold text-base-content/68">{stat.comparison}</span>
+      <p className="app-caption app-text-muted mt-3">
+        上期 <span className="app-text-secondary font-semibold">{stat.comparison}</span>
       </p>
     </article>
   )

@@ -37,8 +37,8 @@ export function ListToolbar({
   return (
     <section aria-label={ariaLabel} className="list-toolbar">
       <div className="list-toolbar-controls">
-        <label className="input input-bordered flex min-h-11 min-w-0 items-center gap-2 bg-base-100">
-          <Search aria-hidden size={18} />
+        <label className="input input-bordered flex min-w-0 items-center gap-2 bg-base-100">
+          <Search aria-hidden size={16} />
           <span className="sr-only">{searchLabel}</span>
           <input
             aria-controls={controlsId}
@@ -53,7 +53,7 @@ export function ListToolbar({
         <select
           aria-controls={controlsId}
           aria-label={filterLabel}
-          className="select select-bordered min-h-11 w-full bg-base-100"
+          className="select select-bordered w-full bg-base-100"
           onChange={(event) => onFilterChange(event.target.value)}
           value={filterValue}
         >
@@ -61,7 +61,7 @@ export function ListToolbar({
         </select>
         <button
           aria-controls={controlsId}
-          className="btn btn-ghost min-h-11 w-full sm:w-auto"
+          className="btn btn-ghost w-full sm:w-auto"
           disabled={!hasActiveFilters}
           onClick={onReset}
           type="button"
@@ -69,7 +69,7 @@ export function ListToolbar({
           <RotateCcw aria-hidden size={17} />重置筛选
         </button>
       </div>
-      <p aria-live="polite" className="text-xs text-base-content/52">{resultSummary}</p>
+      <p aria-live="polite" className="app-caption app-text-muted">{resultSummary}</p>
     </section>
   )
 }

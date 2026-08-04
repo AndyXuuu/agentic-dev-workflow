@@ -3,7 +3,12 @@ import { cleanup } from '@testing-library/react'
 import { createElement } from 'react'
 import { afterEach, vi } from 'vitest'
 
-vi.mock('react-apexcharts', () => ({
+vi.mock('apexcharts/area', () => ({}))
+vi.mock('apexcharts/bar', () => ({}))
+vi.mock('apexcharts/donut', () => ({}))
+vi.mock('apexcharts/features/keyboard', () => ({}))
+vi.mock('apexcharts/features/legend', () => ({}))
+vi.mock('react-apexcharts/core', () => ({
   default: ({ type }: { type: string }) => createElement('div', { 'data-chart-type': type }),
 }))
 

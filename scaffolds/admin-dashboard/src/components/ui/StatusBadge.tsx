@@ -1,11 +1,11 @@
 export type StatusTone = 'success' | 'warning' | 'error' | 'info' | 'neutral'
 
 const toneClasses: Record<StatusTone, string> = {
-  success: 'badge-success',
-  warning: 'badge-warning',
-  error: 'badge-error',
-  info: 'badge-info',
-  neutral: 'badge-neutral',
+  success: 'app-status-badge--success',
+  warning: 'app-status-badge--warning',
+  error: 'app-status-badge--error',
+  info: 'app-status-badge--info',
+  neutral: 'app-status-badge--neutral',
 }
 
 type StatusBadgeProps = {
@@ -14,5 +14,5 @@ type StatusBadgeProps = {
 }
 
 export function StatusBadge({ label, tone = 'neutral' }: StatusBadgeProps) {
-  return <span className={`badge badge-soft badge-sm whitespace-nowrap ${toneClasses[tone]}`}>{label}</span>
+  return <span className={`badge badge-sm app-status-badge whitespace-nowrap ${toneClasses[tone]}`}>{label}</span>
 }

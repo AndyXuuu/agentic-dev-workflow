@@ -3,77 +3,84 @@ import { useMemo, useState } from 'react'
 import { AreaChart } from '../components/charts/AreaChart'
 import { BarChart } from '../components/charts/BarChart'
 import { DonutChart } from '../components/charts/DonutChart'
+import { DesignTokenCatalog } from '../components/design-system/DesignTokenCatalog'
+import { publicComponentCatalog, type PublicComponentCatalogRow } from '../components/design-system/publicComponentCatalog'
 import { DataTable, type DataTableColumn } from '../components/ui/DataTable'
 import { ListToolbar } from '../components/ui/ListToolbar'
+import { Modal } from '../components/ui/Modal'
 import { PageHeader } from '../components/ui/PageHeader'
 import { PageState } from '../components/ui/PageState'
 import { Panel } from '../components/ui/Panel'
-import { StatusBadge, type StatusTone } from '../components/ui/StatusBadge'
+import { ProgressBar } from '../components/ui/ProgressBar'
+import { StatusBadge } from '../components/ui/StatusBadge'
 
-type CatalogRow = {
-  component: string
-  owner: string
-  status: string
-  tone: StatusTone
-}
-
-const catalogRows: CatalogRow[] = [
-  { component: 'AreaChart', owner: 'components/charts', status: '稳定', tone: 'success' },
-  { component: 'BarChart', owner: 'components/charts', status: '稳定', tone: 'success' },
-  { component: 'DonutChart', owner: 'components/charts', status: '稳定', tone: 'success' },
-  { component: 'DataTable', owner: 'components/ui', status: '稳定', tone: 'success' },
-  { component: 'ListToolbar', owner: 'components/ui', status: '稳定', tone: 'success' },
-  { component: 'Modal', owner: 'components/ui', status: '稳定', tone: 'success' },
-  { component: 'PageState', owner: 'components/ui', status: '稳定', tone: 'success' },
-]
-
-const colorRoles = [
-  { label: 'Primary', className: 'bg-primary' },
-  { label: 'Success', className: 'bg-success' },
-  { label: 'Warning', className: 'bg-warning' },
-  { label: 'Error', className: 'bg-error' },
-  { label: 'Info', className: 'bg-info' },
+const designSections = [
+  { href: '#foundation-tokens', label: '基础 Token' },
+  { href: '#controls', label: '控件状态' },
+  { href: '#components', label: '组件清单' },
+  { href: '#list-patterns', label: '列表工具' },
+  { href: '#charts', label: '图表' },
+  { href: '#states', label: '页面状态' },
 ]
 
 export function DesignSystemPage() {
   const [announcement, setAnnouncement] = useState('')
   const [catalogFilter, setCatalogFilter] = useState('all')
   const [catalogQuery, setCatalogQuery] = useState('')
-  const columns = useMemo<DataTableColumn<CatalogRow>[]>(() => [
+  const [modalOpen, setModalOpen] = useState(false)
+  const columns = useMemo<DataTableColumn<PublicComponentCatalogRow>[]>(() => [
     { id: 'component', header: '组件', cell: (row) => <span className="font-semibold">{row.component}</span> },
-    { id: 'owner', header: 'Owner', cell: (row) => <code className="text-xs">{row.owner}</code> },
+    { id: 'owner', header: 'Owner', cell: (row) => <code className="app-caption">{row.owner}</code> },
     { id: 'status', header: '状态', cell: (row) => <StatusBadge label={row.status} tone={row.tone} /> },
   ], [])
 
   return (
-    <div className="space-y-6">
+    <div className="app-page-stack">
       <PageHeader description="直接渲染真实 Token 与共享组件；设计契约以 DESIGN.md 和源码 Owner 为准。" eyebrow="Design System" title="后台设计系统" />
       <p aria-live="polite" className="sr-only">{announcement}</p>
 
-      <section aria-labelledby="foundation-title" className="surface-card p-5 sm:p-6">
-        <h2 className="text-lg font-semibold" id="foundation-title">Foundation</h2>
-        <p className="mt-1 text-sm text-base-content/58">语义颜色随 corporate/business 主题切换，消费者不依赖固定色值。</p>
-        <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {colorRoles.map((role) => (
-            <li className="rounded-xl border border-base-300 p-3" key={role.label}>
-              <span aria-hidden className={`block h-10 rounded-lg ${role.className}`} />
-              <span className="mt-2 block text-sm font-medium">{role.label}</span>
-            </li>
+      <nav aria-label="设计系统分类" className="design-system-nav">
+        <span className="app-caption app-text-muted shrink-0 font-semibold">分类</span>
+        <div className="design-system-nav-list">
+          {designSections.map((section) => (
+            <a className="design-system-nav-link" href={section.href} key={section.href}>{section.label}</a>
           ))}
-        </ul>
-      </section>
+        </div>
+      </nav>
 
-      <div className="grid gap-6 xl:grid-cols-2">
+      <DesignTokenCatalog />
+
+      <section aria-label="控件与状态" className="design-section-anchor app-layout-gap grid xl:grid-cols-2" id="controls">
         <Panel description="只展示实际支持的交互状态" title="Controls">
-          <div className="flex flex-wrap gap-3 p-5">
-            <button className="btn btn-primary" onClick={() => setAnnouncement('Primary 操作已触发')} type="button">Primary</button>
-            <button className="btn btn-outline" onClick={() => setAnnouncement('Outline 操作已触发')} type="button">Outline</button>
-            <button className="btn" disabled type="button">Disabled</button>
-            <button aria-label="正在提交" className="btn btn-primary" disabled type="button"><span className="loading loading-spinner loading-sm" />Loading</button>
+          <div className="app-surface-body grid gap-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="form-control block">
+                <span className="label-text mb-1.5 block font-medium">Input</span>
+                <input className="input input-bordered w-full" placeholder="搜索订单" type="search" />
+              </label>
+              <label className="form-control block">
+                <span className="label-text mb-1.5 block font-medium">Select</span>
+                <select className="select select-bordered w-full" defaultValue="all">
+                  <option value="all">全部状态</option>
+                  <option value="active">已启用</option>
+                </select>
+              </label>
+            </div>
+            <label className="form-control block">
+              <span className="label-text mb-1.5 block font-medium">Invalid input</span>
+              <input aria-describedby="invalid-input-message" aria-invalid="true" className="input input-error w-full" defaultValue="invalid-value" />
+              <span className="app-caption app-text-error mt-1" id="invalid-input-message">请输入符合业务规则的值。</span>
+            </label>
+            <div className="app-control-gap flex flex-wrap">
+              <button className="btn btn-primary" onClick={() => setAnnouncement('Primary 操作已触发')} type="button">Primary</button>
+              <button className="btn btn-outline" onClick={() => setAnnouncement('Outline 操作已触发')} type="button">Outline</button>
+              <button className="btn" disabled type="button">Disabled</button>
+              <button aria-label="正在提交" className="btn btn-primary" disabled type="button"><span className="loading loading-spinner loading-sm" />Loading</button>
+            </div>
           </div>
         </Panel>
         <Panel description="颜色与文案共同表达状态" title="Status Badges">
-          <div className="flex flex-wrap gap-3 p-5">
+          <div className="app-control-gap app-surface-body flex flex-wrap">
             <StatusBadge label="已完成" tone="success" />
             <StatusBadge label="待处理" tone="warning" />
             <StatusBadge label="失败" tone="error" />
@@ -81,14 +88,28 @@ export function DesignSystemPage() {
             <StatusBadge label="草稿" tone="neutral" />
           </div>
         </Panel>
-      </div>
+        <Panel description="确定进度、完成状态与不确定等待均保留可见文本和原生语义" title="Progress Bar">
+          <div className="app-surface-body grid gap-4">
+            <ProgressBar label="数据导入" value={42} />
+            <ProgressBar label="索引构建" tone="success" value={100} />
+            <ProgressBar label="库存同步" tone="info" valueLabel="正在等待服务响应" />
+          </div>
+        </Panel>
+      </section>
 
-      <DataTable ariaLabel="共享组件清单" columns={columns} rowKey={(row) => row.component} rows={catalogRows} surface />
+      <section aria-label="组件清单" className="design-section-anchor space-y-4" id="components">
+        <DataTable ariaLabel="共享组件清单" columns={columns} rowKey={(row) => row.component} rows={publicComponentCatalog} surface />
+        <Panel description="使用真实 Modal 验证打开、关闭、Escape 与焦点恢复。" title="Modal">
+          <div className="app-surface-body">
+            <button className="btn btn-outline" onClick={() => setModalOpen(true)} type="button">预览 Modal</button>
+          </div>
+        </Panel>
+      </section>
 
-      <section aria-labelledby="list-toolbar-title" className="surface-card">
-        <div className="p-5 pb-3 sm:px-6">
-          <h2 className="text-lg font-semibold" id="list-toolbar-title">List Toolbar</h2>
-          <p className="mt-1 text-sm text-base-content/58">统一受控搜索、筛选、重置、结果反馈与窄屏排列。</p>
+      <section aria-labelledby="list-toolbar-title" className="design-section-anchor surface-card" id="list-patterns">
+        <div className="p-4 pb-3 sm:px-5">
+          <h2 className="app-section-title" id="list-toolbar-title">List Toolbar</h2>
+          <p className="app-section-description mt-1">统一受控搜索、筛选、重置、结果反馈与窄屏排列。</p>
         </div>
         <ListToolbar
           ariaLabel="设计系统列表工具栏示例"
@@ -107,15 +128,15 @@ export function DesignSystemPage() {
           searchLabel="搜索成员或邮箱"
           searchValue={catalogQuery}
         />
-        <p className="p-5 text-sm text-base-content/55 sm:px-6" id="catalog-toolbar-result">列表内容由消费页面提供，工具栏不拥有业务过滤规则。</p>
+        <p className="app-body app-surface-body app-text-secondary" id="catalog-toolbar-result">列表内容由消费页面提供，工具栏不拥有业务过滤规则。</p>
       </section>
 
-      <section aria-labelledby="chart-system-title" className="space-y-4">
+      <section aria-labelledby="chart-system-title" className="design-section-anchor space-y-4" id="charts">
         <div>
-          <h2 className="text-lg font-semibold" id="chart-system-title">Charts</h2>
-          <p className="mt-1 text-sm text-base-content/58">ApexCharts 仅由共享适配层消费，页面只提供语义数据。</p>
+          <h2 className="app-section-title" id="chart-system-title">Charts</h2>
+          <p className="app-section-description mt-1">ApexCharts 仅由共享适配层消费，页面只提供语义数据。</p>
         </div>
-        <div className="grid gap-6 xl:grid-cols-2">
+        <div className="app-layout-gap grid xl:grid-cols-2">
           <Panel description="统一曲线、渐变、网格、Tooltip 与 Legend" title="Area Chart">
             <div className="p-3">
               <AreaChart
@@ -157,10 +178,15 @@ export function DesignSystemPage() {
         </div>
       </section>
 
-      <div className="grid gap-6 xl:grid-cols-2">
+      <section aria-label="页面状态" className="design-section-anchor app-layout-gap grid xl:grid-cols-3" id="states">
         <PageState description="正在准备设计系统示例。" state="loading" title="Loading" />
         <PageState description="调整条件或创建第一条记录。" state="empty" title="Empty" />
-      </div>
+        <PageState description="设计系统示例暂时不可用。" onRetry={() => setAnnouncement('PageState 恢复操作已触发')} state="error" title="Error" />
+      </section>
+
+      <Modal description="这是共享 Modal 的真实交互示例。" onClose={() => setModalOpen(false)} open={modalOpen} title="Modal 交互契约">
+        <p className="app-body">内容、说明、关闭按钮和焦点行为均来自共享组件。</p>
+      </Modal>
     </div>
   )
 }
