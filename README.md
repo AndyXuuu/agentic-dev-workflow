@@ -97,6 +97,7 @@ scaffolds/
     AGENTS.md
     README.md
 bin/
+  create-admin-dashboard.sh
   install.sh
   validate-skills.sh
   install-tapd-mcp.sh
@@ -107,6 +108,14 @@ bin/
 ## Standalone Scaffolds
 
 - [Admin Dashboard Scaffold](./scaffolds/admin-dashboard/README.md) — independently installable React administration workspace with responsive navigation, dashboard analytics, resource-list patterns, theme support, and replaceable mock data boundaries.
+
+Create a verified copy at any non-existing target directory:
+
+```bash
+./bin/create-admin-dashboard.sh /path/to/new-admin-project
+```
+
+Relative targets are resolved from the current working directory. The generator refuses to overwrite an existing path, validates the copy in a temporary sibling directory, and only exposes the final target after validation succeeds.
 
 ## Install
 
