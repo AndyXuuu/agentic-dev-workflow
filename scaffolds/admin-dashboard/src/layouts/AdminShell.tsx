@@ -1,14 +1,14 @@
 import { type ReactNode, useEffect, useState } from 'react'
+import { Menu } from 'lucide-react'
 
-import { useTheme } from '../hooks/useTheme'
+import { Button } from '../components/ui/Button'
 import { Sidebar } from './Sidebar'
-import { Topbar } from './Topbar'
 import { CommandSearch } from './CommandSearch'
 
 export function AdminShell({ children }: { children: ReactNode }) {
+  const [desktopCollapsed, setDesktopCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
-  const { theme, toggleTheme } = useTheme()
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -22,19 +22,33 @@ export function AdminShell({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <div className="min-h-screen bg-base-200 text-base-content">
+    <div
+      className="app-shell-root min-h-screen bg-base-200 text-base-content"
+      data-sidebar-collapsed={desktopCollapsed || undefined}
+    >
       <a className="skip-link" href="#main-content">
         跳到主要内容
       </a>
-      <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <Sidebar
+        collapsed={desktopCollapsed}
+        mobileOpen={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        onToggleCollapsed={() => setDesktopCollapsed((collapsed) => !collapsed)}
+      />
       <div className="app-shell-main">
-        <Topbar
-          onSearch={() => setSearchOpen(true)}
-          theme={theme}
-          onMenu={() => setMobileOpen(true)}
-          onToggleTheme={toggleTheme}
-        />
         <main id="main-content" className="app-content mx-auto w-full">
+          <div className="app-mobile-shell-actions lg:hidden">
+            <Button
+              aria-controls="mobile-navigation-drawer"
+              aria-expanded={mobileOpen}
+              aria-label="打开导航"
+              onClick={() => setMobileOpen(true)}
+              square
+              variant="ghost"
+            >
+              <Menu aria-hidden className="app-icon-lg" />
+            </Button>
+          </div>
           {children}
         </main>
       </div>

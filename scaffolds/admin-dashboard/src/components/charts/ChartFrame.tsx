@@ -1,5 +1,6 @@
 import { type ReactNode, useId } from 'react'
 
+import { Button } from '../ui/Button'
 import type { ChartStateProps } from './chart.types'
 
 type ChartFrameProps = ChartStateProps & {
@@ -47,7 +48,7 @@ export function ChartFrame({
         <div>
           <p className="font-semibold">图表加载失败</p>
           <p className="app-body app-text-secondary mt-1">{errorDescription}</p>
-          {onRetry && <button className="btn btn-outline btn-sm mt-4" onClick={onRetry} type="button">重新加载</button>}
+          {onRetry && <Button className="mt-4" onClick={onRetry} size="small" variant="outline">重新加载</Button>}
         </div>
       </div>
     )

@@ -1,3 +1,4 @@
+import { MoreHorizontal } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 import { AreaChart } from '../components/charts/AreaChart'
@@ -5,29 +6,62 @@ import { BarChart } from '../components/charts/BarChart'
 import { DonutChart } from '../components/charts/DonutChart'
 import { DesignTokenCatalog } from '../components/design-system/DesignTokenCatalog'
 import { publicComponentCatalog, type PublicComponentCatalogRow } from '../components/design-system/publicComponentCatalog'
+import { Button } from '../components/ui/Button'
+import { Checkbox } from '../components/ui/Checkbox'
 import { DataTable, type DataTableColumn } from '../components/ui/DataTable'
+import { DestructiveActionDialog } from '../components/ui/DestructiveActionDialog'
+import { DangerZone, type DangerZoneAction } from '../components/ui/DangerZone'
+import { DropdownMenu } from '../components/ui/DropdownMenu'
+import { FormField } from '../components/ui/FormField'
 import { ListToolbar } from '../components/ui/ListToolbar'
 import { Modal } from '../components/ui/Modal'
 import { PageHeader } from '../components/ui/PageHeader'
 import { PageState } from '../components/ui/PageState'
 import { Panel } from '../components/ui/Panel'
 import { ProgressBar } from '../components/ui/ProgressBar'
+import { RadioGroup } from '../components/ui/RadioGroup'
+import { Select } from '../components/ui/Select'
+import { Skeleton } from '../components/ui/Skeleton'
 import { StatusBadge } from '../components/ui/StatusBadge'
+import { Switch } from '../components/ui/Switch'
+import { TablePagination } from '../components/ui/TablePagination'
+import { Tabs } from '../components/ui/Tabs'
+import { Textarea } from '../components/ui/Textarea'
+import { TextInput } from '../components/ui/TextInput'
 
 const designSections = [
   { href: '#foundation-tokens', label: '基础 Token' },
   { href: '#controls', label: '控件状态' },
   { href: '#components', label: '组件清单' },
+  { href: '#safety', label: '危险操作' },
   { href: '#list-patterns', label: '列表工具' },
   { href: '#charts', label: '图表' },
   { href: '#states', label: '页面状态' },
 ]
 
+const catalogDangerAction: DangerZoneAction = {
+  id: 'catalog-reset',
+  title: '重置示例数据',
+  description: '展示不可恢复操作的影响说明、输入确认与等待状态，不会清除数据。',
+  impact: '仅用于验证共享危险操作组件的交互契约。',
+  recovery: '这是设计系统演示，不会产生需要恢复的数据变更。',
+  triggerLabel: '预览重置流程',
+  confirmLabel: '确认重置',
+  confirmationPhrase: 'RESET DEMO',
+}
+
 export function DesignSystemPage() {
   const [announcement, setAnnouncement] = useState('')
   const [catalogFilter, setCatalogFilter] = useState('all')
   const [catalogQuery, setCatalogQuery] = useState('')
+  const [dangerAction, setDangerAction] = useState<DangerZoneAction | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
+  const [newsletterEnabled, setNewsletterEnabled] = useState(true)
+  const [permissions, setPermissions] = useState('editor')
+  const [selectedRows, setSelectedRows] = useState(true)
+  const [tabValue, setTabValue] = useState('overview')
+  const [paginationPage, setPaginationPage] = useState(1)
+  const [paginationPageSize, setPaginationPageSize] = useState(10)
   const columns = useMemo<DataTableColumn<PublicComponentCatalogRow>[]>(() => [
     { id: 'component', header: '组件', cell: (row) => <span className="font-semibold">{row.component}</span> },
     { id: 'owner', header: 'Owner', cell: (row) => <code className="app-caption">{row.owner}</code> },
@@ -54,29 +88,49 @@ export function DesignSystemPage() {
         <Panel description="只展示实际支持的交互状态" title="Controls">
           <div className="app-surface-body grid gap-4">
             <div className="grid gap-3 sm:grid-cols-2">
-              <label className="form-control block">
-                <span className="label-text mb-1.5 block font-medium">Input</span>
-                <input className="input input-bordered w-full" placeholder="搜索订单" type="search" />
-              </label>
-              <label className="form-control block">
-                <span className="label-text mb-1.5 block font-medium">Select</span>
-                <select className="select select-bordered w-full" defaultValue="all">
+              <TextInput label="Input" placeholder="搜索订单" type="search" />
+              <Select defaultValue="all" label="Select">
                   <option value="all">全部状态</option>
                   <option value="active">已启用</option>
-                </select>
-              </label>
+              </Select>
             </div>
-            <label className="form-control block">
-              <span className="label-text mb-1.5 block font-medium">Invalid input</span>
-              <input aria-describedby="invalid-input-message" aria-invalid="true" className="input input-error w-full" defaultValue="invalid-value" />
-              <span className="app-caption app-text-error mt-1" id="invalid-input-message">请输入符合业务规则的值。</span>
-            </label>
+            <TextInput defaultValue="invalid-value" error="请输入符合业务规则的值。" label="Invalid input" />
+            <Textarea hint="用于多行说明，字段高度由共享组件保持一致。" label="Textarea" placeholder="输入内部备注" rows={3} />
+            <FormField hint="FormField 负责标签和帮助信息关联，业务控件仍可自行组合。" label="FormField">
+              {(controlProps) => <output className="input input-bordered flex w-full items-center" {...controlProps}>只读的自定义字段内容</output>}
+            </FormField>
             <div className="app-control-gap flex flex-wrap">
-              <button className="btn btn-primary" onClick={() => setAnnouncement('Primary 操作已触发')} type="button">Primary</button>
-              <button className="btn btn-outline" onClick={() => setAnnouncement('Outline 操作已触发')} type="button">Outline</button>
-              <button className="btn" disabled type="button">Disabled</button>
-              <button aria-label="正在提交" className="btn btn-primary" disabled type="button"><span className="loading loading-spinner loading-sm" />Loading</button>
+              <Button onClick={() => setAnnouncement('Primary 操作已触发')} variant="primary">Primary</Button>
+              <Button onClick={() => setAnnouncement('Outline 操作已触发')} variant="outline">Outline</Button>
+              <Button disabled>Disabled</Button>
+              <Button aria-label="正在提交" loading variant="primary">Loading</Button>
             </div>
+          </div>
+        </Panel>
+        <Panel description="使用原生表单语义承载布尔值和单选状态" title="Choice Controls">
+          <div className="app-surface-body grid gap-4">
+            <Checkbox
+              checked={selectedRows}
+              description="选择当前页可执行批量操作的记录。"
+              label="选择当前页记录"
+              onChange={(event) => setSelectedRows(event.target.checked)}
+            />
+            <RadioGroup
+              label="默认权限"
+              onValueChange={setPermissions}
+              options={[
+                { label: '查看者', value: 'viewer', description: '只能浏览数据。' },
+                { label: '编辑者', value: 'editor', description: '可以修改业务数据。' },
+              ]}
+              orientation="horizontal"
+              value={permissions}
+            />
+            <Switch
+              checked={newsletterEnabled}
+              description="控制是否发送每周运营摘要。"
+              label="每周摘要"
+              onChange={(event) => setNewsletterEnabled(event.target.checked)}
+            />
           </div>
         </Panel>
         <Panel description="颜色与文案共同表达状态" title="Status Badges">
@@ -101,9 +155,60 @@ export function DesignSystemPage() {
         <DataTable ariaLabel="共享组件清单" columns={columns} rowKey={(row) => row.component} rows={publicComponentCatalog} surface />
         <Panel description="使用真实 Modal 验证打开、关闭、Escape 与焦点恢复。" title="Modal">
           <div className="app-surface-body">
-            <button className="btn btn-outline" onClick={() => setModalOpen(true)} type="button">预览 Modal</button>
+            <Button onClick={() => setModalOpen(true)} variant="outline">预览 Modal</Button>
           </div>
         </Panel>
+        <div className="app-layout-gap grid xl:grid-cols-2">
+          <Panel description="Portal 浮层统一处理方向键、视口边界、Escape 与焦点恢复。" title="Dropdown Menu">
+            <div className="app-surface-body">
+              <DropdownMenu
+                items={[
+                  { id: 'edit', label: '编辑资料', description: '打开资料编辑流程', onSelect: () => setAnnouncement('编辑资料操作已触发') },
+                  { id: 'archive', label: '归档记录', description: '演示危险语义菜单项', tone: 'danger', onSelect: () => setAnnouncement('归档记录操作已触发') },
+                ]}
+                label="记录操作"
+                trigger={<><MoreHorizontal aria-hidden className="app-icon-md" />更多操作</>}
+              />
+            </div>
+          </Panel>
+          <Panel description="受控选中值，方向键、Home 与 End 会跳过禁用项。" title="Tabs">
+            <div className="app-surface-body">
+              <Tabs
+                ariaLabel="账户信息分类"
+                items={[
+                  { id: 'overview', label: '概览', content: <p className="app-body app-text-secondary">展示账户摘要与主要指标。</p> },
+                  { id: 'activity', label: '活动', content: <p className="app-body app-text-secondary">展示最近的操作记录。</p> },
+                  { id: 'billing', label: '账单', content: <p className="app-body app-text-secondary">账单能力尚未接入。</p>, disabled: true },
+                ]}
+                onValueChange={setTabValue}
+                value={tabValue}
+              />
+            </div>
+          </Panel>
+          <Panel description="统一结果范围、页大小和首尾边界状态；数据请求仍由页面负责。" title="Table Pagination">
+            <div className="app-surface-body">
+              <TablePagination
+                ariaLabel="组件清单分页示例"
+                onPageChange={setPaginationPage}
+                onPageSizeChange={(value) => { setPaginationPageSize(value); setPaginationPage(1) }}
+                page={paginationPage}
+                pageSize={paginationPageSize}
+                total={47}
+              />
+            </div>
+          </Panel>
+          <Panel description="只表达加载中的内容形状，不伪造业务文案。" title="Skeleton">
+            <div className="app-surface-body grid gap-3" role="status" aria-label="内容加载占位示例">
+              <div className="flex items-center gap-3"><Skeleton variant="avatar" /><div className="grid flex-1 gap-2"><Skeleton className="w-32" /><Skeleton className="w-48 max-w-full" /></div></div>
+              <Skeleton variant="block" />
+              <Skeleton className="w-24" variant="control" />
+            </div>
+          </Panel>
+        </div>
+      </section>
+
+      <section aria-label="危险操作" className="design-section-anchor" id="safety">
+        <DangerZone actions={[catalogDangerAction]} description="共享组件将危险语义、影响说明和确认入口保持一致；业务权限与执行逻辑仍由消费方负责。" onSelect={setDangerAction} />
       </section>
 
       <section aria-labelledby="list-toolbar-title" className="design-section-anchor surface-card" id="list-patterns">
@@ -187,6 +292,13 @@ export function DesignSystemPage() {
       <Modal description="这是共享 Modal 的真实交互示例。" onClose={() => setModalOpen(false)} open={modalOpen} title="Modal 交互契约">
         <p className="app-body">内容、说明、关闭按钮和焦点行为均来自共享组件。</p>
       </Modal>
+      <DestructiveActionDialog
+        action={dangerAction}
+        onClose={() => setDangerAction(null)}
+        onConfirm={async () => ({ ok: true, message: '危险操作交互示例已完成，未更改任何数据。' })}
+        onSuccess={setAnnouncement}
+        open={Boolean(dangerAction)}
+      />
     </div>
   )
 }

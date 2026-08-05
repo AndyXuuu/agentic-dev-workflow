@@ -4,15 +4,18 @@
 
 ## 能力
 
-- 响应式侧栏、顶部导航与移动端抽屉
+- 桌面可收起侧栏、侧栏账户入口、移动端左上角入口与左侧 Drawer，以及键盘快速导航
 - 亮色 / 暗色主题及本地偏好保存
 - Dashboard 指标、趋势图、分类占比、交易表格与活动流
 - ApexCharts 共享图表体系，统一面积图、柱状图、环图、主题、Tooltip、Legend 和数据状态
-- Orders、Products、Customers、Settings 管理页面骨架，以及统一的列表搜索、状态筛选、重置、导出和创建操作
+- Orders、Products、Customers 管理页面骨架，以及统一的列表搜索、状态筛选、受控排序、分页、当前页选择、重置、导出和创建操作
+- 分区式 Settings、保存状态与操作栏，以及只演示交互、不破坏数据的危险操作接入骨架
 - Loading、Empty、Error 演示状态
 - 统一排版、双主题 AA 文本角色与紧凑密度 Token、柔和可访问焦点、Reduced Motion 与窄屏适配
+- Button、TextInput、Select、Textarea、Checkbox、RadioGroup、Switch、DropdownMenu、Tabs、TablePagination、Skeleton 等可直接复用的基础组件库
 - Mock repository 边界，便于替换为真实 API client
 - 独立 `AGENTS.md` AI 开发闭环，覆盖风险分流、Owner、设计、测试与交付规则
+- 仓库内 `admin-dashboard-adapter` 薄适配 Skill，导航页面、设计系统、图表、Mock 数据与验证 Owner
 - `DESIGN.md`、完整 Token/真实组件 Catalog 与设计系统静态门禁
 - 安全生成入口：目标存在即拒绝，临时目录验证通过后才交付
 
@@ -55,11 +58,14 @@ npm run create -- /path/to/new-admin-project
 - 公开组件清单：`src/components/design-system/publicComponentCatalog.ts`
 - 真实组件 Catalog：应用内 `/design-system`
 - Token Catalog：顶部吸顶分类导航，列举全部项目与主题语义 Token、当前主题计算值、用途和视觉预览，并由静态门禁防止注册表漂移
-- 表格：统一使用 `DataTable`，由 Surface 圆角、低对比度分隔线和局部横向滚动共同构成视觉契约
+- 表格：统一使用受控 `DataTable` 与 `TablePagination`，由页面按过滤、排序、分页顺序派生当前页数据，并拥有跨页选择和导出策略
 - 列表工具：统一使用 `ListToolbar`，页面仅持有搜索值、筛选值和业务过滤规则
+- 浮层与分组：锚定操作统一使用 Portal `DropdownMenu`，同一上下文视图切换使用受控 `Tabs`；加载占位按真实内容形状组合 `Skeleton`
+- 基础控件：生产页面统一消费 `Button`、`FormField` 与各类表单组件；共享层负责 DOM 语义、密度、状态和可访问性关联，页面继续负责业务校验与提交
 - 状态标签：统一使用 `StatusBadge`，其 success、warning、error、info、neutral 组合均由共享组件持有并按双主题验证
 - 进度反馈：统一使用原生语义 `ProgressBar`，覆盖确定/不确定状态、可见状态值、数值边界与语义色调，业务任务状态仍由消费页面持有
-- 图表运行时：通过 ApexCharts 官方 tree-shaking 入口按需加载 core、面积图、柱状图、环图及必要交互功能，不打包未使用图表类型
+- 危险操作：`DangerZone` 统一入口与影响说明，`DestructiveActionDialog` 统一确认短语、等待、防重复提交、错误和焦点；权限、二次认证、审计、幂等与真实执行由接入项目的后端拥有
+- 图表运行时：通过 ApexCharts 官方 tree-shaking 入口按需加载 core、面积图、柱状图、环图及必要交互功能，不打包未使用图表类型；分组柱通过图表 Surface Token 保持组内视觉间距
 
 ## 接入真实项目
 

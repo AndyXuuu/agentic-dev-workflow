@@ -1,5 +1,6 @@
 :root {
   --app-shell-sidebar-width: 15rem;
+  --app-shell-sidebar-collapsed-width: 4.5rem;
   --app-shell-header-height: 4rem;
   --app-content-max-width: 100rem;
   --app-font-size-page-title: 1.5rem;
@@ -24,6 +25,10 @@
   --app-control-height: 2.25rem;
   --app-control-height-sm: 2rem;
   --app-control-padding-inline: 0.75rem;
+  --app-icon-size-sm: 1rem;
+  --app-icon-size-md: 1.125rem;
+  --app-icon-size-lg: 1.25rem;
+  --app-icon-size-xl: 1.5rem;
   --app-radius-surface: 1rem;
   --app-radius-overlay: 1.25rem;
   --app-radius-control: 0.75rem;
@@ -47,6 +52,8 @@
   --app-chart-series-3: rgb(2, 132, 199);
   --app-chart-series-4: rgb(217, 119, 6);
   --app-chart-series-5: rgb(124, 58, 237);
+  --app-chart-height: 17.875rem;
+  --app-chart-surface: var(--color-base-100);
   --app-chart-grid: rgba(15, 23, 42, 0.1);
   --app-chart-label: rgb(100, 116, 139);
   --app-chart-tooltip: rgb(15, 23, 42);

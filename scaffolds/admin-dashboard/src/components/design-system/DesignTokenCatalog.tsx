@@ -74,6 +74,17 @@ export const designTokenGroups: DesignTokenGroup[] = [
     ],
   },
   {
+    id: 'icons',
+    title: '图标',
+    description: '按控件内图标、标准导航图标、强调图标和状态图标分级；消费者不传入任意像素尺寸。',
+    tokens: [
+      { name: '--app-icon-size-sm', label: 'Small', usage: '小型按钮、输入框和表格操作图标。', preview: 'length' },
+      { name: '--app-icon-size-md', label: 'Medium', usage: '标准按钮、导航和普通操作图标。', preview: 'length' },
+      { name: '--app-icon-size-lg', label: 'Large', usage: '顶部栏、品牌和指标卡强调图标。', preview: 'length' },
+      { name: '--app-icon-size-xl', label: 'Extra large', usage: '空态、错误态和加载状态图标。', preview: 'length' },
+    ],
+  },
+  {
     id: 'radius',
     title: '圆角',
     description: '按 Surface、Overlay 和 Control 三层使用，不在页面创建新的圆角语义。',
@@ -118,7 +129,8 @@ export const designTokenGroups: DesignTokenGroup[] = [
     description: '仅服务应用壳和内容边界，业务页面不得直接复刻这些尺寸。',
     tokens: [
       { name: '--app-shell-sidebar-width', label: '桌面侧栏', usage: '桌面端主导航宽度。', preview: 'length' },
-      { name: '--app-shell-header-height', label: '顶部栏', usage: '顶部导航与侧栏品牌区高度。', preview: 'length' },
+      { name: '--app-shell-sidebar-collapsed-width', label: '收起侧栏', usage: '桌面端紧凑图标导航宽度。', preview: 'length' },
+      { name: '--app-shell-header-height', label: '侧栏品牌区', usage: '侧栏品牌与移动导航标题区域高度。', preview: 'length' },
       { name: '--app-content-max-width', label: '内容最大宽度', usage: '超宽屏页面内容边界。', preview: 'length' },
     ],
   },
@@ -142,6 +154,8 @@ export const designTokenGroups: DesignTokenGroup[] = [
       { name: '--app-chart-series-3', label: 'Series 3', usage: '第三分类序列。', preview: 'color' },
       { name: '--app-chart-series-4', label: 'Series 4', usage: '第四分类序列。', preview: 'color' },
       { name: '--app-chart-series-5', label: 'Series 5', usage: '第五分类序列。', preview: 'color' },
+      { name: '--app-chart-height', label: 'Chart height', usage: '共享图表与图表状态的统一内容高度。', preview: 'length' },
+      { name: '--app-chart-surface', label: 'Chart surface', usage: '分组柱等图形的视觉分隔色，必须与图表承载 Surface 对齐。', preview: 'color' },
       { name: '--app-chart-grid', label: 'Grid', usage: '坐标网格与参考线。', preview: 'color' },
       { name: '--app-chart-label', label: 'Label', usage: '坐标、Legend 与辅助标签。', preview: 'color' },
       { name: '--app-chart-tooltip', label: 'Tooltip', usage: '图表浮层背景。', preview: 'color' },

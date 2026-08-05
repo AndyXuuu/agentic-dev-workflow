@@ -1,6 +1,9 @@
 import { X } from 'lucide-react'
 import { type ReactNode, useEffect, useId, useRef } from 'react'
 
+import { acquirePageScrollLock } from '../../lib/overlayScrollLock'
+import { Button } from './Button'
+
 type ModalProps = {
   children: ReactNode
   description?: string
@@ -23,7 +26,6 @@ export function Modal({ children, description, footer, open, title, onClose }: M
     if (open && !dialog.open) {
       restoreFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
       dialog.showModal()
-      document.body.dataset.overlayOpen = 'true'
       queueMicrotask(() => {
         const target = dialog.querySelector<HTMLElement>('[data-autofocus="primary"]')
           ?? dialog.querySelector<HTMLElement>('[data-autofocus]')
@@ -33,13 +35,11 @@ export function Modal({ children, description, footer, open, title, onClose }: M
       dialog.close()
     }
 
-    return () => {
-      delete document.body.dataset.overlayOpen
-    }
   }, [open])
 
+  useEffect(() => open ? acquirePageScrollLock() : undefined, [open])
+
   const handleClosed = () => {
-    delete document.body.dataset.overlayOpen
     restoreFocusRef.current?.focus()
   }
 
@@ -65,9 +65,9 @@ export function Modal({ children, description, footer, open, title, onClose }: M
             <h2 className="app-section-title" id={titleId}>{title}</h2>
             {description && <p className="app-section-description mt-1" id={descriptionId}>{description}</p>}
           </div>
-          <button aria-label="关闭" className="btn btn-ghost btn-square btn-sm" data-autofocus type="button" onClick={onClose}>
-            <X aria-hidden size={18} />
-          </button>
+          <Button aria-label="关闭" data-autofocus onClick={onClose} size="small" square variant="ghost">
+            <X aria-hidden className="app-icon-sm" />
+          </Button>
         </header>
         <div className="app-surface-body">{children}</div>
         {footer && <footer className="app-control-gap app-surface-footer flex flex-wrap justify-end border-t border-base-300/70">{footer}</footer>}

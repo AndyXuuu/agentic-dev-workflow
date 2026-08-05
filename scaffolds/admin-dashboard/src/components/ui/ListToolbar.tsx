@@ -1,5 +1,9 @@
 import { RotateCcw, Search } from 'lucide-react'
 
+import { Button } from './Button'
+import { Select } from './Select'
+import { TextInput } from './TextInput'
+
 export type ListToolbarOption = {
   label: string
   value: string
@@ -37,37 +41,36 @@ export function ListToolbar({
   return (
     <section aria-label={ariaLabel} className="list-toolbar">
       <div className="list-toolbar-controls">
-        <label className="input input-bordered flex min-w-0 items-center gap-2 bg-base-100">
-          <Search aria-hidden size={16} />
-          <span className="sr-only">{searchLabel}</span>
-          <input
-            aria-controls={controlsId}
-            aria-label={searchLabel}
-            className="min-w-0 grow"
-            onChange={(event) => onSearchChange(event.target.value)}
-            placeholder={searchLabel}
-            type="search"
-            value={searchValue}
-          />
-        </label>
-        <select
+        <TextInput
           aria-controls={controlsId}
-          aria-label={filterLabel}
-          className="select select-bordered w-full bg-base-100"
+          containerClassName="min-w-0"
+          label={searchLabel}
+          labelHidden
+          onChange={(event) => onSearchChange(event.target.value)}
+          placeholder={searchLabel}
+          startIcon={<Search aria-hidden className="app-icon-sm" />}
+          type="search"
+          value={searchValue}
+        />
+        <Select
+          aria-controls={controlsId}
+          label={filterLabel}
+          labelHidden
           onChange={(event) => onFilterChange(event.target.value)}
           value={filterValue}
         >
           {filterOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-        </select>
-        <button
+        </Select>
+        <Button
           aria-controls={controlsId}
-          className="btn btn-ghost w-full sm:w-auto"
+          className="w-full sm:w-auto"
           disabled={!hasActiveFilters}
           onClick={onReset}
-          type="button"
+          startIcon={<RotateCcw aria-hidden className="app-icon-sm" />}
+          variant="ghost"
         >
-          <RotateCcw aria-hidden size={17} />重置筛选
-        </button>
+          重置筛选
+        </Button>
       </div>
       <p aria-live="polite" className="app-caption app-text-muted">{resultSummary}</p>
     </section>

@@ -8,7 +8,8 @@
       try {
         const savedTheme = localStorage.getItem('admin-dashboard-theme')
         const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-        document.documentElement.dataset.theme = savedTheme || (systemDark ? 'business' : 'corporate')
+        const validSavedTheme = savedTheme === 'business' || savedTheme === 'corporate' ? savedTheme : null
+        document.documentElement.dataset.theme = validSavedTheme || (systemDark ? 'business' : 'corporate')
       } catch {
         document.documentElement.dataset.theme = 'corporate'
       }

@@ -1,12 +1,16 @@
 import { Download, Plus } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { Button } from '../components/ui/Button'
 import { DataTable, type DataTableColumn } from '../components/ui/DataTable'
 import { ListToolbar } from '../components/ui/ListToolbar'
 import { Modal } from '../components/ui/Modal'
 import { PageHeader } from '../components/ui/PageHeader'
 import { PageState } from '../components/ui/PageState'
+import { Skeleton } from '../components/ui/Skeleton'
 import { StatusBadge } from '../components/ui/StatusBadge'
+import { TablePagination } from '../components/ui/TablePagination'
+import { TextInput } from '../components/ui/TextInput'
 import { downloadCsv } from '../lib/csv'
 import { resourceConfig, resourceRows, type ResourceKey, type ResourceRow } from './resource.data'
 
@@ -15,6 +19,24 @@ type ResourceListPageProps = {
 }
 
 type LoadState = 'loading' | 'ready' | 'error'
+type SortDirection = 'ascending' | 'descending' | 'none'
+
+function ResourceTableSkeleton({ label }: { label: string }) {
+  return (
+    <div aria-label={label} className="app-table-skeleton" role="status">
+      <h2 className="sr-only">加载数据</h2>
+      <div className="app-table-skeleton__toolbar"><Skeleton className="w-32" /><Skeleton className="w-20" variant="control" /></div>
+      {[0, 1, 2].map((row) => (
+        <div className="app-table-skeleton__row" key={row}>
+          <Skeleton variant="control" />
+          <Skeleton className="w-28" />
+          <Skeleton className="w-full" />
+          <Skeleton className="w-20" />
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export function ResourceListPage({ resource }: ResourceListPageProps) {
   const config = resourceConfig[resource]
@@ -25,6 +47,10 @@ export function ResourceListPage({ resource }: ResourceListPageProps) {
   const [createOpen, setCreateOpen] = useState(false)
   const [draftName, setDraftName] = useState('')
   const [selected, setSelected] = useState<ResourceRow | null>(null)
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Set<string>>(() => new Set())
+  const [sortDirection, setSortDirection] = useState<SortDirection>('none')
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(2)
   const [announcement, setAnnouncement] = useState('')
   const timerRef = useRef<number | null>(null)
 
@@ -49,7 +75,7 @@ export function ResourceListPage({ resource }: ResourceListPageProps) {
     { label: '全部状态', value: 'all' },
     ...statuses.map((status) => ({ label: status, value: status })),
   ], [statuses])
-  const rows = useMemo(() => {
+  const filteredRows = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase('zh-CN')
     return localRows.filter((row) => {
       const matchesQuery = !normalized || [row.id, row.title, row.subtitle, row.meta, row.status].some((value) =>
@@ -58,15 +84,40 @@ export function ResourceListPage({ resource }: ResourceListPageProps) {
       return matchesQuery && matchesStatus
     })
   }, [localRows, query, statusFilter])
+  const sortedRows = useMemo(() => {
+    if (sortDirection === 'none') return filteredRows
+    return [...filteredRows].sort((left, right) => {
+      const result = left.id.localeCompare(right.id, 'zh-CN', { numeric: true })
+      return sortDirection === 'ascending' ? result : -result
+    })
+  }, [filteredRows, sortDirection])
+  const pageCount = Math.max(1, Math.ceil(sortedRows.length / pageSize))
+  const currentPage = Math.min(page, pageCount)
+  const visibleRows = useMemo(
+    () => sortedRows.slice((currentPage - 1) * pageSize, currentPage * pageSize),
+    [currentPage, pageSize, sortedRows],
+  )
 
   const columns = useMemo<DataTableColumn<ResourceRow>[]>(() => [
-    { id: 'id', header: '编号', cell: (row) => <span className="font-semibold">{row.id}</span> },
+    {
+      id: 'id',
+      header: '编号',
+      cell: (row) => <span className="font-semibold">{row.id}</span>,
+      sort: {
+        direction: sortDirection,
+        label: '按编号排序',
+        onToggle: () => {
+          setSortDirection((current) => current === 'ascending' ? 'descending' : 'ascending')
+          setPage(1)
+        },
+      },
+    },
     { id: 'name', header: '名称', cell: (row) => <span><span className="block font-medium">{row.title}</span><span className="app-caption app-text-muted">{row.subtitle}</span></span> },
     { id: 'meta', header: '信息', cell: (row) => row.meta, className: 'app-text-secondary' },
     { id: 'value', header: '价值', cell: (row) => <span className="font-semibold tabular-nums">{row.value}</span> },
     { id: 'status', header: '状态', cell: (row) => <StatusBadge label={row.status} tone={row.tone} /> },
-    { id: 'actions', header: <span className="sr-only">操作</span>, align: 'right', cell: (row) => <button className="btn btn-ghost btn-sm" onClick={() => setSelected(row)} type="button">查看</button> },
-  ], [])
+    { id: 'actions', header: <span className="sr-only">操作</span>, align: 'right', cell: (row) => <Button onClick={() => setSelected(row)} size="small" variant="ghost">查看</Button> },
+  ], [sortDirection])
 
   const createRow = () => {
     const title = draftName.trim()
@@ -81,6 +132,7 @@ export function ResourceListPage({ resource }: ResourceListPageProps) {
       tone: 'neutral',
     }
     setLocalRows((current) => [row, ...current])
+    setPage(1)
     setDraftName('')
     setCreateOpen(false)
     setAnnouncement(`${title} 已添加到本地演示列表`)
@@ -88,14 +140,16 @@ export function ResourceListPage({ resource }: ResourceListPageProps) {
 
   const exportRows = () => {
     const header = ['编号', '名称', '补充信息', '业务信息', '价值', '状态']
-    const data = rows.map((row) => [row.id, row.title, row.subtitle, row.meta, row.value, row.status])
+    const data = sortedRows.map((row) => [row.id, row.title, row.subtitle, row.meta, row.value, row.status])
     downloadCsv(`${resource}.csv`, [header, ...data])
-    setAnnouncement(`已导出 ${rows.length} 条${config.title}记录`)
+    setAnnouncement(`已导出 ${sortedRows.length} 条${config.title}记录`)
   }
 
   const resetFilters = () => {
     setQuery('')
     setStatusFilter('all')
+    setPage(1)
+    setSelectedRowKeys(new Set())
   }
 
   return (
@@ -103,12 +157,8 @@ export function ResourceListPage({ resource }: ResourceListPageProps) {
       <PageHeader
         actions={
           <>
-            <button className="btn btn-outline btn-sm border-base-300" disabled={loadState !== 'ready' || rows.length === 0} onClick={exportRows} type="button">
-              <Download aria-hidden size={17} />导出 CSV
-            </button>
-            <button className="btn btn-primary btn-sm" onClick={() => setCreateOpen(true)} type="button">
-              <Plus aria-hidden size={17} />{config.primaryAction}
-            </button>
+            <Button className="border-base-300" disabled={loadState !== 'ready' || sortedRows.length === 0} onClick={exportRows} size="small" startIcon={<Download aria-hidden className="app-icon-sm" />} variant="outline">导出 CSV</Button>
+            <Button onClick={() => setCreateOpen(true)} size="small" startIcon={<Plus aria-hidden className="app-icon-sm" />} variant="primary">{config.primaryAction}</Button>
           </>
         }
         description={config.description}
@@ -124,33 +174,62 @@ export function ResourceListPage({ resource }: ResourceListPageProps) {
           filterLabel="按状态筛选"
           filterOptions={statusOptions}
           filterValue={statusFilter}
-          onFilterChange={setStatusFilter}
+          onFilterChange={(value) => { setStatusFilter(value); setPage(1); setSelectedRowKeys(new Set()) }}
           onReset={resetFilters}
-          onSearchChange={setQuery}
-          resultSummary={loadState === 'ready' ? `共 ${rows.length} 条结果` : '正在准备列表结果'}
+          onSearchChange={(value) => { setQuery(value); setPage(1); setSelectedRowKeys(new Set()) }}
+          resultSummary={loadState === 'ready' ? `共 ${sortedRows.length} 条结果` : '正在准备列表结果'}
           searchLabel={config.search}
           searchValue={query}
         />
 
         <div id="resource-list-content">
           {loadState === 'loading' ? (
-            <PageState description="正在读取本地演示 repository。" state="loading" surface={false} title="加载数据" />
+            <ResourceTableSkeleton label={`${config.title}加载占位`} />
           ) : loadState === 'error' ? (
             <PageState description="演示数据源暂时不可用，请重试恢复列表。" onRetry={startLoad} state="error" surface={false} title="加载失败" />
-          ) : rows.length === 0 ? (
+          ) : sortedRows.length === 0 ? (
             <PageState description="尝试修改关键词或状态筛选查看其他演示数据。" state="empty" surface={false} title="没有匹配结果" />
           ) : (
             <DataTable
               ariaLabel={`${config.title}列表`}
               columns={columns}
               footer={
-                <div className="app-body app-text-muted flex flex-wrap items-center justify-between gap-3">
-                  <span>显示 {rows.length} 条演示记录</span>
-                  <button className="link link-hover" onClick={() => setLoadState('error')} type="button">预览错误状态</button>
+                <div className="grid gap-3">
+                  <div className="app-body app-text-muted flex flex-wrap items-center justify-between gap-3">
+                    <span>已选择 {selectedRowKeys.size} 条记录</span>
+                    <Button onClick={() => setLoadState('error')} variant="link">预览错误状态</Button>
+                  </div>
+                  <TablePagination
+                    ariaLabel={`${config.title}分页`}
+                    onPageChange={setPage}
+                    onPageSizeChange={(value) => { setPageSize(value); setPage(1) }}
+                    page={currentPage}
+                    pageSize={pageSize}
+                    pageSizeOptions={[2, 5, 10]}
+                    total={sortedRows.length}
+                  />
                 </div>
               }
               rowKey={(row) => row.id}
-              rows={rows}
+              rows={visibleRows}
+              selection={{
+                selectedKeys: selectedRowKeys,
+                rowLabel: (row) => `记录 ${row.id}`,
+                onRowSelectionChange: (row, checked) => setSelectedRowKeys((current) => {
+                  const next = new Set(current)
+                  if (checked) next.add(row.id)
+                  else next.delete(row.id)
+                  return next
+                }),
+                onSelectAllChange: (checked) => setSelectedRowKeys((current) => {
+                  const next = new Set(current)
+                  for (const row of visibleRows) {
+                    if (checked) next.add(row.id)
+                    else next.delete(row.id)
+                  }
+                  return next
+                }),
+              }}
             />
           )}
         </div>
@@ -158,13 +237,10 @@ export function ResourceListPage({ resource }: ResourceListPageProps) {
 
       <Modal description="该记录只保存在当前页面状态中，用于演示创建流程。" onClose={() => setCreateOpen(false)} open={createOpen} title={config.primaryAction}>
         <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); createRow() }}>
-          <label className="form-control block">
-            <span className="label-text mb-2 block font-medium">名称</span>
-            <input className="input input-bordered w-full" data-autofocus maxLength={80} name="name" onChange={(event) => setDraftName(event.target.value)} required value={draftName} />
-          </label>
+          <TextInput data-autofocus label="名称" maxLength={80} name="name" onChange={(event) => setDraftName(event.target.value)} required value={draftName} />
           <div className="flex justify-end gap-2">
-            <button className="btn btn-ghost" onClick={() => setCreateOpen(false)} type="button">取消</button>
-            <button className="btn btn-primary" type="submit">保存演示记录</button>
+            <Button onClick={() => setCreateOpen(false)} variant="ghost">取消</Button>
+            <Button type="submit" variant="primary">保存演示记录</Button>
           </div>
         </form>
       </Modal>

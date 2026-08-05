@@ -2,6 +2,7 @@ import { FileText } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 import { DataTable, type DataTableColumn } from '../../components/ui/DataTable'
+import { Button } from '../../components/ui/Button'
 import { Modal } from '../../components/ui/Modal'
 import { StatusBadge } from '../../components/ui/StatusBadge'
 import { transactions, type Transaction } from './dashboard.data'
@@ -29,9 +30,9 @@ export function TransactionsTable() {
       header: <span className="sr-only">操作</span>,
       align: 'right',
       cell: (row) => (
-        <button aria-label={`查看 ${row.id} 发票`} className="btn btn-ghost btn-square btn-sm" onClick={() => setSelected(row)} type="button">
-          <FileText aria-hidden size={17} />
-        </button>
+        <Button aria-label={`查看 ${row.id} 发票`} onClick={() => setSelected(row)} size="small" square variant="ghost">
+          <FileText aria-hidden className="app-icon-sm" />
+        </Button>
       ),
     },
   ], [])

@@ -22,9 +22,13 @@
 - Dashboard 业务展示位于 `src/features/dashboard`，Mock 数据只由该 feature 的 data 文件提供。
 - `DESIGN.md` 是设计契约 Owner，Foundation Token 由 `src/styles/tokens.css` 持有，主题接线与跨场景样式位于 `src/styles/index.css`。
 - `src/components/design-system/publicComponentCatalog.ts` 是公开共享组件清单；Catalog 必须直接渲染清单中的真实组件，内部 Helper 通过文档明确豁免。
-- 所有数据表格通过 `src/components/ui/DataTable.tsx` 渲染；页面只提供列定义和业务单元格内容。
-- 所有资源列表通过 `src/components/ui/ListToolbar.tsx` 组合搜索、筛选、重置与结果摘要；页面拥有查询状态和业务过滤规则。
-- 所有数据图表通过 `src/components/charts` 渲染；`ApexChart.tsx`、`apex.options.ts` 与 `apexcharts.modules.d.ts` 构成内部供应商适配层，公开组件和页面不得导入 `apexcharts`、`react-apexcharts` 或传递 `ApexOptions`。
+- `src/lib/overlayScrollLock.ts` 是多 Overlay 页面滚动锁的唯一 Owner；Dialog、Drawer 或移动导航不得直接开关 Body 锁定状态。
+- 所有数据表格通过 `src/components/ui/DataTable.tsx` 渲染；组件拥有表格语义和受控排序/选择控件，页面拥有实际数据顺序、跨页选择与批量业务规则。
+- 所有资源列表通过 `ListToolbar`、`DataTable`、`TablePagination` 和 `Skeleton` 组合搜索、筛选、加载、排序、分页与当前页选择；页面按过滤→排序→分页派生数据，并拥有查询复位、导出和服务端接入策略。
+- 锚定操作菜单通过 Portal `DropdownMenu` 渲染，同一任务上下文内的关联视图通过受控 `Tabs` 渲染；业务页面不得自建浮层定位或页签键盘逻辑。
+- 生产消费者的按钮、文本输入、选择、多行输入、Checkbox、Radio、Switch 和 Tabs 必须复用 `src/components/ui` 中对应基础组件；只有这些组件 Owner 可以直接渲染原生 `<button>`、`<input>`、`<select>` 或 `<textarea>`。共享层拥有 DOM、密度、状态和可访问性关联，业务校验、权限和提交仍由页面/feature 拥有。
+- 危险操作通过 `src/components/ui/DangerZone.tsx` 与 `DestructiveActionDialog.tsx` 组合；共享层拥有影响说明、确认、等待、错误和焦点契约，具体权限、前置条件、审计与执行仍由 feature/service 拥有。
+- 所有数据图表通过 `src/components/charts` 渲染；`ApexChart.tsx`、`apex.options.ts` 与 `apexcharts.modules.d.ts` 构成内部供应商适配层，公开组件和页面不得导入 `apexcharts`、`react-apexcharts` 或传递 `ApexOptions`。分组柱间距由图表适配层和 `--app-chart-surface` 共同持有，页面不得覆盖供应商 stroke/columnWidth。
 - 真实 API、认证、权限和业务规则不属于本脚手架。接入项目时通过新的 service/adapter Owner 替换 Mock 数据。
 
 页面只负责编排，场景组件负责领域展示，共享 UI 保持纯粹。不要在视图中复制 formatter、validator、权限判断、请求封装或业务状态机；新增逻辑前先搜索现有 Owner。
@@ -32,7 +36,7 @@
 ## Design and Interaction Contract
 
 - `src/styles/tokens.css` 是项目 Token 源码 Owner；组件优先消费 daisyUI 语义类和项目 Token，不散落品牌色、固定外部视觉值或无语义的一次性样式。
-- 页面标题、正文、辅助信息、Surface 间距、控件高度和焦点反馈必须消费 `--app-font-*`、`--app-line-*`、`--app-space-*`、`--app-control-*` 与 `--app-focus-*` 契约；页面不得用组件库默认尺寸建立平行密度体系。
+- 页面标题、正文、辅助信息、Surface 间距、控件高度、图标尺寸和焦点反馈必须消费 `--app-font-*`、`--app-line-*`、`--app-space-*`、`--app-control-*`、`--app-icon-*` 与 `--app-focus-*` 契约；页面不得用组件库默认尺寸建立平行密度体系。
 - 有意义文本必须使用 `app-text-secondary`、`app-text-muted`、`app-text-accent` 等已验证角色，不使用 `text-base-content/<opacity>` 自行调低对比度；语义状态统一通过 `StatusBadge` 渲染。
 - 外部设计参考只用于提取信息层级、密度、响应式和交互意图，不复制 Logo、品牌资产、商业文案或源代码，也不能覆盖本项目的可访问性与业务边界。
 - 数据界面按相关性覆盖 Loading、Data、Empty、Error 和恢复操作；交互覆盖键盘、焦点、禁用、等待与错误反馈。

@@ -5,6 +5,7 @@ export type ChartTheme = {
   palette: string[]
   grid: string
   label: string
+  surface: string
 }
 
 function readToken(styles: CSSStyleDeclaration, name: string, fallback: string) {
@@ -18,5 +19,6 @@ export function readChartTheme(theme: Theme): ChartTheme {
     palette: [1, 2, 3, 4, 5].map((index) => readToken(styles, `--app-chart-series-${index}`, 'currentColor')),
     grid: readToken(styles, '--app-chart-grid', 'transparent'),
     label: readToken(styles, '--app-chart-label', 'currentColor'),
+    surface: readToken(styles, '--app-chart-surface', 'transparent'),
   }
 }

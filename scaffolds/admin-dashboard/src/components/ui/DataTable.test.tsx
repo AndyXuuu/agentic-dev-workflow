@@ -1,5 +1,6 @@
 import { render, screen, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import userEvent from '@testing-library/user-event'
+import { describe, expect, it, vi } from 'vitest'
 
 import { DataTable, type DataTableColumn } from './DataTable'
 
@@ -18,5 +19,42 @@ describe('DataTable', () => {
     const table = within(region).getByRole('table', { name: '商品列表' })
     expect(within(table).getByRole('columnheader', { name: '编号' })).toBeVisible()
     expect(within(table).getByRole('cell', { name: '示例商品' })).toBeVisible()
+  })
+
+  it('exposes controlled sort and current-page selection semantics', async () => {
+    const user = userEvent.setup()
+    const onToggle = vi.fn()
+    const onRowSelectionChange = vi.fn()
+    const onSelectAllChange = vi.fn()
+    render(
+      <DataTable
+        ariaLabel="商品列表"
+        columns={[
+          { ...columns[0], sort: { direction: 'ascending', label: '按编号排序', onToggle } },
+          columns[1],
+        ]}
+        rowKey={(row) => row.id}
+        rows={[{ id: '1', name: '商品一' }, { id: '2', name: '商品二' }]}
+        selection={{
+          selectedKeys: new Set(['1']),
+          rowLabel: (row) => `商品 ${row.name}`,
+          onRowSelectionChange,
+          onSelectAllChange,
+        }}
+      />,
+    )
+
+    const sortableHeader = screen.getByRole('columnheader', { name: /编号/ })
+    expect(sortableHeader).toHaveAttribute('aria-sort', 'ascending')
+    await user.click(within(sortableHeader).getByRole('button', { name: '按编号排序，升序' }))
+    expect(onToggle).toHaveBeenCalledOnce()
+
+    const selectAll = screen.getByRole('checkbox', { name: '选择当前页全部记录' })
+    expect(selectAll).toBePartiallyChecked()
+    expect(screen.getByRole('row', { name: /商品一/ })).toHaveAttribute('aria-selected', 'true')
+    await user.click(screen.getByRole('checkbox', { name: '选择商品 商品二' }))
+    expect(onRowSelectionChange).toHaveBeenCalledWith({ id: '2', name: '商品二' }, true)
+    await user.click(selectAll)
+    expect(onSelectAllChange).toHaveBeenCalledWith(true)
   })
 })

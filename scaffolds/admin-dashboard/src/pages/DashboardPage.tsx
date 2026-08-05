@@ -2,6 +2,7 @@ import { Download, Plus } from 'lucide-react'
 import { useState } from 'react'
 
 import { Link } from '../app/router'
+import { Button } from '../components/ui/Button'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
 import { ActivityFeed } from '../features/dashboard/ActivityFeed'
@@ -31,11 +32,9 @@ export function DashboardPage() {
       <PageHeader
         actions={
           <>
-            <button className="btn btn-outline btn-sm border-base-300" onClick={handleExport} type="button">
-              <Download aria-hidden size={17} />导出
-            </button>
+            <Button className="border-base-300" onClick={handleExport} size="small" startIcon={<Download aria-hidden className="app-icon-sm" />} variant="outline">导出</Button>
             <Link className="btn btn-primary btn-sm" to="/products">
-              <Plus aria-hidden size={17} />管理商品
+              <Plus aria-hidden className="app-icon-sm" />管理商品
             </Link>
           </>
         }

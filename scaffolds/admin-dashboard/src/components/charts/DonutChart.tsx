@@ -37,7 +37,7 @@ export function DonutChart({
 
   return (
     <ChartFrame ariaLabel={ariaLabel} errorDescription={errorDescription} onRetry={onRetry} state={resolvedState} summary={summary}>
-      <ApexChart height={286} options={options} series={series} type="donut" />
+      <ApexChart options={options} series={series} type="donut" />
     </ChartFrame>
   )
 }

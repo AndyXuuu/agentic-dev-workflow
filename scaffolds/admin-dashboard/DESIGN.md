@@ -10,22 +10,23 @@
 
 | 领域 | Token Owner | 使用规则 |
 | --- | --- | --- |
-| 壳层尺寸 | `--app-shell-*` | 只用于侧栏、顶部栏和内容宽度 |
+| 壳层尺寸 | `--app-shell-*` | 只用于桌面展开/收起侧栏、侧栏品牌区和内容宽度；移动端通过左上角入口打开左侧 Drawer，桌面与移动端均不设置顶部工具条 |
 | 排版与文本 | `--app-font-size-*`、`--app-line-height-*`、`--app-text-*` | 页面标题、关键指标、区块标题、正文、控件和辅助信息使用固定语义层级；有意义文本在双主题满足 WCAG 2.2 AA，不消费组件库偶然默认值或透明度工具类 |
 | 密度与间距 | `--app-space-*` | 页面、Surface、工具栏和控件间距按任务邻近关系组合，不在消费者中建立第二套尺度 |
 | 控件与焦点 | `--app-control-*`、`--app-focus-*`、`--app-primary-action-*` | 桌面端采用紧凑控件，粗指针设备提高点击高度；焦点使用低强度边框与柔和外环，Primary action 在双主题保持可读性 |
+| 图标 | `--app-icon-size-*` | `sm/md/lg/xl` 分别用于紧凑控件、标准操作、强调图标和状态图标；图标消费者使用 `app-icon-*` 语义类，不传入任意像素尺寸 |
 | 圆角 | `--app-radius-*` | Surface、Overlay、Control 分层，不在页面重复定义 |
 | 边框 | `--app-border-*` | 默认使用低对比度语义分隔，不用粗线框住每个单元格 |
 | 阴影 | `--app-shadow-*` | 只表达 Surface 与 Overlay 层级 |
 | Motion | `--app-motion-*` | 只用于状态反馈，并服从 Reduced Motion |
 | 表格与列表工具 | `--app-table-*` | 由 `DataTable`、`ListToolbar` 消费，页面不得平行实现表格皮肤或筛选工具布局 |
-| 图表 | `--app-chart-*` | 由 `components/charts` 独占消费，统一主题、色序、网格、Tooltip 与 Legend |
+| 图表 | `--app-chart-*` | 由 `components/charts` 独占消费，统一高度、主题、色序、网格、Tooltip 与 Legend |
 
 颜色角色来自 daisyUI 的 `base`、`primary`、`success`、`warning`、`error`、`info` 语义主题；项目 Token 只在稳定跨组件语义出现时扩展，不复制底层 primitive 色板。
 
-Catalog 的 Foundation Tokens 区域是公开 Token 的可视索引：按语义颜色、排版、间距、圆角、边框与表面、控件与焦点、壳层、层级与动效、图表分组，展示 Token 名称、当前主题计算值、用途和限制。数值仍由 `tokens.css` 或 daisyUI 主题持有，Catalog 不复制第二份值；静态门禁要求所有 `--app-*` 定义与 Catalog 注册表一一对应。
+Catalog 的 Foundation Tokens 区域是公开 Token 的可视索引：按语义颜色、排版、间距、图标、圆角、边框与表面、控件与焦点、壳层、层级与动效、图表分组，展示 Token 名称、当前主题计算值、用途和限制。数值仍由 `tokens.css` 或 daisyUI 主题持有，Catalog 不复制第二份值；静态门禁要求所有 `--app-*` 定义与 Catalog 注册表一一对应。
 
-Catalog 顶部提供吸顶分类导航，固定链接到 Foundation Tokens、控件状态、组件清单、列表工具、图表和页面状态。新增大型 Catalog 区块时必须同时注册顶部入口和稳定锚点；分类导航允许窄屏横向滚动，不引入独立路由或重复页面状态。
+Catalog 顶部提供吸顶分类导航，固定链接到 Foundation Tokens、控件状态、组件清单、危险操作、列表工具、图表和页面状态。新增大型 Catalog 区块时必须同时注册顶部入口和稳定锚点；分类导航允许窄屏横向滚动，不引入独立路由或重复页面状态。
 
 公开组件清单由 `src/components/design-system/publicComponentCatalog.ts` 持有，Catalog 直接消费该清单；`DESIGN.md` 说明公开契约，静态门禁校验清单中的每个组件同时存在文档条目和真实 Catalog 示例。`ApexChart` 等内部适配层不进入公开清单。
 
@@ -33,22 +34,43 @@ Catalog 顶部提供吸顶分类导航，固定链接到 Foundation Tokens、控
 
 | 组件 | Owner | 契约 |
 | --- | --- | --- |
-| `DataTable` | `src/components/ui/DataTable.tsx` | 语义 caption、命名滚动区域、柔和表头、低对比度行分隔、末行收口、surface/embedded 两种容器 |
+| `Button` | `src/components/ui/Button.tsx` | 原生 button 语义、primary/outline/ghost/danger/link 变体、标准/小型密度、方形图标按钮，以及 loading、disabled、`aria-busy` 和默认非提交行为；业务权限与动作状态由消费者拥有 |
+| `FormField` | `src/components/ui/FormField.tsx` | 标签、必填提示、Hint/Error、稳定 ID 和 `aria-describedby`/`aria-invalid` 关联；只拥有字段布局与可访问性接线，不拥有业务校验规则 |
+| `TextInput` | `src/components/ui/TextInput.tsx` | 原生 input 属性、统一标签/帮助/错误、标准密度、可选起始图标和隐藏视觉标签；搜索、邮箱等业务语义仍由原生 type 与消费者定义 |
+| `Select` | `src/components/ui/Select.tsx` | 原生 select 与 option 语义、统一字段布局、错误和聚焦外观；消费者拥有选项来源与业务选择状态 |
+| `Textarea` | `src/components/ui/Textarea.tsx` | 原生多行输入、统一字段布局、最小高度与纵向缩放；不内置富文本或字数业务规则 |
+| `Checkbox` | `src/components/ui/Checkbox.tsx` | 独立布尔/多选语义、可视觉隐藏的可访问标签、说明、错误和 indeterminate 混合状态；消费者拥有批量选择规则 |
+| `RadioGroup` | `src/components/ui/RadioGroup.tsx` | 原生 fieldset/radio 单选组、受控/非受控选择、横向/纵向排列、禁用、必填和错误语义 |
+| `Switch` | `src/components/ui/Switch.tsx` | 原生 checkbox 数据模型与 switch 语义、标签、说明、错误、禁用和紧凑设置 Surface；仅用于即时布尔设置，不替代 Checkbox 的多选语义 |
+| `DataTable` | `src/components/ui/DataTable.tsx` | 语义 caption、命名滚动区域、柔和表头、低对比度行分隔、surface/embedded 容器，以及受控排序、当前页全选/混合状态、行选择和 `aria-sort`/`aria-selected`；页面拥有数据顺序、跨页选择与批量业务规则 |
+| `DangerZone` | `src/components/ui/DangerZone.tsx` | 将高风险操作收束到页面末尾的独立 Surface，逐项呈现名称、影响说明和明确触发入口；只负责视图契约，不判断权限或执行操作 |
 | `ListToolbar` | `src/components/ui/ListToolbar.tsx` | 受控搜索、单维筛选、重置、结果摘要、`aria-controls` 与从窄屏开始的排列；业务过滤规则仍由页面拥有 |
-| `Modal` | `src/components/ui/Modal.tsx` | Native dialog、默认视口居中、窄屏安全边距、Backdrop、Escape、背景关闭、初始焦点、关闭后焦点恢复、滚动锁定；全局 Reset 后必须显式保留居中定位契约 |
+| `TablePagination` | `src/components/ui/TablePagination.tsx` | 受控页码与页大小、可见结果范围、总页数和首尾禁用状态；页面拥有服务端/本地数据切片、查询复位与 URL 策略 |
+| `DropdownMenu` | `src/components/ui/DropdownMenu.tsx` | Portal 锚定菜单、视口翻转/夹取、menu/menuitem 语义、方向键/Home/End/Escape/Tab、外部关闭和焦点恢复；消费方只提供真实可执行动作，不放置复选过滤或伪造操作 |
+| `Tabs` | `src/components/ui/Tabs.tsx` | 受控自动激活页签、tab/tabpanel 关联、roving tabindex、方向键/Home/End 与禁用项跳过；只切换同一任务上下文内的关联视图 |
+| `Skeleton` | `src/components/ui/Skeleton.tsx` | text/control/avatar/block 四类内容形状与隐藏视觉语义；外层状态区提供可访问加载名称，消费者按真实布局组合且不伪造业务内容 |
+| `Modal` | `src/components/ui/Modal.tsx` | Native dialog、默认视口居中、窄屏安全边距、Backdrop、Escape、背景关闭、初始焦点、关闭后焦点恢复、可叠加引用计数的滚动锁定；全局 Reset 后必须显式保留居中定位契约 |
+| `DestructiveActionDialog` | `src/components/ui/DestructiveActionDialog.tsx` | 复用 Modal，展示影响与恢复方式；按动作要求输入确认短语，覆盖取消、等待、防重复提交、成功关闭和可重试错误，消费方拥有权限与执行逻辑 |
 | `PageHeader` | `src/components/ui/PageHeader.tsx` | 每页唯一主标题、说明、Eyebrow 与页级操作编排 |
 | `Panel` | `src/components/ui/Panel.tsx` | 标题、说明、可选操作与内容编排 |
 | `PageState` | `src/components/ui/PageState.tsx` | Loading、Empty、Error 与恢复动作 |
 | `ProgressBar` | `src/components/ui/ProgressBar.tsx` | 原生 progressbar 语义、确定/不确定进度、可见标签和值、数值边界保护，以及 primary、success、warning、error、info、neutral 语义色调；业务任务状态、上传和轮询由消费者拥有 |
 | `StatusBadge` | `src/components/ui/StatusBadge.tsx` | success、warning、error、info、neutral 语义状态；颜色与文案共同表达状态，前景/柔和背景组合在双主题达到普通文本对比度 |
 | `DesignTokenCatalog` | `src/components/design-system/DesignTokenCatalog.tsx` | Catalog 专用公开 Token 索引，从运行时计算样式读取当前主题值，并提供分组、用途与视觉预览 |
-| 原生 Button / Input / Select | daisyUI 语义类 + `src/styles/index.css` | 共享 md/sm 高度、字号、圆角、边框和 focus-visible；消费者只选择语义 variant，不覆盖基础密度 |
 | `AreaChart` | `src/components/charts/AreaChart.tsx` | 平滑趋势、渐变面积、语义序列、数据摘要与完整数据状态 |
 | `BarChart` | `src/components/charts/BarChart.tsx` | 分类对比、分组柱、统一柱形圆角、语义序列、数据摘要与完整数据状态 |
 | `DonutChart` | `src/components/charts/DonutChart.tsx` | 分类占比、中心汇总、统一色序、数据摘要与完整数据状态 |
 | `ApexChart` | `src/components/charts/ApexChart.tsx`、`apex.options.ts`、`apexcharts.modules.d.ts` | 内部第三方适配层，负责 ApexCharts 渲染、配置、缺失的 side-effect module 声明和 Reduced Motion；公开组件与页面不得依赖供应商类型 |
 
-原生 Button、Input、Select 继续使用 daisyUI 语义组件。只有出现跨场景行为或样式契约时才新增项目包装组件。
+生产消费者必须通过上述共享基础组件渲染按钮和表单控件，不直接拼接 daisyUI 原生类。组件 Owner 内部继续使用原生元素与 daisyUI 语义类，并把 DOM 属性透传给稳定边界；业务校验、权限、提交、查询和领域状态始终由页面或 feature 拥有。
+
+## Destructive Action Contract
+
+危险操作按可恢复性区分语义：停用/禁用可以恢复，重置/删除默认不可恢复。两者都必须说明影响范围和恢复方式；不可恢复操作必须要求输入场景明确的确认短语。触发按钮、标题、说明和确认文案共同表达风险，不能只用红色区分。
+
+`DangerZone` 只组织操作列表并向消费方返回选中动作，`DestructiveActionDialog` 只拥有确认输入和本地提交状态。feature/service 必须负责权限、二次认证、前置条件、依赖检查、审计、幂等、超时和实际副作用；脚手架 Mock action 只能返回明确的“未更改数据”结果，不能伪装完成真实删除。
+
+等待期间禁止重复提交并阻止关闭导致状态悬空；失败在 Dialog 内提供可行动信息并允许重试；成功关闭后恢复触发器焦点，由消费方通过既有反馈区域宣布结果。不可恢复操作进入 Dialog 后优先聚焦确认输入，可恢复操作优先聚焦取消。
 
 ## Typography and Density Contract
 
@@ -69,10 +91,11 @@ Catalog 顶部提供吸顶分类导航，固定链接到 Foundation Tokens、控
 3. 单元格仅使用低对比度底部分隔线，最后一行不画线。
 4. Hover 只提供轻微背景反馈，不改变布局。
 5. 二维内容在命名且可聚焦的局部区域滚动，页面本身不得横向溢出。
+6. 排序与选择是受控契约：表头公布 `aria-sort`，当前页全选反映混合状态，行公布 `aria-selected`；页面负责过滤、排序、分页后再把当前页数据交给表格。
 
 ## List Header Contract
 
-资源列表采用三层结构：页标题区说明任务并承载导出/新增等页级动作；`ListToolbar` 承载搜索、筛选、重置和结果反馈；`DataTable` 承载数据语义与局部横向滚动。工具栏和数据状态位于同一 Surface，Loading、Empty、Error 时工具栏保持可见，用户可以直接修改或重置条件。
+资源列表采用三层结构：页标题区说明任务并承载导出/新增等页级动作；`ListToolbar` 承载搜索、筛选、重置和结果反馈；`DataTable` 与 `TablePagination` 承载当前页数据语义、排序、选择和分页。页面按过滤→排序→分页的顺序派生数据，查询、筛选、页大小或排序变化时回到第一页；导出覆盖全部过滤/排序结果，不缩小为当前页。工具栏和数据状态位于同一 Surface，Loading 组合 `Skeleton` 保持布局稳定，Empty、Error 提供明确恢复路径。
 
 `ListToolbar` 是受控视图组件，不解析查询、不筛选数据、不决定权限，也不拥有导出和创建流程。窄屏按搜索、筛选、重置的任务顺序纵向排列，宽屏再增强为单行；搜索和筛选必须通过 `aria-controls` 指向持续存在的结果区域。
 
@@ -81,9 +104,9 @@ Catalog 顶部提供吸顶分类导航，固定链接到 Foundation Tokens、控
 | Consumer | Shared components | State coverage |
 | --- | --- | --- |
 | Dashboard | Panel、DataTable、StatusBadge、Modal | Data、导出反馈、详情 Overlay |
-| Resource Lists | PageHeader、ListToolbar、DataTable、PageState、StatusBadge、Modal | Loading、Data、Empty、Error、Search、Filter、Reset、Export、Create、Details |
-| Settings | PageHeader | Dirty、Saving、Saved、Error、Invalid input |
-| Design System Catalog | 直接导入真实共享组件与公开组件 manifest | Light/Dark、控件 invalid、Modal、确定/不确定进度、Loading、Empty、Error 与表格契约 |
+| Resource Lists | PageHeader、ListToolbar、DataTable、TablePagination、Skeleton、PageState、StatusBadge、Modal | Loading、Data、Empty、Error、Search、Filter、Sort、Pagination、Current-page selection、Reset、Export、Create、Details |
+| Settings | PageHeader、Panel、DangerZone、DestructiveActionDialog | Dirty、Saving、Saved、Error、Invalid input、取消更改、可恢复确认、不可恢复短语确认、等待与 Mock 成功反馈 |
+| Design System Catalog | 直接导入真实共享组件与公开组件 manifest | Light/Dark、控件 invalid、Modal、Dropdown Menu、Tabs、Pagination、Skeleton、危险操作确认、确定/不确定进度、Loading、Empty、Error 与表格契约 |
 
 ## Verification
 
@@ -100,7 +123,7 @@ Catalog 是展示入口，不是第二套实现；任何示例必须直接导入
 
 1. 页面只提供分类、序列、摘要和业务单位，不传递 `ApexOptions`。
 2. `ApexChart.tsx` 只加载 ApexCharts core、当前实际使用的图表类型以及 Legend/Keyboard 功能；`chart.theme.ts` 从 `--app-chart-*` Token 解析亮暗主题，统一色序、网格与标签。
-3. Area Chart 统一使用平滑曲线、克制渐变和低对比度虚线网格；Bar Chart 统一使用分组柱、柱末端圆角和克制间距；Donut Chart 统一使用中心汇总和底部 Legend。
+3. Area Chart 统一使用平滑曲线、克制渐变和低对比度虚线网格；Bar Chart 统一使用分组柱、柱末端圆角、分类组宽度和 `--app-chart-surface` 描边形成的组内视觉间距，不允许相邻序列无分隔贴合；Donut Chart 统一使用中心汇总和底部 Legend。
 4. Loading、Empty、Error、Data 状态由 `ChartFrame` 持有；错误状态可提供恢复动作。
 5. 每个图表必须提供场景化名称和文本数据摘要，视觉图形不能成为理解数据的唯一方式。
 6. 动画服从 `prefers-reduced-motion`；图表宽度不得导致页面整体横向滚动。

@@ -51,7 +51,7 @@ export function buildBarChartOptions({ categories, chartTheme, series, valueSuff
       active: { filter: { type: 'none' } },
       hover: { filter: { type: 'lighten', value: 0.06 } },
     },
-    stroke: { colors: ['transparent'], width: 0 },
+    stroke: { colors: [chartTheme.surface], width: 2 },
     theme: { mode: chartTheme.mode },
     tooltip: {
       theme: chartTheme.mode,

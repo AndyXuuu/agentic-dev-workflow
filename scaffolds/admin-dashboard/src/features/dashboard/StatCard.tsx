@@ -25,7 +25,7 @@ export function StatCard({ stat }: { stat: DashboardStat }) {
           </div>
         </div>
         <span className="app-text-secondary grid size-10 shrink-0 place-items-center rounded-xl bg-base-200">
-          <Icon aria-hidden size={21} />
+          <Icon aria-hidden className="app-icon-lg" />
         </span>
       </div>
       <p className="app-caption app-text-muted mt-3">

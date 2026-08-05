@@ -2,7 +2,9 @@ import { Search } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 import { type AppPath, useNavigate } from '../app/router'
+import { Button } from '../components/ui/Button'
 import { Modal } from '../components/ui/Modal'
+import { TextInput } from '../components/ui/TextInput'
 
 const destinations: Array<{ path: AppPath; label: string; description: string }> = [
   { path: '/dashboard', label: '经营概览', description: '销售、订单和库存指标' },
@@ -35,18 +37,23 @@ export function CommandSearch({ open, onClose }: CommandSearchProps) {
 
   return (
     <Modal description="搜索并打开脚手架中的页面。" onClose={onClose} open={open} title="快速导航">
-      <label className="input input-bordered flex items-center gap-2 bg-base-100">
-        <Search aria-hidden size={16} />
-        <span className="sr-only">搜索页面</span>
-        <input aria-label="搜索页面" data-autofocus="primary" className="grow" onChange={(event) => setQuery(event.target.value)} placeholder="输入页面名称" type="search" value={query} />
-      </label>
+      <TextInput
+        data-autofocus="primary"
+        label="搜索页面"
+        labelHidden
+        onChange={(event) => setQuery(event.target.value)}
+        placeholder="输入页面名称"
+        startIcon={<Search aria-hidden className="app-icon-sm" />}
+        type="search"
+        value={query}
+      />
       {results.length > 0 ? (
         <ul className="mt-4 space-y-1">
           {results.map((item) => (
             <li key={item.path}>
-              <button className="btn btn-ghost h-auto min-h-0 w-full justify-start px-3 py-2 text-left" onClick={() => select(item.path)} type="button">
+              <Button className="h-auto min-h-0 w-full justify-start px-3 py-2 text-left" onClick={() => select(item.path)} variant="ghost">
                 <span><span className="block font-semibold">{item.label}</span><span className="app-caption app-text-muted mt-1 block font-normal">{item.description}</span></span>
-              </button>
+              </Button>
             </li>
           ))}
         </ul>
