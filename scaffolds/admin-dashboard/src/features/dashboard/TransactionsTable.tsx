@@ -1,10 +1,7 @@
 import { FileText } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
-import { DataTable, type DataTableColumn } from '../../components/ui/DataTable'
-import { Button } from '../../components/ui/Button'
-import { Modal } from '../../components/ui/Modal'
-import { StatusBadge } from '../../components/ui/StatusBadge'
+import { Button, DataTable, type DataTableColumn, Modal, StatusBadge } from '../../components/ui'
 import { transactions, type Transaction } from './dashboard.data'
 
 export function TransactionsTable() {

@@ -6,29 +6,33 @@ import { BarChart } from '../components/charts/BarChart'
 import { DonutChart } from '../components/charts/DonutChart'
 import { DesignTokenCatalog } from '../components/design-system/DesignTokenCatalog'
 import { publicComponentCatalog, type PublicComponentCatalogRow } from '../components/design-system/publicComponentCatalog'
-import { Button } from '../components/ui/Button'
-import { Checkbox } from '../components/ui/Checkbox'
-import { DataTable, type DataTableColumn } from '../components/ui/DataTable'
-import { DestructiveActionDialog } from '../components/ui/DestructiveActionDialog'
-import { DangerZone, type DangerZoneAction } from '../components/ui/DangerZone'
-import { DropdownMenu } from '../components/ui/DropdownMenu'
-import { FormField } from '../components/ui/FormField'
-import { ListToolbar } from '../components/ui/ListToolbar'
-import { Modal } from '../components/ui/Modal'
-import { PageHeader } from '../components/ui/PageHeader'
-import { PageState } from '../components/ui/PageState'
-import { Panel } from '../components/ui/Panel'
-import { ProgressBar } from '../components/ui/ProgressBar'
-import { RadioGroup } from '../components/ui/RadioGroup'
-import { Select } from '../components/ui/Select'
-import { Skeleton } from '../components/ui/Skeleton'
-import { StatusBadge } from '../components/ui/StatusBadge'
-import { Switch } from '../components/ui/Switch'
-import { TablePagination } from '../components/ui/TablePagination'
-import { Tabs } from '../components/ui/Tabs'
-import { Textarea } from '../components/ui/Textarea'
-import { TextInput } from '../components/ui/TextInput'
-import { Tooltip } from '../components/ui/Tooltip'
+import {
+  Button,
+  Checkbox,
+  DataTable,
+  type DataTableColumn,
+  DestructiveActionDialog,
+  DangerZone,
+  type DangerZoneAction,
+  DropdownMenu,
+  FormField,
+  ListToolbar,
+  Modal,
+  PageHeader,
+  PageState,
+  Panel,
+  ProgressBar,
+  RadioGroup,
+  Select,
+  Skeleton,
+  StatusBadge,
+  Switch,
+  TablePagination,
+  Tabs,
+  Textarea,
+  TextInput,
+  Tooltip,
+} from '../components/ui'
 import { useHorizontalOverflow } from '../hooks/useHorizontalOverflow'
 
 const designSections = [

@@ -1,6 +1,6 @@
 ---
 name: admin-dashboard-adapter
-description: 按 Admin Dashboard Scaffold 的真实 Owner、设计系统、图表适配层、Mock 数据边界和验证命令导航前端实现与审查。用于修改页面、共享组件、Token、Catalog、路由、图表或本地状态时；不保存通用前端规则。
+description: 按 Admin Dashboard Scaffold 的真实 Owner、路由与访问注册表、Session/BFF 契约、HTTP 边界、feature 分层、设计系统、图表适配层和验证命令导航实现与审查。用于修改页面、共享组件、Token、Catalog、路由、认证授权、API 契约与接入、图表或本地状态时；不保存通用工程规则。
 ---
 
 # Admin Dashboard Scaffold 项目适配
@@ -16,17 +16,20 @@ description: 按 Admin Dashboard Scaffold 的真实 Owner、设计系统、图�
 
 ## 项目特有路由
 
-- 路由、深链或页面编排：从 `src/app/router.tsx`、`src/app/App.tsx` 和 `src/app/App.test.tsx` 开始。
+- 路由、深链或页面编排：从 `src/app/routes.tsx`、`src/app/router.tsx`、`src/app/App.tsx` 和 `src/app/App.test.tsx` 开始；页面、侧栏和命令搜索统一消费路由注册表。
+- Session、认证或授权：从 `contracts/admin-api.openapi.json`、`contracts/README.md` 和 `src/auth` 开始；Session Provider、路由保护、侧栏与命令搜索统一消费 `accessPolicy.ts`，真实 Provider 必须按源契约实现。
+- API 接入：从 `src/api/httpClient.ts` 和对应 `src/features/<domain>` 开始；HTTP client 只拥有传输、超时、取消、解析和错误分类，endpoint、响应映射、重试与恢复属于 feature service/adapter。
 - 设计系统或共享 UI：从 `DESIGN.md`、`src/styles/tokens.css`、`src/components/ui`、`src/components/design-system` 和 `scripts/check-design-system.mjs` 开始。
 - 图表：从 `src/components/charts` 开始；页面和公开组件不得直接依赖 ApexCharts 供应商类型或入口。
-- 列表与 Mock 数据：从 `src/pages/ResourceListPage.tsx`、`src/pages/resource.data.ts` 或对应 `src/features` Owner 开始；页面按过滤→排序→分页派生数据，复用 `ListToolbar`、`DataTable`、`TablePagination` 和 `Skeleton`。
+- 列表与 Mock 数据：从 `src/features/resources` 开始；`ResourceListPage.tsx` 只是路由包装，feature 按过滤→排序→分页派生数据并复用 `ListToolbar`、`DataTable`、`TablePagination` 和 `Skeleton`。
 - 本地设置与主题：分别从 `src/features/settings` 和 `src/hooks/useTheme.ts` 开始；危险操作复用 `DangerZone` 与 `DestructiveActionDialog`，不要把演示存储或 Mock action 当成真实权限、审计或服务端状态。
 
 ## 不可违反的项目边界
 
 - `DESIGN.md` 是设计契约 Owner；公开 Token、组件或变体变化必须同步真实 Catalog 和设计门禁。
-- Button、字段、选择控件、表格、列表工具、分页、加载占位、锚定菜单、页签、语义状态和图表分别复用既有共享 Owner；生产页面不直接输出原生按钮或表单控件，不自建浮层定位或键盘模型，也不创建平行实现。
-- `ApexChart.tsx` 与 `apex.options.ts` 是供应商隔离边界；真实 API、认证、权限和业务规则不属于本脚手架。
+- Button、字段、选择控件、表格、列表工具、分页、加载占位、锚定菜单、页签和语义状态统一从 `src/components/ui/index.ts` 公共入口消费并复用既有 Owner；生产页面不直接输出原生按钮或表单控件，不自建浮层定位或键盘模型，也不创建平行实现。
+- `ApexChart.tsx` 与 `apex.options.ts` 是图表供应商隔离边界；`src/api/httpClient.ts` 是原始 HTTP 传输边界；`session.gateway.ts` 拥有已确认的认证 endpoint 适配。真实身份服务、数据库、角色模型和业务授权不属于本脚手架。
+- `contracts/admin-api.openapi.json` 是唯一 BFF 源契约；前端类型、生成 Client 和后端模型不得成为平行来源。浏览器不得接触 Access Token/Refresh Token，隐藏导航或操作也不得被视为 Provider 授权。
 - `node_modules`、`dist` 和生成器临时目录不是手工修改目标；生成新工程只使用已有安全生成入口。
 
 ## 验证入口

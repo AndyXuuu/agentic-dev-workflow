@@ -17,19 +17,23 @@
 
 ## Project Boundaries
 
-- React 页面与路由位于 `src/app`、`src/pages`。
+- `src/app/routes.tsx` 是页面路径、导航标签、搜索说明、图标、访问要求与渲染入口的唯一注册表；`src/app/router.tsx` 只拥有 History API、深链归一化与 Link 行为，`src/pages` 只负责编排 feature。
+- `src/auth/SessionProvider.tsx` 是唯一应用级 Session 状态 Owner，`accessPolicy.ts` 是路由与局部操作访问判断的唯一 Owner；页面保护、侧栏和命令搜索必须消费同一路由访问元数据，前端隐藏控件不替代 Provider 授权。
+- `src/auth/session.gateway.ts` 是 Session endpoint 的前端适配边界；`contracts/admin-api.openapi.json` 是浏览器与同源 BFF 的语言无关源契约，手写前端类型与未来后端模型都只是 projection，不得反向成为第二契约源。
 - 应用壳位于 `src/layouts`，共享原语位于 `src/components/ui`。
 - Dashboard 业务展示位于 `src/features/dashboard`，Mock 数据只由该 feature 的 data 文件提供。
+- 资源列表与设置场景分别由 `src/features/resources` 和 `src/features/settings` 持有；页面不得重新持有查询、分页、保存状态或 repository 调用。
+- `src/api/httpClient.ts` 是浏览器 HTTP 传输边界；feature service 通过 `HttpClient` 接口接入真实 endpoint，生产源码不得在其他位置直接调用 `fetch`。
 - `DESIGN.md` 是设计契约 Owner，Foundation Token 由 `src/styles/tokens.css` 持有，主题接线与真正跨场景样式位于 `src/styles/index.css`，Catalog、表单控件、数据表格与 Overlay 样式按职责位于 `src/styles/components`。
 - `src/components/design-system/publicComponentCatalog.ts` 是公开共享组件清单；Catalog 必须直接渲染清单中的真实组件，内部 Helper 通过文档明确豁免。
 - `src/lib/overlayScrollLock.ts` 是多 Overlay 页面滚动锁的唯一 Owner；Dialog、Drawer 或移动导航不得直接开关 Body 锁定状态。
-- 所有数据表格通过 `src/components/ui/DataTable.tsx` 渲染；组件拥有表格语义和受控排序/选择控件，页面拥有实际数据顺序、跨页选择与批量业务规则。
-- 所有资源列表通过 `ListToolbar`、`DataTable`、`TablePagination` 和 `Skeleton` 组合搜索、筛选、加载、排序、分页与当前页选择；页面按过滤→排序→分页派生数据，并拥有查询复位、导出和服务端接入策略。
+- 所有数据表格通过 `src/components/ui/DataTable.tsx` 渲染；组件拥有表格语义和受控排序/选择控件，消费 feature 拥有实际数据顺序、跨页选择与批量业务规则。
+- 所有资源列表通过 `ListToolbar`、`DataTable`、`TablePagination` 和 `Skeleton` 组合搜索、筛选、加载、排序、分页与当前页选择；resource feature 按过滤→排序→分页派生数据，并拥有查询复位、导出和服务端接入策略。
 - 锚定操作菜单通过 Portal `DropdownMenu` 渲染，同一任务上下文内的关联视图通过受控 `Tabs` 渲染；业务页面不得自建浮层定位或页签键盘逻辑。
-- 生产消费者的按钮、文本输入、选择、多行输入、Checkbox、Radio、Switch 和 Tabs 必须复用 `src/components/ui` 中对应基础组件；只有这些组件 Owner 可以直接渲染原生 `<button>`、`<input>`、`<select>` 或 `<textarea>`。共享层拥有 DOM、密度、状态和可访问性关联，业务校验、权限和提交仍由页面/feature 拥有。
+- 生产消费者从 `src/components/ui/index.ts` 公共入口复用按钮、文本输入、选择、多行输入、Checkbox、Radio、Switch 和 Tabs；只有这些组件 Owner 可以直接渲染原生 `<button>`、`<input>`、`<select>` 或 `<textarea>`。共享层拥有 DOM、密度、状态和可访问性关联，业务校验、权限和提交仍由 feature 拥有。
 - 危险操作通过 `src/components/ui/DangerZone.tsx` 与 `DestructiveActionDialog.tsx` 组合；共享层拥有影响说明、确认、等待、错误和焦点契约，具体权限、前置条件、审计与执行仍由 feature/service 拥有。
 - 所有数据图表通过 `src/components/charts` 渲染；`ApexChart.tsx`、`apex.options.ts` 与 `apexcharts.modules.d.ts` 构成内部供应商适配层，公开组件和页面不得导入 `apexcharts`、`react-apexcharts` 或传递 `ApexOptions`。分组柱间距由图表适配层和 `--app-chart-surface` 共同持有，页面不得覆盖供应商 stroke/columnWidth。
-- 真实 API、认证、权限和业务规则不属于本脚手架。接入项目时通过新的 service/adapter Owner 替换 Mock 数据。
+- 脚手架只提供 Session/访问控制骨架和已确认的 BFF 契约，不实现真实身份服务、数据库、密码策略、OAuth/OIDC、角色模型或业务授权。接入项目时在对应 feature 下新增 service/adapter，把传输响应映射为稳定 view model，并通过 `HttpClient` 注入传输实现后替换 Mock repository。
 
 页面只负责编排，场景组件负责领域展示，共享 UI 保持纯粹。不要在视图中复制 formatter、validator、权限判断、请求封装或业务状态机；新增逻辑前先搜索现有 Owner。
 
@@ -48,7 +52,9 @@
 
 - 实现已确认需求的最小正确方案，优先组合与复用，不为未来场景预建抽象。
 - 浏览器状态只能有一个 Owner；URL、局部状态、主题偏好和远端数据不得重复存储。
+- 浏览器不得读取或把 Access Token、Refresh Token 写入任何 Web Storage；同源 BFF Session Cookie 必须为 `Secure; HttpOnly; SameSite=Lax; Path=/`。所有状态写请求校验可信 Origin，已有身份的写请求还要校验 Session 绑定的 CSRF Header。
 - 第三方 SDK 和服务响应通过 adapter/view model 进入 UI，不向组件泄漏供应商类型。
+- HTTP 默认不自动重试写操作；调用方必须按读写语义明确决定重试、幂等和恢复策略。请求支持调用方取消和有限超时，错误按 HTTP、网络、超时、取消与响应解析分类，不依赖文案判断失败类型。
 - 不硬编码、提交或记录密钥、令牌、个人路径、个人数据和敏感 URL。
 - 不吞掉错误；保留原因并向用户提供可行动的恢复信息。
 
@@ -57,6 +63,8 @@
 - Focused 行为测试：`npm test -- <test-file>`
 - 全部行为测试：`npm test`
 - 静态与设计契约：`npm run lint`
+- 代码结构契约：`npm run check:architecture`
+- API 源契约：`npm run check:contracts`
 - 类型与生产构建：`npm run build`
 - 完整本地门禁：`npm run verify`
 - 独立真实浏览器契约：`npm run test:browser`（首次运行先执行 `npm run test:browser:install`；仅在响应式、主题、Overlay 或完整 UI 交付时触发，不并入每次 `verify`）

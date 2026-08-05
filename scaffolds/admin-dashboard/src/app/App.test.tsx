@@ -20,6 +20,14 @@ describe('admin dashboard scaffold', () => {
     expect(screen.getByRole('table')).toBeVisible()
   })
 
+  it('normalizes an unknown deep link to the registered fallback route', async () => {
+    window.history.replaceState({}, '', '/unknown')
+    render(<App />)
+
+    expect(await screen.findByRole('heading', { name: '经营概览' })).toBeVisible()
+    expect(window.location.pathname).toBe('/dashboard')
+  })
+
   it('navigates to a management page and exposes an empty search state', async () => {
     const user = userEvent.setup()
     render(<App />)
@@ -55,7 +63,7 @@ describe('admin dashboard scaffold', () => {
     expect(screen.getByText('SKU-1001')).toBeVisible()
   })
 
-  it('keeps resource sorting, pagination, and current-page selection controlled by the page', async () => {
+  it('keeps resource sorting, pagination, and current-page selection controlled by the resource feature', async () => {
     const user = userEvent.setup()
     render(<App />)
 

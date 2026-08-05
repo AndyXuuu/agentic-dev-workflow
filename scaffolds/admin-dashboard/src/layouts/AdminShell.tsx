@@ -1,7 +1,8 @@
 import { type ReactNode, useEffect, useState } from 'react'
 import { Menu } from 'lucide-react'
 
-import { Button } from '../components/ui/Button'
+import { useSession } from '../auth'
+import { Button } from '../components/ui'
 import { Sidebar } from './Sidebar'
 import { CommandSearch } from './CommandSearch'
 
@@ -9,17 +10,26 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const [desktopCollapsed, setDesktopCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
+  const { state } = useSession()
+  const authenticated = state.status === 'authenticated'
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === 'k') {
+      if (authenticated && (event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === 'k') {
         event.preventDefault()
         setSearchOpen(true)
       }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [])
+  }, [authenticated])
+
+  useEffect(() => {
+    if (!authenticated) {
+      setMobileOpen(false)
+      setSearchOpen(false)
+    }
+  }, [authenticated])
 
   return (
     <div
@@ -37,7 +47,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
       />
       <div className="app-shell-main">
         <main id="main-content" className="app-content mx-auto w-full">
-          <div className="app-mobile-shell-actions lg:hidden">
+          {authenticated && <div className="app-mobile-shell-actions lg:hidden">
             <Button
               aria-controls="mobile-navigation-drawer"
               aria-expanded={mobileOpen}
@@ -48,11 +58,11 @@ export function AdminShell({ children }: { children: ReactNode }) {
             >
               <Menu aria-hidden className="app-icon-lg" />
             </Button>
-          </div>
+          </div>}
           {children}
         </main>
       </div>
-      <CommandSearch onClose={() => setSearchOpen(false)} open={searchOpen} />
+      {authenticated && <CommandSearch onClose={() => setSearchOpen(false)} open={searchOpen} />}
     </div>
   )
 }

@@ -1,26 +1,18 @@
 import { createContext, type MouseEvent, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
-import { buttonClassName, type ButtonSize, type ButtonVariant } from '../components/ui/Button'
+import { buttonClassName, type ButtonSize, type ButtonVariant } from '../components/ui'
 
-export type AppPath = '/dashboard' | '/orders' | '/products' | '/customers' | '/settings' | '/design-system'
-
-const validPaths = new Set<AppPath>(['/dashboard', '/orders', '/products', '/customers', '/settings', '/design-system'])
-
-function readPath(): AppPath {
-  return validPaths.has(window.location.pathname as AppPath)
-    ? (window.location.pathname as AppPath)
-    : '/dashboard'
-}
+type PathResolver = (pathname: string) => string
 
 type RouterValue = {
-  path: AppPath
-  navigate: (path: AppPath) => void
+  path: string
+  navigate: (path: string) => void
 }
 
 const RouterContext = createContext<RouterValue | null>(null)
 
-export function RouterProvider({ children }: { children: ReactNode }) {
-  const [path, setPath] = useState<AppPath>(readPath)
+export function RouterProvider({ children, resolvePath }: { children: ReactNode; resolvePath: PathResolver }) {
+  const [path, setPath] = useState(() => resolvePath(window.location.pathname))
 
   useEffect(() => {
     if (window.location.pathname !== path) window.history.replaceState({}, '', path)
@@ -28,20 +20,24 @@ export function RouterProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const onPopState = () => {
-      const nextPath = readPath()
+      const nextPath = resolvePath(window.location.pathname)
       if (window.location.pathname !== nextPath) window.history.replaceState({}, '', nextPath)
       setPath(nextPath)
     }
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
-  }, [])
+  }, [resolvePath])
 
-  const navigate = useCallback((nextPath: AppPath) => {
-    if (nextPath === readPath() && window.location.pathname === nextPath) return
-    window.history.pushState({}, '', nextPath)
-    setPath(nextPath)
-    window.scrollTo({ top: 0, behavior: 'auto' })
-  }, [])
+  const navigate = useCallback(
+    (requestedPath: string) => {
+      const nextPath = resolvePath(requestedPath)
+      if (nextPath === resolvePath(window.location.pathname) && window.location.pathname === nextPath) return
+      window.history.pushState({}, '', nextPath)
+      setPath(nextPath)
+      window.scrollTo({ top: 0, behavior: 'auto' })
+    },
+    [resolvePath],
+  )
 
   const value = useMemo(() => ({ path, navigate }), [navigate, path])
   return <RouterContext.Provider value={value}>{children}</RouterContext.Provider>
@@ -70,7 +66,7 @@ type LinkProps = {
   children: ReactNode
   className?: string
   onNavigate?: () => void
-  to: AppPath
+  to: string
   'aria-current'?: 'page'
 }
 

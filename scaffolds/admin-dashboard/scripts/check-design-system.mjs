@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 const projectRoot = fileURLToPath(new URL('..', import.meta.url))
 const sourceRoot = join(projectRoot, 'src')
 const tokensPath = join(sourceRoot, 'styles', 'tokens.css')
-const resourceListPath = join(sourceRoot, 'pages', 'ResourceListPage.tsx')
+const resourceListPath = join(sourceRoot, 'features', 'resources', 'ResourceList.tsx')
 const catalogPath = join(sourceRoot, 'pages', 'DesignSystemPage.tsx')
 const tokenCatalogPath = join(sourceRoot, 'components', 'design-system', 'DesignTokenCatalog.tsx')
 const componentCatalogPath = join(sourceRoot, 'components', 'design-system', 'publicComponentCatalog.ts')
@@ -79,17 +79,20 @@ if (!indexHtml.includes("savedTheme === 'business' || savedTheme === 'corporate'
 }
 
 const resourceList = readFileSync(resourceListPath, 'utf8')
-if (!resourceList.includes("from '../components/ui/ListToolbar'")) {
-  failures.push('ResourceListPage 必须通过共享 ListToolbar 渲染搜索与筛选')
+if (!resourceList.includes("from '../../components/ui'")) {
+  failures.push('ResourceList 必须通过共享 UI 公共入口消费列表组件')
 }
-if (!resourceList.includes("from '../components/ui/TablePagination'")) {
-  failures.push('ResourceListPage 必须通过共享 TablePagination 渲染分页')
+if (!resourceList.includes('<ListToolbar')) {
+  failures.push('ResourceList feature 必须通过共享 ListToolbar 渲染搜索与筛选')
 }
-if (!resourceList.includes("from '../components/ui/Skeleton'")) {
-  failures.push('ResourceListPage 必须通过共享 Skeleton 渲染加载占位')
+if (!resourceList.includes('<TablePagination')) {
+  failures.push('ResourceList feature 必须通过共享 TablePagination 渲染分页')
+}
+if (!resourceList.includes('<Skeleton')) {
+  failures.push('ResourceList feature 必须通过共享 Skeleton 渲染加载占位')
 }
 if (!resourceList.includes('selection={{') || !resourceList.includes('sort: {')) {
-  failures.push('ResourceListPage 必须通过 DataTable 的受控契约实现排序与当前页选择')
+  failures.push('ResourceList feature 必须通过 DataTable 的受控契约实现排序与当前页选择')
 }
 
 const catalog = readFileSync(catalogPath, 'utf8')
@@ -132,7 +135,12 @@ for (const file of sourceFiles(sourceRoot)) {
   if (/text-base-content\/\d+/.test(content)) failures.push(`${name}: 有意义文本必须使用已验证的 app-text-* 语义角色`)
   const lucideImports = [...content.matchAll(/import\s*\{([\s\S]*?)\}\s*from\s*['"]lucide-react['"]/g)]
     .flatMap((match) => match[1].split(','))
-    .map((entry) => entry.trim().split(/\s+as\s+/).at(-1))
+    .map((entry) =>
+      entry
+        .trim()
+        .split(/\s+as\s+/)
+        .at(-1),
+    )
     .filter(Boolean)
   for (const icon of lucideImports) {
     if (new RegExp(`<${icon}\\b[^>]*\\bsize=\\{\\d+\\}`, 's').test(content)) {
@@ -142,21 +150,17 @@ for (const file of sourceFiles(sourceRoot)) {
   if (/\bbadge-soft\b|\bbadge-(?:success|warning|error|info|neutral)\b/.test(content)) {
     failures.push(`${name}: 语义状态必须通过共享 StatusBadge 渲染`)
   }
-  if (name !== 'src/components/ui/Button.tsx'
-    && /\bclassName\s*=\s*(?:"[^"]*\bbtn(?:-[\w-]+)?\b[^"]*"|\{`[^`]*\bbtn(?:-[\w-]+)?\b[^`]*`\})/.test(content)) {
+  if (name !== 'src/components/ui/Button.tsx' && /\bclassName\s*=\s*(?:"[^"]*\bbtn(?:-[\w-]+)?\b[^"]*"|\{`[^`]*\bbtn(?:-[\w-]+)?\b[^`]*`\})/.test(content)) {
     failures.push(`${name}: Button 风格链接和按钮必须复用共享 Button 视觉 Owner`)
   }
   if (/<table\b/.test(content) && !name.endsWith('components/ui/DataTable.tsx')) failures.push(`${name}: 表格必须通过共享 DataTable 渲染`)
   if (!name.endsWith('.test.tsx') && /<(?:button|input|select|textarea)\b/.test(content) && !nativeControlOwners.has(name)) {
     failures.push(`${name}: 生产消费者必须通过共享基础组件渲染 Button、Input、Select 与选择控件`)
   }
-  if (/(?:from\s+|import\s*\()['"]react-apexcharts(?:\/core)?['"]/.test(content)
-    && !name.endsWith('components/charts/ApexChart.tsx')) {
+  if (/(?:from\s+|import\s*\()['"]react-apexcharts(?:\/core)?['"]/.test(content) && !name.endsWith('components/charts/ApexChart.tsx')) {
     failures.push(`${name}: react-apexcharts 只能由共享 ApexChart 适配层导入`)
   }
-  if (/(?:from\s+|import\s*\()['"]apexcharts(?:\/[^'"]+)?['"]/.test(content)
-    && !name.endsWith('components/charts/ApexChart.tsx')
-    && !name.endsWith('components/charts/apex.options.ts')) {
+  if (/(?:from\s+|import\s*\()['"]apexcharts(?:\/[^'"]+)?['"]/.test(content) && !name.endsWith('components/charts/ApexChart.tsx') && !name.endsWith('components/charts/apex.options.ts')) {
     failures.push(`${name}: ApexCharts 类型与配置只能存在于内部适配层`)
   }
 }

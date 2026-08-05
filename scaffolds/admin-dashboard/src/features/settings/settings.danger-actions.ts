@@ -1,5 +1,4 @@
-import type { DangerZoneAction } from '../../components/ui/DangerZone'
-import type { DestructiveActionResult } from '../../components/ui/DestructiveActionDialog'
+import type { DangerZoneAction, DestructiveActionResult } from '../../components/ui'
 
 export const workspaceDangerActions: readonly DangerZoneAction[] = [
   {

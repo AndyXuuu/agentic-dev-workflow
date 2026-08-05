@@ -1,38 +1,12 @@
-import {
-  Boxes,
-  ChevronRight,
-  LayoutDashboard,
-  PackageSearch,
-  Palette,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Settings,
-  ShoppingBag,
-  Users,
-  X,
-} from 'lucide-react'
-import { type ComponentType, useEffect, useRef } from 'react'
+import { Boxes, ChevronRight, PanelLeftClose, PanelLeftOpen, X } from 'lucide-react'
+import { useEffect, useRef } from 'react'
 
-import { Link, type AppPath, usePath } from '../app/router'
-import { Button } from '../components/ui/Button'
-import { Tooltip } from '../components/ui/Tooltip'
+import { Link, usePath } from '../app/router'
+import { getAccessibleAppRoutes } from '../app/routes'
+import { useSession } from '../auth'
+import { Button, Tooltip } from '../components/ui'
 import { acquirePageScrollLock } from '../lib/overlayScrollLock'
 import { AccountMenu } from './AccountMenu'
-
-type NavItem = {
-  label: string
-  path: AppPath
-  icon: ComponentType<{ className?: string; 'aria-hidden'?: boolean }>
-}
-
-const navigation: NavItem[] = [
-  { label: '概览', path: '/dashboard', icon: LayoutDashboard },
-  { label: '订单', path: '/orders', icon: ShoppingBag },
-  { label: '商品', path: '/products', icon: PackageSearch },
-  { label: '客户', path: '/customers', icon: Users },
-  { label: '设置', path: '/settings', icon: Settings },
-  { label: '设计系统', path: '/design-system', icon: Palette },
-]
 
 type SidebarProps = {
   collapsed: boolean
@@ -51,6 +25,8 @@ type SidebarContentProps = {
 
 function SidebarContent({ collapsed = false, mobile, navigationId, onClose, onToggleCollapsed }: SidebarContentProps) {
   const currentPath = usePath()
+  const { state } = useSession()
+  const routes = state.status === 'authenticated' ? getAccessibleAppRoutes(state.session) : []
 
   return (
     <aside
@@ -100,28 +76,32 @@ function SidebarContent({ collapsed = false, mobile, navigationId, onClose, onTo
           <p className="app-caption app-text-muted mb-2 px-3 font-semibold uppercase tracking-widest">Workspace</p>
         )}
         <ul className="menu w-full gap-1 p-0">
-          {navigation.map((item) => {
-            const Icon = item.icon
+          {routes.map((route) => {
+            const Icon = route.icon
             const navigationLink = (ariaDescribedBy?: string) => (
               <Link
-                aria-current={currentPath === item.path ? 'page' : undefined}
+                aria-current={currentPath === route.path ? 'page' : undefined}
                 aria-describedby={ariaDescribedBy}
-                className={`app-nav-item group rounded-xl ${collapsed && !mobile ? 'justify-center px-0' : 'px-3'} ${currentPath === item.path ? 'active font-semibold' : ''}`}
+                className={`app-nav-item group rounded-xl ${collapsed && !mobile ? 'justify-center px-0' : 'px-3'} ${currentPath === route.path ? 'active font-semibold' : ''}`}
                 onNavigate={mobile ? onClose : undefined}
-                to={item.path}
+                to={route.path}
               >
                 <Icon aria-hidden className="app-icon-md" />
-                <span className={collapsed && !mobile ? 'sr-only' : undefined}>{item.label}</span>
+                <span className={collapsed && !mobile ? 'sr-only' : undefined}>{route.navigationLabel}</span>
                 {(!collapsed || mobile) && (
                   <ChevronRight aria-hidden className="app-icon-sm ml-auto opacity-35 group-hover:opacity-70" />
                 )}
               </Link>
             )
             return (
-              <li key={item.path}>
-                {collapsed && !mobile
-                  ? <Tooltip label={item.label} placement="right">{({ 'aria-describedby': describedBy }) => navigationLink(describedBy)}</Tooltip>
-                  : navigationLink()}
+              <li key={route.path}>
+                {collapsed && !mobile ? (
+                  <Tooltip label={route.navigationLabel} placement="right">
+                    {({ 'aria-describedby': describedBy }) => navigationLink(describedBy)}
+                  </Tooltip>
+                ) : (
+                  navigationLink()
+                )}
               </li>
             )
           })}
@@ -129,7 +109,9 @@ function SidebarContent({ collapsed = false, mobile, navigationId, onClose, onTo
       </nav>
 
       <div className={`border-t border-base-300 ${collapsed && !mobile ? 'p-2' : 'p-3'}`}>
-        <AccountMenu collapsed={collapsed && !mobile} onNavigate={mobile ? onClose : undefined} />
+        {state.status === 'authenticated' && (
+          <AccountMenu collapsed={collapsed && !mobile} onNavigate={mobile ? onClose : undefined} />
+        )}
       </div>
     </aside>
   )

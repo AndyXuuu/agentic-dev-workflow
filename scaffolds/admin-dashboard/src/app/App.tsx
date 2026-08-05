@@ -1,28 +1,36 @@
 import { AdminShell } from '../layouts/AdminShell'
-import { DashboardPage } from '../pages/DashboardPage'
-import { DesignSystemPage } from '../pages/DesignSystemPage'
-import { ResourceListPage } from '../pages/ResourceListPage'
-import { SettingsPage } from '../pages/SettingsPage'
 import { ThemeProvider } from '../hooks/useTheme'
+import {
+  defaultDemoSession,
+  demoSessionGateway,
+  RouteAccessBoundary,
+  type Session,
+  type SessionGateway,
+  SessionProvider,
+} from '../auth'
 import { RouterProvider, usePath } from './router'
+import { getAppRoute, resolveAppPath } from './routes'
 
 function CurrentPage() {
   const path = usePath()
-
-  if (path === '/orders') return <ResourceListPage key="orders" resource="orders" />
-  if (path === '/products') return <ResourceListPage key="products" resource="products" />
-  if (path === '/customers') return <ResourceListPage key="customers" resource="customers" />
-  if (path === '/settings') return <SettingsPage />
-  if (path === '/design-system') return <DesignSystemPage />
-  return <DashboardPage />
+  const route = getAppRoute(path)
+  return <RouteAccessBoundary requirement={route.access}>{route.render()}</RouteAccessBoundary>
 }
 
-export function App() {
+type AppProps = {
+  initialSession?: Session
+  sessionGateway?: SessionGateway
+}
+
+export function App({ initialSession, sessionGateway = demoSessionGateway }: AppProps = {}) {
+  const bootstrapSession = initialSession ?? (sessionGateway === demoSessionGateway ? defaultDemoSession : undefined)
   return (
     <ThemeProvider>
-      <RouterProvider>
-        <AdminShell><CurrentPage /></AdminShell>
-      </RouterProvider>
+      <SessionProvider gateway={sessionGateway} initialSession={bootstrapSession}>
+        <RouterProvider resolvePath={resolveAppPath}>
+          <AdminShell><CurrentPage /></AdminShell>
+        </RouterProvider>
+      </SessionProvider>
     </ThemeProvider>
   )
 }

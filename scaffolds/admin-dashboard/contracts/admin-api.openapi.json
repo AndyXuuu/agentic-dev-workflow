@@ -1,0 +1,461 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Admin Dashboard BFF API",
+    "version": "1.0.0",
+    "description": "Canonical same-origin BFF contract. The browser authenticates with an HttpOnly cookie and never receives access or refresh tokens. Every state-changing request requires trusted-Origin validation; authenticated state changes also require the X-CSRF-Token header."
+  },
+  "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "paths": {
+    "/v1/auth/session": {
+      "post": {
+        "operationId": "createSession",
+        "summary": "Create a browser session",
+        "description": "Validates user credentials and the trusted Origin at the BFF boundary, then establishes the same-origin browser session. Rate limiting and generic public errors must prevent account discovery.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionCredentials"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Session established.",
+            "headers": {
+              "Set-Cookie": {
+                "$ref": "#/components/headers/SessionCookie"
+              },
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationFailed"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnexpectedFailure"
+          }
+        }
+      },
+      "get": {
+        "operationId": "getSession",
+        "summary": "Read the current browser session",
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authenticated session.",
+            "headers": {
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnexpectedFailure"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteSession",
+        "summary": "End the current browser session",
+        "description": "Idempotently invalidates the server-side session and expires the browser cookie.",
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CsrfToken"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Session absent or invalidated.",
+            "headers": {
+              "Set-Cookie": {
+                "$ref": "#/components/headers/ExpiredSessionCookie"
+              },
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnexpectedFailure"
+          }
+        }
+      }
+    },
+    "/v1/auth/session/refresh": {
+      "post": {
+        "operationId": "refreshSession",
+        "summary": "Rotate and renew the current browser session",
+        "description": "Rotates the server-side session identifier. The response never exposes access or refresh tokens.",
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CsrfToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session renewed and rotated.",
+            "headers": {
+              "Set-Cookie": {
+                "$ref": "#/components/headers/SessionCookie"
+              },
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnexpectedFailure"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "cookieSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "__Host-admin_session",
+        "description": "Opaque same-origin session identifier. It is set only by the BFF and is never readable by browser JavaScript."
+      }
+    },
+    "parameters": {
+      "CsrfToken": {
+        "name": "X-CSRF-Token",
+        "in": "header",
+        "required": true,
+        "description": "Session-bound anti-CSRF token. The BFF must also validate the request Origin for state-changing operations.",
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": false,
+        "description": "Client-generated key for a future operation whose contract explicitly defines safe replay semantics.",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    },
+    "headers": {
+      "RequestId": {
+        "description": "Opaque correlation identifier safe to show in support and error workflows.",
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "SessionCookie": {
+        "description": "__Host-admin_session cookie with Secure; HttpOnly; SameSite=Lax; Path=/. Domain must be omitted.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "ExpiredSessionCookie": {
+        "description": "Expires __Host-admin_session with Max-Age=0; Secure; HttpOnly; SameSite=Lax; Path=/. Domain must be omitted.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "Actor": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "displayName", "roleLabel"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "roleLabel": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "Permission": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Provider-owned authorization capability. Consumers must not infer permissions from role labels."
+      },
+      "Session": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["actor", "permissions", "expiresAt", "csrfToken"],
+        "properties": {
+          "actor": {
+            "$ref": "#/components/schemas/Actor"
+          },
+          "permissions": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            }
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "csrfToken": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Session-bound anti-CSRF value. It is not an authentication credential."
+          }
+        }
+      },
+      "SessionCredentials": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["login", "password"],
+        "properties": {
+          "login": {
+            "type": "string",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1,
+            "writeOnly": true
+          }
+        }
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "description": "RFC 9457 problem details. Public fields must not expose stack traces, secrets, credentials, internal identifiers, or implementation details.",
+        "required": ["type", "title", "status", "requestId"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri-reference"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "minimum": 400,
+            "maximum": 599
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string",
+            "format": "uri-reference"
+          },
+          "requestId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "ValidationProblem": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ProblemDetails"
+          },
+          {
+            "type": "object",
+            "required": ["errors"],
+            "properties": {
+              "errors": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Authentication is absent or invalid.",
+        "headers": {
+          "X-Request-ID": {
+            "$ref": "#/components/headers/RequestId"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetails"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "The authenticated actor is not allowed to perform the operation, or the Origin/CSRF check failed.",
+        "headers": {
+          "X-Request-ID": {
+            "$ref": "#/components/headers/RequestId"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetails"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "The requested transition conflicts with current server state.",
+        "headers": {
+          "X-Request-ID": {
+            "$ref": "#/components/headers/RequestId"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetails"
+            }
+          }
+        }
+      },
+      "ValidationFailed": {
+        "description": "One or more request fields are invalid.",
+        "headers": {
+          "X-Request-ID": {
+            "$ref": "#/components/headers/RequestId"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ValidationProblem"
+            }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "Request rate limit exceeded.",
+        "headers": {
+          "X-Request-ID": {
+            "$ref": "#/components/headers/RequestId"
+          },
+          "Retry-After": {
+            "description": "Delay in seconds before another attempt.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetails"
+            }
+          }
+        }
+      },
+      "UnexpectedFailure": {
+        "description": "Unexpected provider failure. Public details remain generic and the request ID is used for diagnosis.",
+        "headers": {
+          "X-Request-ID": {
+            "$ref": "#/components/headers/RequestId"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetails"
+            }
+          }
+        }
+      }
+    }
+  }
+}

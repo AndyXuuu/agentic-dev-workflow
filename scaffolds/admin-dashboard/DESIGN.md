@@ -1,6 +1,6 @@
 # Admin Dashboard Design System
 
-本文是本脚手架视觉与交互契约的唯一权威说明。实现源码仍是可执行事实：Foundation Token 位于 `src/styles/tokens.css`，控件、Catalog、数据表格与 Overlay 样式按 Owner 位于 `src/styles/components`，共享组件位于 `src/components/ui`，Catalog 位于 `/design-system`。
+本文是本脚手架视觉与交互契约的唯一权威说明。实现源码仍是可执行事实：Foundation Token 位于 `src/styles/tokens.css`，控件、Catalog、数据表格与 Overlay 样式按 Owner 位于 `src/styles/components`，共享组件实现位于 `src/components/ui` 并从 `src/components/ui/index.ts` 公开，Catalog 位于 `/design-system`。
 
 ## Design Intent
 
@@ -28,7 +28,7 @@ Catalog 的 Foundation Tokens 区域是公开 Token 的可视索引：按语义�
 
 Catalog 顶部提供吸顶分类导航，固定链接到 Foundation Tokens、控件状态、组件清单、危险操作、列表工具、图表和页面状态。新增大型 Catalog 区块时必须同时注册顶部入口和稳定锚点；分类导航允许窄屏横向滚动，并通过共享边缘渐隐公布尚未显示的内容，不引入独立路由或重复页面状态。
 
-公开组件清单由 `src/components/design-system/publicComponentCatalog.ts` 持有，Catalog 直接消费该清单；`DESIGN.md` 说明公开契约，静态门禁校验清单中的每个组件同时存在文档条目和真实 Catalog 示例。`ApexChart` 等内部适配层不进入公开清单。
+公开组件清单由 `src/components/design-system/publicComponentCatalog.ts` 持有，代码消费者统一从 `src/components/ui/index.ts` 导入共享 UI，Catalog 直接消费清单；`DESIGN.md` 说明公开契约，静态门禁校验清单中的每个组件同时存在文档条目和真实 Catalog 示例。组件内部可以按 Owner 文件相互引用，业务消费者不得通过深层路径绕过公共边界；`ApexChart` 等内部适配层不进入公开清单。
 
 ## Component Contract
 
@@ -43,10 +43,10 @@ Catalog 顶部提供吸顶分类导航，固定链接到 Foundation Tokens、控
 | `RadioGroup` | `src/components/ui/RadioGroup.tsx` | 原生 fieldset/radio 单选组、受控/非受控选择、横向/纵向排列、禁用、必填和错误语义 |
 | `Switch` | `src/components/ui/Switch.tsx` | 原生 checkbox 数据模型与 switch 语义、标签、说明、错误、禁用和紧凑设置 Surface；组件显式拥有圆角轨道、Thumb、checked、focus 与 disabled 外观，不继承 daisyUI 偶然默认值；仅用于即时布尔设置，不替代 Checkbox 的多选语义 |
 | `Tooltip` | `src/components/ui/Tooltip.tsx` | 为收起导航等缺少可见文本的控件提供 hover 与 keyboard focus 可见标签，并通过 `aria-describedby` 关联触发器；只补充说明，不替代触发器自己的可访问名称或承载可交互内容 |
-| `DataTable` | `src/components/ui/DataTable.tsx` | 语义 caption、命名滚动区域、柔和表头、低对比度行分隔、surface/embedded 容器、随滚动位置更新的边缘渐隐提示，以及受控排序、当前页全选/混合状态、行选择和 `aria-sort`/`aria-selected`；页面拥有数据顺序、跨页选择与批量业务规则 |
+| `DataTable` | `src/components/ui/DataTable.tsx` | 语义 caption、命名滚动区域、柔和表头、低对比度行分隔、surface/embedded 容器、随滚动位置更新的边缘渐隐提示，以及受控排序、当前页全选/混合状态、行选择和 `aria-sort`/`aria-selected`；消费 feature 拥有数据顺序、跨页选择与批量业务规则 |
 | `DangerZone` | `src/components/ui/DangerZone.tsx` | 将高风险操作收束到页面末尾的独立 Surface，逐项呈现名称、影响说明和明确触发入口；只负责视图契约，不判断权限或执行操作 |
-| `ListToolbar` | `src/components/ui/ListToolbar.tsx` | 受控搜索、单维筛选、按需出现的重置动作、结果摘要、`aria-controls` 与从窄屏开始的排列；无有效筛选时不为禁用恢复动作占用移动空间，业务过滤规则仍由页面拥有 |
-| `TablePagination` | `src/components/ui/TablePagination.tsx` | 受控页码与页大小、可见结果范围、总页数和首尾禁用状态；页面拥有服务端/本地数据切片、查询复位与 URL 策略 |
+| `ListToolbar` | `src/components/ui/ListToolbar.tsx` | 受控搜索、单维筛选、按需出现的重置动作、结果摘要、`aria-controls` 与从窄屏开始的排列；无有效筛选时不为禁用恢复动作占用移动空间，业务过滤规则仍由消费 feature 拥有 |
+| `TablePagination` | `src/components/ui/TablePagination.tsx` | 受控页码与页大小、可见结果范围、总页数和首尾禁用状态；消费 feature 拥有服务端/本地数据切片、查询复位与 URL 策略 |
 | `DropdownMenu` | `src/components/ui/DropdownMenu.tsx` | Portal 锚定菜单、视口翻转/夹取、menu/menuitem 语义、方向键/Home/End/Escape/Tab、外部关闭和焦点恢复；消费方只提供真实可执行动作，不放置复选过滤或伪造操作 |
 | `Tabs` | `src/components/ui/Tabs.tsx` | 受控自动激活页签、tab/tabpanel 关联、roving tabindex、方向键/Home/End 与禁用项跳过；只切换同一任务上下文内的关联视图 |
 | `Skeleton` | `src/components/ui/Skeleton.tsx` | text/control/avatar/block 四类内容形状与隐藏视觉语义；外层状态区提供可访问加载名称，消费者按真实布局组合且不伪造业务内容 |

@@ -1,6 +1,6 @@
 import { type ReactNode, useId } from 'react'
 
-import { Button } from '../ui/Button'
+import { Button } from '../ui'
 import type { ChartStateProps } from './chart.types'
 
 type ChartFrameProps = ChartStateProps & {

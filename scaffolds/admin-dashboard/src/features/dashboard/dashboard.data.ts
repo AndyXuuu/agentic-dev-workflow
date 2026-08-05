@@ -1,4 +1,4 @@
-import type { StatusTone } from '../../components/ui/StatusBadge'
+import type { StatusTone } from '../../components/ui'
 
 export type DashboardStat = {
   label: string

@@ -1,6 +1,6 @@
 import { CircleDollarSign, CreditCard, ShoppingBag, TrendingUp } from 'lucide-react'
 
-import { StatusBadge } from '../../components/ui/StatusBadge'
+import { StatusBadge } from '../../components/ui'
 import type { DashboardStat } from './dashboard.data'
 
 const icons = {
