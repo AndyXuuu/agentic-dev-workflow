@@ -18,6 +18,7 @@ type DropdownMenuProps = {
   items: readonly DropdownMenuItem[]
   label: string
   trigger: ReactNode
+  triggerDescribedBy?: string
   triggerClassName?: string
 }
 
@@ -27,7 +28,7 @@ type MenuPosition = {
   top: number
 }
 
-export function DropdownMenu({ align = 'end', items, label, trigger, triggerClassName }: DropdownMenuProps) {
+export function DropdownMenu({ align = 'end', items, label, trigger, triggerClassName, triggerDescribedBy }: DropdownMenuProps) {
   const [open, setOpen] = useState(false)
   const [position, setPosition] = useState<MenuPosition>({ left: 0, ready: false, top: 0 })
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -119,6 +120,7 @@ export function DropdownMenu({ align = 'end', items, label, trigger, triggerClas
         aria-expanded={open}
         aria-haspopup="menu"
         aria-label={label}
+        aria-describedby={triggerDescribedBy}
         className={triggerClassName}
         onClick={() => {
           setPosition((current) => ({ ...current, ready: false }))

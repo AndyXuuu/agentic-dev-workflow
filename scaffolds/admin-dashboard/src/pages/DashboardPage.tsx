@@ -33,7 +33,7 @@ export function DashboardPage() {
         actions={
           <>
             <Button className="border-base-300" onClick={handleExport} size="small" startIcon={<Download aria-hidden className="app-icon-sm" />} variant="outline">导出</Button>
-            <Link className="btn btn-primary btn-sm" to="/products">
+            <Link action={{ size: 'small', variant: 'primary' }} to="/products">
               <Plus aria-hidden className="app-icon-sm" />管理商品
             </Link>
           </>

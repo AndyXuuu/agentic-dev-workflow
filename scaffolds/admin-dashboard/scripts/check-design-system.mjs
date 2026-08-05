@@ -142,6 +142,10 @@ for (const file of sourceFiles(sourceRoot)) {
   if (/\bbadge-soft\b|\bbadge-(?:success|warning|error|info|neutral)\b/.test(content)) {
     failures.push(`${name}: 语义状态必须通过共享 StatusBadge 渲染`)
   }
+  if (name !== 'src/components/ui/Button.tsx'
+    && /\bclassName\s*=\s*(?:"[^"]*\bbtn(?:-[\w-]+)?\b[^"]*"|\{`[^`]*\bbtn(?:-[\w-]+)?\b[^`]*`\})/.test(content)) {
+    failures.push(`${name}: Button 风格链接和按钮必须复用共享 Button 视觉 Owner`)
+  }
   if (/<table\b/.test(content) && !name.endsWith('components/ui/DataTable.tsx')) failures.push(`${name}: 表格必须通过共享 DataTable 渲染`)
   if (!name.endsWith('.test.tsx') && /<(?:button|input|select|textarea)\b/.test(content) && !nativeControlOwners.has(name)) {
     failures.push(`${name}: 生产消费者必须通过共享基础组件渲染 Button、Input、Select 与选择控件`)

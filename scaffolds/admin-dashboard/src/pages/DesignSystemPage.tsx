@@ -28,6 +28,8 @@ import { TablePagination } from '../components/ui/TablePagination'
 import { Tabs } from '../components/ui/Tabs'
 import { Textarea } from '../components/ui/Textarea'
 import { TextInput } from '../components/ui/TextInput'
+import { Tooltip } from '../components/ui/Tooltip'
+import { useHorizontalOverflow } from '../hooks/useHorizontalOverflow'
 
 const designSections = [
   { href: '#foundation-tokens', label: '基础 Token' },
@@ -51,6 +53,7 @@ const catalogDangerAction: DangerZoneAction = {
 }
 
 export function DesignSystemPage() {
+  const navigationOverflow = useHorizontalOverflow<HTMLDivElement>()
   const [announcement, setAnnouncement] = useState('')
   const [catalogFilter, setCatalogFilter] = useState('all')
   const [catalogQuery, setCatalogQuery] = useState('')
@@ -75,10 +78,17 @@ export function DesignSystemPage() {
 
       <nav aria-label="设计系统分类" className="design-system-nav">
         <span className="app-caption app-text-muted shrink-0 font-semibold">分类</span>
-        <div className="design-system-nav-list">
-          {designSections.map((section) => (
-            <a className="design-system-nav-link" href={section.href} key={section.href}>{section.label}</a>
-          ))}
+        <div
+          className="design-system-nav-scroll horizontal-scroll-frame"
+          data-at-end={navigationOverflow.atEnd}
+          data-at-start={navigationOverflow.atStart}
+          data-overflow={navigationOverflow.hasOverflow}
+        >
+          <div className="design-system-nav-list" ref={navigationOverflow.ref}>
+            {designSections.map((section) => (
+              <a className="design-system-nav-link" href={section.href} key={section.href}>{section.label}</a>
+            ))}
+          </div>
         </div>
       </nav>
 
@@ -104,6 +114,9 @@ export function DesignSystemPage() {
               <Button onClick={() => setAnnouncement('Outline 操作已触发')} variant="outline">Outline</Button>
               <Button disabled>Disabled</Button>
               <Button aria-label="正在提交" loading variant="primary">Loading</Button>
+              <Tooltip label="补充解释，不替代按钮名称。">
+                {({ 'aria-describedby': describedBy }) => <Button aria-describedby={describedBy} variant="outline">Tooltip</Button>}
+              </Tooltip>
             </div>
           </div>
         </Panel>

@@ -1,0 +1,153 @@
+.app-switch-control {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--app-space-toolbar);
+  border: 1px solid var(--app-border-muted);
+  border-radius: var(--app-radius-control);
+  background: color-mix(in oklab, var(--color-base-200) 70%, var(--color-base-100));
+  padding: var(--app-space-toolbar);
+}
+
+.app-switch {
+  --app-switch-track-height: calc(var(--app-control-height-sm) - var(--app-space-control-gap));
+  --app-switch-track-width: calc(var(--app-control-height-sm) + var(--app-space-control-gap));
+
+  position: relative;
+  flex: none;
+  width: var(--app-switch-track-width);
+  height: var(--app-switch-track-height);
+  appearance: none;
+  border: 1px solid var(--app-border-subtle);
+  border-radius: var(--app-radius-control);
+  background: color-mix(in oklab, var(--color-base-content) 14%, var(--color-base-100));
+  cursor: pointer;
+  transition:
+    border-color var(--app-motion-fast) ease,
+    background-color var(--app-motion-fast) ease,
+    box-shadow var(--app-motion-fast) ease;
+}
+
+.app-switch::before {
+  position: absolute;
+  top: calc(var(--app-space-control-gap) / 2);
+  left: calc(var(--app-space-control-gap) / 2);
+  width: calc(var(--app-switch-track-height) - var(--app-space-control-gap));
+  height: calc(var(--app-switch-track-height) - var(--app-space-control-gap));
+  border-radius: 50%;
+  background: var(--color-base-100);
+  box-shadow: var(--app-shadow-surface);
+  content: '';
+  transition: transform var(--app-motion-fast) ease;
+}
+
+.app-switch:checked {
+  border-color: var(--app-primary-action-background);
+  background: var(--app-primary-action-background);
+}
+
+.app-switch:checked::before {
+  transform: translateX(calc(var(--app-switch-track-width) - var(--app-switch-track-height)));
+}
+
+.app-switch:focus-visible {
+  border-color: var(--app-focus-control-border);
+  outline: none;
+  box-shadow: var(--app-focus-control-shadow);
+}
+
+.app-switch:disabled {
+  cursor: not-allowed;
+}
+
+.app-switch-control:has(input:disabled),
+.app-choice-control:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.56;
+}
+
+.app-choice-control {
+  display: flex;
+  cursor: pointer;
+  align-items: flex-start;
+  gap: var(--app-space-control-gap);
+}
+
+.app-choice-group {
+  display: grid;
+  gap: var(--app-space-toolbar);
+}
+
+.app-choice-group--horizontal {
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+}
+
+.app-choice-message {
+  margin-top: 0.25rem;
+  margin-left: calc(1.5rem + var(--app-space-control-gap));
+}
+
+:where(.btn) {
+  height: var(--app-control-height);
+  min-height: var(--app-control-height);
+  padding-inline: var(--app-control-padding-inline);
+  border-radius: var(--app-radius-control);
+  font-size: var(--app-font-size-control);
+  line-height: var(--app-line-height-body);
+}
+
+:where(.btn.btn-primary) {
+  border-color: var(--app-primary-action-background);
+  background: var(--app-primary-action-background);
+  color: var(--app-primary-action-content);
+}
+
+:where(.btn.btn-sm) {
+  height: var(--app-control-height-sm);
+  min-height: var(--app-control-height-sm);
+  font-size: var(--app-font-size-caption);
+  line-height: var(--app-line-height-caption);
+}
+
+:where(.input, .select, .textarea) {
+  height: var(--app-control-height);
+  min-height: var(--app-control-height);
+  border-radius: var(--app-radius-control);
+  font-size: var(--app-font-size-control);
+  line-height: var(--app-line-height-body);
+  transition:
+    border-color var(--app-motion-fast) ease,
+    box-shadow var(--app-motion-fast) ease;
+}
+
+:where(.textarea) {
+  height: auto;
+  min-height: calc(var(--app-control-height) * 2);
+  padding-block: 0.5rem;
+  resize: vertical;
+}
+
+:where(.label-text) {
+  font-size: var(--app-font-size-control);
+  line-height: var(--app-line-height-body);
+}
+
+.input:focus,
+.input:focus-visible,
+.input:focus-within,
+.select:focus,
+.select:focus-visible,
+.select:focus-within,
+.select:open,
+.textarea:focus,
+.textarea:focus-visible {
+  --input-color: var(--app-focus-control-border);
+  border-color: var(--app-focus-control-border);
+  outline: none;
+  box-shadow: var(--app-focus-control-shadow);
+}
+
+.input > :where(input, textarea):focus-visible {
+  outline: none;
+}

@@ -12,7 +12,7 @@
 - 分区式 Settings、保存状态与操作栏，以及只演示交互、不破坏数据的危险操作接入骨架
 - Loading、Empty、Error 演示状态
 - 统一排版、双主题 AA 文本角色与紧凑密度 Token、柔和可访问焦点、Reduced Motion 与窄屏适配
-- Button、TextInput、Select、Textarea、Checkbox、RadioGroup、Switch、DropdownMenu、Tabs、TablePagination、Skeleton 等可直接复用的基础组件库
+- Button、TextInput、Select、Textarea、Checkbox、RadioGroup、Switch、Tooltip、DropdownMenu、Tabs、TablePagination、Skeleton 等可直接复用的基础组件库
 - Mock repository 边界，便于替换为真实 API client
 - 独立 `AGENTS.md` AI 开发闭环，覆盖风险分流、Owner、设计、测试与交付规则
 - 仓库内 `admin-dashboard-adapter` 薄适配 Skill，导航页面、设计系统、图表、Mock 数据与验证 Owner
@@ -40,6 +40,15 @@ npm run build
 npm run verify
 ```
 
+涉及响应式、主题或 Overlay 几何的完整交付，首次运行先安装 Chromium，再执行独立浏览器契约：
+
+```bash
+npm run test:browser:install
+npm run test:browser
+```
+
+浏览器契约不并入每次 `verify`，避免局部迭代重复承担真实浏览器启动成本。
+
 ## 安全生成新工程
 
 从本目录执行：
@@ -55,6 +64,7 @@ npm run create -- /path/to/new-admin-project
 - 权威契约：`DESIGN.md`
 - Foundation Token：`src/styles/tokens.css`
 - 共享组件：`src/components/ui`
+- 组件样式：`src/styles/components`，按 Catalog、表单控件、数据表格与 Overlay 的真实 Owner 拆分
 - 公开组件清单：`src/components/design-system/publicComponentCatalog.ts`
 - 真实组件 Catalog：应用内 `/design-system`
 - Token Catalog：顶部吸顶分类导航，列举全部项目与主题语义 Token、当前主题计算值、用途和视觉预览，并由静态门禁防止注册表漂移

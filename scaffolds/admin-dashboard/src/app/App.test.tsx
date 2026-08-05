@@ -43,9 +43,11 @@ describe('admin dashboard scaffold', () => {
 
     expect(screen.getByRole('button', { name: '导出 CSV' })).toBeEnabled()
     expect(screen.getByRole('button', { name: '添加商品' })).toBeEnabled()
+    expect(screen.queryByRole('button', { name: '重置筛选' })).not.toBeInTheDocument()
     await user.selectOptions(screen.getByRole('combobox', { name: '按状态筛选' }), '低库存')
     expect(screen.getByText('SKU-1002')).toBeVisible()
     expect(screen.queryByText('SKU-1001')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '重置筛选' })).toBeVisible()
 
     await user.click(screen.getByRole('button', { name: '重置筛选' }))
     expect(screen.getByRole('combobox', { name: '按状态筛选' })).toHaveValue('all')
@@ -129,8 +131,10 @@ describe('admin dashboard scaffold', () => {
 
     const sidebar = screen.getByRole('complementary')
     await user.click(within(sidebar).getByRole('button', { name: '收起侧栏' }))
+    const dashboardLink = within(sidebar).getByRole('link', { name: '概览' })
     expect(within(sidebar).getByRole('button', { name: '展开侧栏' })).toHaveAttribute('aria-expanded', 'false')
-    expect(within(sidebar).getByRole('link', { name: '概览' })).toBeVisible()
+    expect(dashboardLink).toBeVisible()
+    expect(dashboardLink).toHaveAccessibleDescription('概览')
 
     await user.click(within(sidebar).getByRole('button', { name: '展开侧栏' }))
     expect(within(sidebar).getByRole('button', { name: '收起侧栏' })).toHaveAttribute('aria-expanded', 'true')
@@ -217,19 +221,18 @@ describe('admin dashboard scaffold', () => {
     expect(screen.getByRole('textbox', { name: '工作区名称' })).toHaveValue('Demo Commerce')
   })
 
-  it('recovers a resource list from its error state', async () => {
+  it('keeps demo state controls in the design system instead of production-style lists', async () => {
     const user = userEvent.setup()
     render(<App />)
 
     const navigation = screen.getByRole('navigation', { name: '主导航' })
     await user.click(within(navigation).getByRole('link', { name: '商品' }))
-    await user.click(await screen.findByRole('button', { name: '预览错误状态' }))
-    expect(screen.getByRole('heading', { name: '加载失败' })).toBeVisible()
-    expect(screen.getByRole('alert')).not.toHaveAttribute('aria-live')
-
-    await user.click(screen.getByRole('button', { name: '重新加载' }))
-    expect(screen.getByRole('heading', { name: '加载数据' })).toBeVisible()
     expect(await screen.findByText('SKU-1001')).toBeVisible()
+    expect(screen.queryByRole('button', { name: '预览错误状态' })).not.toBeInTheDocument()
+
+    await user.click(within(navigation).getByRole('link', { name: '设计系统' }))
+    expect(await screen.findByRole('heading', { name: 'Error' })).toBeVisible()
+    expect(screen.getByRole('button', { name: '重新加载' })).toBeVisible()
   })
 
   it('opens quick navigation with the documented keyboard shortcut', async () => {

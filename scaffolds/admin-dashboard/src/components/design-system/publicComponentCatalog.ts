@@ -25,6 +25,7 @@ export const publicComponentCatalog = [
   { component: 'Tabs', owner: 'components/ui', status: '稳定', tone: 'success' },
   { component: 'TextInput', owner: 'components/ui', status: '稳定', tone: 'success' },
   { component: 'Textarea', owner: 'components/ui', status: '稳定', tone: 'success' },
+  { component: 'Tooltip', owner: 'components/ui', status: '稳定', tone: 'success' },
 ] as const
 
 export type PublicComponentCatalogRow = (typeof publicComponentCatalog)[number]

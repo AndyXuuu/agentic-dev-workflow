@@ -20,7 +20,7 @@
 - React 页面与路由位于 `src/app`、`src/pages`。
 - 应用壳位于 `src/layouts`，共享原语位于 `src/components/ui`。
 - Dashboard 业务展示位于 `src/features/dashboard`，Mock 数据只由该 feature 的 data 文件提供。
-- `DESIGN.md` 是设计契约 Owner，Foundation Token 由 `src/styles/tokens.css` 持有，主题接线与跨场景样式位于 `src/styles/index.css`。
+- `DESIGN.md` 是设计契约 Owner，Foundation Token 由 `src/styles/tokens.css` 持有，主题接线与真正跨场景样式位于 `src/styles/index.css`，Catalog、表单控件、数据表格与 Overlay 样式按职责位于 `src/styles/components`。
 - `src/components/design-system/publicComponentCatalog.ts` 是公开共享组件清单；Catalog 必须直接渲染清单中的真实组件，内部 Helper 通过文档明确豁免。
 - `src/lib/overlayScrollLock.ts` 是多 Overlay 页面滚动锁的唯一 Owner；Dialog、Drawer 或移动导航不得直接开关 Body 锁定状态。
 - 所有数据表格通过 `src/components/ui/DataTable.tsx` 渲染；组件拥有表格语义和受控排序/选择控件，页面拥有实际数据顺序、跨页选择与批量业务规则。
@@ -59,6 +59,7 @@
 - 静态与设计契约：`npm run lint`
 - 类型与生产构建：`npm run build`
 - 完整本地门禁：`npm run verify`
+- 独立真实浏览器契约：`npm run test:browser`（首次运行先执行 `npm run test:browser:install`；仅在响应式、主题、Overlay 或完整 UI 交付时触发，不并入每次 `verify`）
 - 人工检查：亮/暗主题、320px 等效窄屏、键盘导航、表格横向滚动和浏览器控制台；触达 Overlay 时必须真实打开并检查居中或锚定位置、视口包含、安全边距、Backdrop、层级和滚动。
 
 先运行能证明改动的最窄检查；跨 Owner 或共享契约变化后再运行全部行为测试和构建。不要在每次局部编辑后机械重复全量检查，也不要把未运行的 CI/发布门禁写成已经通过。

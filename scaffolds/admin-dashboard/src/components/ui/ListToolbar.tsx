@@ -61,18 +61,21 @@ export function ListToolbar({
         >
           {filterOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
         </Select>
-        <Button
-          aria-controls={controlsId}
-          className="w-full sm:w-auto"
-          disabled={!hasActiveFilters}
-          onClick={onReset}
-          startIcon={<RotateCcw aria-hidden className="app-icon-sm" />}
-          variant="ghost"
-        >
-          重置筛选
-        </Button>
       </div>
-      <p aria-live="polite" className="app-caption app-text-muted">{resultSummary}</p>
+      <div className="list-toolbar-summary">
+        <p aria-live="polite" className="app-caption app-text-muted">{resultSummary}</p>
+        {hasActiveFilters && (
+          <Button
+            aria-controls={controlsId}
+            onClick={onReset}
+            size="small"
+            startIcon={<RotateCcw aria-hidden className="app-icon-sm" />}
+            variant="link"
+          >
+            重置筛选
+          </Button>
+        )}
+      </div>
     </section>
   )
 }

@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -19,6 +19,26 @@ describe('DataTable', () => {
     const table = within(region).getByRole('table', { name: '商品列表' })
     expect(within(table).getByRole('columnheader', { name: '编号' })).toBeVisible()
     expect(within(table).getByRole('cell', { name: '示例商品' })).toBeVisible()
+  })
+
+  it('exposes the remaining horizontal content through its shared edge affordance', () => {
+    render(<DataTable ariaLabel="商品列表" columns={columns} rowKey={(row) => row.id} rows={[{ id: '1', name: '示例商品' }]} />)
+
+    const region = screen.getByRole('region', { name: '商品列表，可横向滚动' })
+    const frame = region.parentElement as HTMLElement
+    Object.defineProperties(region, {
+      clientWidth: { configurable: true, value: 320 },
+      scrollLeft: { configurable: true, value: 0, writable: true },
+      scrollWidth: { configurable: true, value: 704 },
+    })
+
+    fireEvent(window, new Event('resize'))
+    expect(frame).toHaveAttribute('data-overflow', 'true')
+    expect(frame).toHaveAttribute('data-at-end', 'false')
+
+    region.scrollLeft = 384
+    fireEvent.scroll(region)
+    expect(frame).toHaveAttribute('data-at-end', 'true')
   })
 
   it('exposes controlled sort and current-page selection semantics', async () => {

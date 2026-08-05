@@ -1,5 +1,7 @@
 import { createContext, type MouseEvent, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
+import { buttonClassName, type ButtonSize, type ButtonVariant } from '../components/ui/Button'
+
 export type AppPath = '/dashboard' | '/orders' | '/products' | '/customers' | '/settings' | '/design-system'
 
 const validPaths = new Set<AppPath>(['/dashboard', '/orders', '/products', '/customers', '/settings', '/design-system'])
@@ -60,6 +62,11 @@ export function useNavigate() {
 }
 
 type LinkProps = {
+  action?: {
+    size?: ButtonSize
+    variant?: ButtonVariant
+  }
+  'aria-describedby'?: string
   children: ReactNode
   className?: string
   onNavigate?: () => void
@@ -67,7 +74,7 @@ type LinkProps = {
   'aria-current'?: 'page'
 }
 
-export function Link({ children, className, onNavigate, to, 'aria-current': ariaCurrent }: LinkProps) {
+export function Link({ action, children, className, onNavigate, to, 'aria-current': ariaCurrent, 'aria-describedby': ariaDescribedBy }: LinkProps) {
   const { navigate } = useRouter()
 
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
@@ -77,5 +84,15 @@ export function Link({ children, className, onNavigate, to, 'aria-current': aria
     onNavigate?.()
   }
 
-  return <a aria-current={ariaCurrent} className={className} href={to} onClick={handleClick}>{children}</a>
+  return (
+    <a
+      aria-current={ariaCurrent}
+      aria-describedby={ariaDescribedBy}
+      className={action ? buttonClassName({ className, ...action }) : className}
+      href={to}
+      onClick={handleClick}
+    >
+      {children}
+    </a>
+  )
 }

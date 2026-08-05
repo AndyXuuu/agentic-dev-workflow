@@ -195,10 +195,7 @@ export function ResourceListPage({ resource }: ResourceListPageProps) {
               columns={columns}
               footer={
                 <div className="grid gap-3">
-                  <div className="app-body app-text-muted flex flex-wrap items-center justify-between gap-3">
-                    <span>已选择 {selectedRowKeys.size} 条记录</span>
-                    <Button onClick={() => setLoadState('error')} variant="link">预览错误状态</Button>
-                  </div>
+                  <p className="app-body app-text-muted">已选择 {selectedRowKeys.size} 条记录</p>
                   <TablePagination
                     ariaLabel={`${config.title}分页`}
                     onPageChange={setPage}

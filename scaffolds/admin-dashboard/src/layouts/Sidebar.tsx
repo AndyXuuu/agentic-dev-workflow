@@ -15,6 +15,7 @@ import { type ComponentType, useEffect, useRef } from 'react'
 
 import { Link, type AppPath, usePath } from '../app/router'
 import { Button } from '../components/ui/Button'
+import { Tooltip } from '../components/ui/Tooltip'
 import { acquirePageScrollLock } from '../lib/overlayScrollLock'
 import { AccountMenu } from './AccountMenu'
 
@@ -63,8 +64,8 @@ function SidebarContent({ collapsed = false, mobile, navigationId, onClose, onTo
               <Boxes aria-hidden className="app-icon-lg" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="app-section-title truncate font-bold tracking-tight">Admin Workspace</p>
-              <p className="app-caption app-text-muted truncate">Operations workspace</p>
+              <p className="app-section-title truncate font-bold tracking-tight">Admin</p>
+              <p className="app-caption app-text-muted truncate">Workspace</p>
             </div>
           </>
         )}
@@ -101,20 +102,26 @@ function SidebarContent({ collapsed = false, mobile, navigationId, onClose, onTo
         <ul className="menu w-full gap-1 p-0">
           {navigation.map((item) => {
             const Icon = item.icon
+            const navigationLink = (ariaDescribedBy?: string) => (
+              <Link
+                aria-current={currentPath === item.path ? 'page' : undefined}
+                aria-describedby={ariaDescribedBy}
+                className={`app-nav-item group rounded-xl ${collapsed && !mobile ? 'justify-center px-0' : 'px-3'} ${currentPath === item.path ? 'active font-semibold' : ''}`}
+                onNavigate={mobile ? onClose : undefined}
+                to={item.path}
+              >
+                <Icon aria-hidden className="app-icon-md" />
+                <span className={collapsed && !mobile ? 'sr-only' : undefined}>{item.label}</span>
+                {(!collapsed || mobile) && (
+                  <ChevronRight aria-hidden className="app-icon-sm ml-auto opacity-35 group-hover:opacity-70" />
+                )}
+              </Link>
+            )
             return (
               <li key={item.path}>
-                <Link
-                  aria-current={currentPath === item.path ? 'page' : undefined}
-                  className={`app-nav-item group rounded-xl ${collapsed && !mobile ? 'justify-center px-0' : 'px-3'} ${currentPath === item.path ? 'active font-semibold' : ''}`}
-                  onNavigate={mobile ? onClose : undefined}
-                  to={item.path}
-                >
-                  <Icon aria-hidden className="app-icon-md" />
-                  <span className={collapsed && !mobile ? 'sr-only' : undefined}>{item.label}</span>
-                  {(!collapsed || mobile) && (
-                    <ChevronRight aria-hidden className="app-icon-sm ml-auto opacity-35 group-hover:opacity-70" />
-                  )}
-                </Link>
+                {collapsed && !mobile
+                  ? <Tooltip label={item.label} placement="right">{({ 'aria-describedby': describedBy }) => navigationLink(describedBy)}</Tooltip>
+                  : navigationLink()}
               </li>
             )
           })}

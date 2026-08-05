@@ -1,0 +1,125 @@
+.data-table-shell {
+  min-width: 0;
+}
+
+.list-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-control-gap);
+  border-bottom: 1px solid var(--app-border-muted);
+  background: var(--app-table-toolbar);
+  padding: var(--app-space-toolbar);
+}
+
+.list-toolbar-controls {
+  display: grid;
+  min-width: 0;
+  gap: var(--app-space-control-gap);
+}
+
+.list-toolbar-summary {
+  display: flex;
+  min-height: var(--app-control-height-sm);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--app-space-control-gap);
+}
+
+.data-table-region {
+  contain: inline-size layout paint;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--color-base-content);
+  font-size: var(--app-font-size-control);
+  line-height: var(--app-line-height-body);
+}
+
+.data-table--standard {
+  min-width: 44rem;
+}
+
+.data-table--wide {
+  min-width: 52rem;
+}
+
+.data-table :where(th, td) {
+  border-bottom: 1px solid var(--app-border-muted);
+  padding: var(--app-table-cell-padding-block) var(--app-table-cell-padding-inline);
+  vertical-align: middle;
+}
+
+.data-table th {
+  background: var(--app-table-header);
+  color: var(--app-text-muted);
+  font-size: var(--app-font-size-caption);
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+}
+
+.data-table tbody tr {
+  transition: background-color var(--app-motion-fast) ease;
+}
+
+.data-table tbody tr:hover {
+  background: var(--app-surface-hover);
+}
+
+.data-table tbody tr:last-child > td {
+  border-bottom: 0;
+}
+
+.data-table-footer {
+  border-top: 1px solid var(--app-border-muted);
+  padding: var(--app-space-toolbar) var(--app-table-cell-padding-inline);
+}
+
+.data-table__selection {
+  width: calc(var(--app-control-height) + var(--app-table-cell-padding-inline));
+  text-align: center;
+}
+
+.data-table__selection .app-choice-control {
+  justify-content: center;
+}
+
+.data-table__sort {
+  height: auto;
+  min-height: var(--app-control-height-sm);
+  margin-block: calc(var(--app-table-cell-padding-block) * -0.5);
+  margin-inline: calc(var(--app-control-padding-inline) * -1);
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+.data-table tr[aria-selected='true'] {
+  background: color-mix(in oklab, var(--color-primary) 7%, transparent);
+}
+
+.app-table-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--app-space-toolbar);
+}
+
+.app-table-pagination__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-control-gap);
+}
+
+@media (min-width: 40rem) {
+  .list-toolbar-controls {
+    grid-template-columns: minmax(14rem, 1fr) 12rem;
+    align-items: center;
+  }
+}

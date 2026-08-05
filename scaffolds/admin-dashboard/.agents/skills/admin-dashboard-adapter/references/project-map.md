@@ -14,6 +14,7 @@
 | 应用能力与接入方式 | `README.md` | 用户可见能力、生成方式、真实项目接入或部署要求变化时更新 |
 | 设计系统 | `DESIGN.md` | Token、主题、共享组件、Catalog、图表视觉或采用规则变化时更新 |
 | 可执行设计 Token | `src/styles/tokens.css` | Foundation Token 的唯一数值 Owner |
+| 组件样式 | `src/styles/components` | Catalog、表单控件、数据表格与 Overlay 的样式 Owner；跨场景基础规则保留在 `src/styles/index.css` |
 | 公开组件清单 | `src/components/design-system/publicComponentCatalog.ts` | 共享公开组件增删或成熟度变化时更新 |
 | 项目架构 | `AGENTS.md` 与真实 import/调用关系 | 未发现独立架构文档；不得用本地图替代源码事实 |
 
@@ -27,7 +28,7 @@
 | 资源列表 | `src/pages/ResourceListPage.tsx`、`src/pages/resource.data.ts` | 页面持有查询、筛选、排序、分页、跨页选择与导出策略；按过滤→排序→分页派生当前页数据，复用列表工具、表格、分页与加载占位组件 |
 | 设置与本地持久化 | `src/pages/SettingsPage.tsx`、`src/features/settings/settings.repository.ts`、`settings.danger-actions.ts` | 仅保存非敏感演示设置并演示无数据副作用的危险操作；真实服务接入需新增 service/adapter Owner |
 | 主题状态 | `src/hooks/useTheme.ts` | 主题偏好与 DOM 主题接线的唯一 Owner |
-| 共享 UI | `src/components/ui` | 基础控件、表格、分页、加载占位、Portal 菜单、Tabs 与 Overlay 的 DOM 语义、键盘、状态、尺寸和样式契约由组件拥有；生产消费者不得绕过基础组件，危险操作通过 `DangerZone` 与 `DestructiveActionDialog` 组合，业务校验、权限和副作用不得进入共享层 |
+| 共享 UI | `src/components/ui` | 基础控件、Tooltip、表格、分页、加载占位、Portal 菜单、Tabs 与 Overlay 的 DOM 语义、键盘、状态、尺寸和样式契约由组件拥有；生产消费者不得绕过基础组件，危险操作通过 `DangerZone` 与 `DestructiveActionDialog` 组合，业务校验、权限和副作用不得进入共享层 |
 | 图表公共边界 | `src/components/charts/AreaChart.tsx`、`BarChart.tsx`、`DonutChart.tsx`、`ChartFrame.tsx` | 页面只传语义数据、状态和摘要 |
 | ApexCharts 适配 | `src/components/charts/ApexChart.tsx`、`apex.options.ts`、`chart.theme.ts`、`apexcharts.modules.d.ts` | 供应商导入、类型、按需模块、主题转换与分组柱间距不得泄漏到页面 |
 | 设计 Catalog | `src/pages/DesignSystemPage.tsx`、`src/components/design-system` | 直接渲染真实 Token 与公开组件，不维护展示专用平行实现 |
@@ -51,6 +52,7 @@
 | 整体行为 | 当前全部 Vitest 行为测试 | `npm test` | 跨 Owner、共享契约或完整交付 |
 | 类型与生产包 | TypeScript 与 Vite 生产构建 | `npm run build` | 公开类型、依赖、动态导入、样式或交付边界变化 |
 | 完整本地门禁 | Lint、设计契约、全部测试和构建 | `npm run verify` | 跨 Owner 或准备复制/交付脚手架时 |
+| 浏览器契约 | 桌面/320px、双主题控件、Modal/Drawer/Dropdown 几何与焦点 | `npm run test:browser` | 响应式、主题、Overlay 或完整 UI 交付；首次运行先安装 Chromium |
 | 人工/运行时 | 页面、主题、视口、键盘、控制台和真实几何 | `npm run dev` | 视觉、响应式、Overlay、焦点或图表变化 |
 
 ## 项目特有风险与缺口
@@ -59,4 +61,4 @@
 - History API 路由要求部署平台配置未知路径回退；仓库未提供平台专属部署配置。
 - `localStorage` 只承载主题与演示设置，不得扩展为长期敏感凭据存储。
 - 未发现仓库 CI 配置、生产部署 Owner、真实 API 契约、认证或权限实现；本地 `npm run verify` 不代表 CI/发布成功。
-- JSDOM 不执行真实布局；Overlay 居中、视口包含、图表和双主题视觉仍需浏览器证据。
+- JSDOM 不执行真实布局；代表性几何由 Playwright 浏览器契约持续保护，完整视觉判断、图表细节和控制台仍需 Orca 或等价真实浏览器证据。

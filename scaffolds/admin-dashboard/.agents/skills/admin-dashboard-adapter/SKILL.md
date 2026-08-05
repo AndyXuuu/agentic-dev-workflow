@@ -31,6 +31,6 @@ description: 按 Admin Dashboard Scaffold 的真实 Owner、设计系统、图�
 
 ## 验证入口
 
-按项目地图选择最小相关检查。跨共享组件、Token、Catalog、路由或多个 Owner 的完整交付运行 `npm run verify`。涉及 Overlay、主题、响应式或图表视觉时，还需通过真实浏览器验证；不能用 JSDOM 证明几何布局。
+按项目地图选择最小相关检查。跨共享组件、Token、Catalog、路由或多个 Owner 的完整交付运行 `npm run verify`。涉及 Overlay、主题或响应式稳定契约时运行独立 `npm run test:browser`；完整视觉和图表细节仍需 Orca 或等价真实浏览器检查，不能用 JSDOM 证明几何布局。
 
 行为、契约、页面、架构或公开组件变化时更新既有 canonical document，不创建重复说明。

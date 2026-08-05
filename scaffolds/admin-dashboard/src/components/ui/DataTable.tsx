@@ -1,6 +1,7 @@
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
 import type { Key, ReactNode } from 'react'
 
+import { useHorizontalOverflow } from '../../hooks/useHorizontalOverflow'
 import { Button } from './Button'
 import { Checkbox } from './Checkbox'
 
@@ -53,15 +54,22 @@ export function DataTable<Row>({
   selection,
   surface = false,
 }: DataTableProps<Row>) {
+  const overflow = useHorizontalOverflow<HTMLElement>()
   const selectedCount = selection ? rows.filter((row) => selection.selectedKeys.has(rowKey(row))).length : 0
   const allSelected = rows.length > 0 && selectedCount === rows.length
   const partlySelected = selectedCount > 0 && !allSelected
 
   return (
     <section className={surface ? 'data-table-shell surface-card' : 'data-table-shell'} aria-label={ariaLabel}>
-      {/* biome-ignore lint/a11y/noNoninteractiveTabindex: 横向溢出区需要进入键盘焦点流，才能使用方向键滚动。 */}
-      <section className="data-table-region" aria-label={`${ariaLabel}，可横向滚动`} tabIndex={0}>
-        <table className={`data-table data-table--${minimumWidth}`}>
+      <div
+        className="horizontal-scroll-frame"
+        data-at-end={overflow.atEnd}
+        data-at-start={overflow.atStart}
+        data-overflow={overflow.hasOverflow}
+      >
+        {/* biome-ignore lint/a11y/noNoninteractiveTabindex: 横向溢出区需要进入键盘焦点流，才能使用方向键滚动。 */}
+        <section className="data-table-region" aria-label={`${ariaLabel}，可横向滚动`} ref={overflow.ref} tabIndex={0}>
+          <table className={`data-table data-table--${minimumWidth}`}>
           <caption className="sr-only">{ariaLabel}</caption>
           <thead>
             <tr>
@@ -120,8 +128,9 @@ export function DataTable<Row>({
               </tr>
             ))}
           </tbody>
-        </table>
-      </section>
+          </table>
+        </section>
+      </div>
       {footer && <footer className="data-table-footer">{footer}</footer>}
     </section>
   )

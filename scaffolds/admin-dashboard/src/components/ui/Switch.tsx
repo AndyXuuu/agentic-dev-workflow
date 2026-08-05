@@ -25,7 +25,7 @@ export function Switch({ checked, className, description, error, id, label, ...p
           aria-invalid={error ? true : undefined}
           aria-checked={checked}
           checked={checked}
-          className={['toggle toggle-primary', className].filter(Boolean).join(' ')}
+          className={['app-switch', className].filter(Boolean).join(' ')}
           id={controlId}
           role="switch"
           type="checkbox"

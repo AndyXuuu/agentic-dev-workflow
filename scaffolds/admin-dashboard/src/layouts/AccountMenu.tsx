@@ -2,6 +2,7 @@ import { ChevronsUpDown, Moon, Palette, Settings, Sun } from 'lucide-react'
 
 import { useNavigate } from '../app/router'
 import { DropdownMenu } from '../components/ui/DropdownMenu'
+import { Tooltip } from '../components/ui/Tooltip'
 import { useTheme } from '../hooks/useTheme'
 
 type AccountMenuProps = {
@@ -19,7 +20,7 @@ export function AccountMenu({ collapsed = false, onNavigate }: AccountMenuProps)
     onNavigate?.()
   }
 
-  return (
+  const menu = (triggerDescribedBy?: string) => (
     <DropdownMenu
       align="start"
       items={[
@@ -46,6 +47,7 @@ export function AccountMenu({ collapsed = false, onNavigate }: AccountMenuProps)
         },
       ]}
       label="账户导航"
+      triggerDescribedBy={triggerDescribedBy}
       trigger={(
         <span className={`flex min-w-0 flex-1 items-center ${collapsed ? 'justify-center' : 'gap-2'}`}>
           <span className="avatar placeholder">
@@ -67,4 +69,8 @@ export function AccountMenu({ collapsed = false, onNavigate }: AccountMenuProps)
       triggerClassName={`app-sidebar-account${collapsed ? ' app-sidebar-account--collapsed' : ''}`}
     />
   )
+
+  return collapsed
+    ? <Tooltip label="账户导航" placement="right">{({ 'aria-describedby': describedBy }) => menu(describedBy)}</Tooltip>
+    : menu()
 }

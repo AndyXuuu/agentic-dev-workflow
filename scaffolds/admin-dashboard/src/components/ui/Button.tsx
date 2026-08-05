@@ -1,7 +1,7 @@
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react'
 
-type ButtonVariant = 'danger' | 'dangerOutline' | 'ghost' | 'link' | 'neutral' | 'outline' | 'primary'
-type ButtonSize = 'default' | 'small'
+export type ButtonVariant = 'danger' | 'dangerOutline' | 'ghost' | 'link' | 'neutral' | 'outline' | 'primary'
+export type ButtonSize = 'default' | 'small'
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean
@@ -21,6 +21,28 @@ const variantClasses: Record<ButtonVariant, string> = {
   primary: 'btn-primary',
 }
 
+type ButtonClassNameOptions = {
+  className?: string
+  size?: ButtonSize
+  square?: boolean
+  variant?: ButtonVariant
+}
+
+export function buttonClassName({
+  className,
+  size = 'default',
+  square = false,
+  variant = 'neutral',
+}: ButtonClassNameOptions = {}) {
+  return [
+    'btn',
+    variantClasses[variant],
+    size === 'small' ? 'btn-sm' : '',
+    square ? 'btn-square' : '',
+    className,
+  ].filter(Boolean).join(' ')
+}
+
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({
   children,
   className,
@@ -33,13 +55,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   variant = 'neutral',
   ...props
 }, ref) {
-  const classes = [
-    'btn',
-    variantClasses[variant],
-    size === 'small' ? 'btn-sm' : '',
-    square ? 'btn-square' : '',
-    className,
-  ].filter(Boolean).join(' ')
+  const classes = buttonClassName({ className, size, square, variant })
 
   return (
     <button
