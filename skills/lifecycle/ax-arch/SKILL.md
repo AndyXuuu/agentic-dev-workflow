@@ -12,6 +12,9 @@ Your job is to design a maintainable implementation that fits the existing codeb
 Before proposing design:
 
 - Search for existing similar behavior.
+- Verify the current behavior and the material premise behind the requested change; do not
+  treat the user's diagnosis or proposed architecture as proof that the existing design is
+  deficient.
 - Identify owner modules and boundaries.
 - Identify existing helpers/services/classes/hooks.
 - Identify current tests and verification commands.
@@ -22,6 +25,8 @@ Before proposing design:
 Produce a design:
 
 - Existing system summary
+- Decision rationale and success signal
+- Meaningful alternatives, including no change when relevant
 - Affected modules
 - Proposed structure
 - Data flow
@@ -34,6 +39,9 @@ Produce a design:
 
 ## Rules
 
+- Give an independent recommendation. When changing an existing design, compare the verified
+  baseline with only the meaningful alternatives, including no change when it may be preferable,
+  and state what evidence would show the chosen design is actually better.
 - Do not put unrelated responsibilities into one file.
 - Prefer extending established modules over creating parallel ones.
 - Introduce abstractions only when they remove real duplication or clarify ownership.

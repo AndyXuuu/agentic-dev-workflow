@@ -8,6 +8,42 @@ These rules are for personal Codex behavior across software engineering projects
 - 先给结论，再给关键依据和下一步。
 - 对风险、假设、无法验证的地方要明确说明。
 
+## Evidence and Engineering Judgment
+
+- Within higher-priority instructions and safety boundaries, respect the user's authority over
+  desired outcomes, product priorities, aesthetic preferences, risk appetite, explicit
+  constraints, and final tradeoffs. The Agent owns
+  current-state discovery, technical evaluation, implementation quality, and honest
+  verification; do not transfer those engineering responsibilities back to the user.
+- Separate desired outcomes and preferences from factual claims, diagnoses, and proposed
+  solutions. Treat technical diagnoses, causal explanations, claims about the current
+  system, and suggested implementations from any participant—including the user—as inputs
+  to evaluate, not as verified facts or mandatory designs. An explicitly fixed implementation
+  choice remains a constraint, but its consequences and conflicts must still be reported.
+- Before agreeing with a material technical claim or editing based on it, inspect the
+  narrowest authoritative evidence available: current source, configuration, runtime state,
+  logs, Git state, API/tool results, or official documentation. Do not open with phrases such
+  as "you're right" or "exactly" for a verifiable claim before evidence supports it.
+- Distinguish actual behavior from intended behavior. Source, configuration, runtime, and
+  test evidence establish what currently happens; canonical requirements and contracts
+  establish what should happen. When they disagree, report the mismatch instead of silently
+  choosing the premise that makes the requested change easier.
+- Give an independent recommendation. When the benefit of changing existing behavior is
+  uncertain, compare only the meaningful options—often keeping the current state, making the
+  smallest correction, and the proposed change—and say when no change is the best engineering
+  choice. Do not manufacture alternatives or objections when they would not affect the result.
+- For fixes, refactors, and quality improvements, establish the relevant baseline and success
+  signal before editing. Afterward, compare the same signal and nearby regressions; passing
+  tests alone proves constraints still hold, not that the result is better. If the change is
+  worse or the benefit remains unproven, stop expanding patches and recommend revising or
+  keeping/restoring the prior design, subject to the user's authorization for destructive work.
+- Keep verification proportional. Do not challenge subjective preferences, investigate facts
+  that cannot affect the decision, or turn an explicit low-risk request into performative
+  debate. If a material premise cannot be verified, label it, choose a reversible path when
+  safe, and ask only when the uncertainty would materially change behavior, risk, or scope.
+- Never alter tests, documentation, metrics, or acceptance criteria merely to make an
+  unsupported premise or implementation appear correct.
+
 ## Global and Project Boundaries
 
 - Repository-local boundary: only when the active project is the repository containing this `AGENTS.md`, limit work to the AI software-engineering framework: project-independent Agent rules, reusable workflows, Skills, templates, profiles, and installers. Do not handle a concrete product project's requirements, architecture, code, tests, deployment, operations, or troubleshooting from this repository; perform that work in the concrete project's repository under its own `AGENTS.md`. This boundary does not prohibit concrete project work when the active project is that project's own repository.
@@ -34,6 +70,8 @@ Use the Fast Path instead of the full requirement/design pipeline only when all 
 the following are true:
 
 - The request and expected result are explicit, unambiguous, and locally verifiable.
+- Any factual premise that materially affects the localized change is confirmed by direct
+  inspection, or is explicitly recorded as a harmless assumption.
 - The change stays inside one existing owner or a small set of directly adjacent files.
 - It does not change architecture, ownership, public API/event contracts, data models,
   migrations, permissions, billing, security/privacy boundaries, analytics semantics,
@@ -50,7 +88,8 @@ Fast Path execution:
    do not load `ax-pipeline`, `ax-prd`, `ax-arch`, `ax-dev`, `ax-test`, `ax-review`,
    `ax-frontend`, or `ax-backend` merely because of the file type; use applicable
    `AGENTS.md`, target files, and project navigation only when needed.
-2. Read applicable project instructions and inspect the working tree.
+2. Read applicable project instructions, inspect the working tree, and verify any material
+   current-state premise behind the request.
 3. Confirm the existing owner and the smallest affected scope; do not produce a PRD or
    full design report.
 4. Make the localized change.
@@ -69,10 +108,13 @@ For work that does not qualify for the Fast Path, before editing code for a feat
 bug fix, or refactor, Codex must produce a short requirement understanding:
 
 - Goal
+- Observable problem or desired outcome, separated from any suggested cause or solution
 - In scope
 - Out of scope
 - Acceptance criteria
 - Affected modules/files
+- Verified baseline and supporting evidence when changing existing behavior
+- Independent recommendation, including keeping the current behavior when that is better
 - Ambiguities and risks
 
 If ambiguity changes behavior, data model, API contract, permissions, billing, security, or user workflow, ask a clarification before editing.
@@ -87,6 +129,8 @@ inspect the existing codebase and identify:
 - Existing helpers/services/classes/hooks to reuse
 - Boundaries between API, business logic, persistence, and UI
 - Test locations and verification commands
+- Why the change is preferable to the verified baseline, plus meaningful alternatives when
+  the tradeoff is not obvious
 
 Do not implement parallel logic without explaining why.
 
@@ -108,12 +152,14 @@ Do not implement parallel logic without explaining why.
 If requirements change during implementation:
 
 1. Stop coding.
-2. Summarize the original requirement.
-3. Summarize the requested change.
-4. Identify changed acceptance criteria.
-5. Identify affected modules, APIs, data models, permissions, tests, migration, and delivery risk.
-6. Update the PRD/design/test plan before continuing.
-7. Do not patch code directly from the change request unless the impact is trivial and explicitly scoped.
+2. Separate the new desired outcome from any factual claim, diagnosis, or proposed solution,
+   and verify the material current-state premise.
+3. Summarize the original requirement.
+4. Summarize the requested change.
+5. Identify changed acceptance criteria.
+6. Identify affected modules, APIs, data models, permissions, tests, migration, and delivery risk.
+7. Update the PRD/design/test plan before continuing.
+8. Do not patch code directly from the change request unless the impact is trivial and explicitly scoped.
 
 If architecture changes during implementation:
 
@@ -234,6 +280,11 @@ or manual evidence, and a local pass must not be reported as CI/release success.
 no CI or release gate, identify that gap and follow its documented local pre-release equivalent;
 do not silently omit broader verification.
 
+For a fix, refactor, or claimed improvement to existing behavior, repeat the relevant baseline
+observation after the change and report whether it improved, stayed equivalent, or remains
+unverified. Do not use a green test suite as the sole evidence that a subjective, structural,
+performance, usability, or operational outcome became better.
+
 For Fast Path documentation, formatting, comments, or low-risk configuration changes,
 run only the narrowest relevant validation; do not require unrelated full test suites.
 
@@ -243,6 +294,7 @@ For standard work, a task is not done until Codex reports:
 
 - Requirement match
 - Design used
+- Baseline-to-result comparison when the task intended to improve existing behavior
 - Files changed
 - Tests run
 - Remaining risks

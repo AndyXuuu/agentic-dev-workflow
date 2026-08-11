@@ -26,6 +26,8 @@ executable Agent workflows.
 The framework is designed to make Agent-assisted development:
 
 - **Governed** — classify risk before editing and apply proportionate delivery gates.
+- **Evidence-led** — separate user goals from technical premises, verify current state,
+  and recommend no change when it is better.
 - **Traceable** — connect requirements, design decisions, code, tests, and delivery evidence.
 - **Locally understandable** — give each behavior a clear Owner, boundary, and verification path.
 - **Verifiable** — test expected behavior instead of mirroring the current implementation.
@@ -236,8 +238,9 @@ $tapd-query List stories and bugs for workspace 123456.
 
 ## Operating Rule
 
-Use the Fast Path in `AGENTS.md` for explicit, localized, low-risk changes. Use PRD and
-design gates for work that does not meet every Fast Path condition, and escalate
+Apply the evidence and engineering-judgment gate in `AGENTS.md` before accepting a technical
+premise or proposed solution. Then use the Fast Path for explicit, localized, low-risk changes.
+Use PRD and design gates for work that does not meet every Fast Path condition, and escalate
 immediately when a risk boundary appears. Decide this before loading optional role or
 domain Skills; an eligible Fast Path change uses project instructions and local Owner
 navigation without loading the full `ax-dev`, `ax-frontend`, or `ax-backend` workflow.
