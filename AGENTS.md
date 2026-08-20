@@ -79,6 +79,33 @@ These rules are for personal Codex behavior across software engineering projects
 - Never alter tests, documentation, metrics, or acceptance criteria merely to make an
   unsupported premise or implementation appear correct.
 
+## Security Goal and Complexity Budget
+
+- Subject to higher-priority safety requirements and mandatory project policy, derive security
+  work from the accepted behavior and its stated threat model. Before adding a non-trivial
+  control, identify the protected asset, credible threat or failure, attacker capability, trust
+  boundary, and observable security property. A broad request such as "make it secure" does not
+  by itself authorize the strongest possible threat model.
+- Do not silently upgrade protection against mistakes or program bugs into protection against
+  compromised administrator credentials, malicious insiders, collusion, or supply-chain
+  substitution. A stronger attacker model is a requirement and architecture change, not an
+  automatic completion condition for the current task.
+- Describe controls by the guarantee they actually provide. Request-supplied actor or
+  `approved_by` text is audit attribution, not independent approval; a digest of metadata or a
+  source identifier is not content-integrity verification unless trusted bytes are verified.
+  Correct materially overstated names, specifications, or acceptance claims within the current
+  documentation scope; do not use the correction as authority to build the stronger mechanism.
+- Treat new principals, roles, separation of duties, approval state machines, permission
+  boundaries, content digests, signatures, attestations, key lifecycles, schema migrations, or
+  cross-Owner enforcement as material scope when they were not already required. State the
+  security-property delta, implementation and operating cost, migration impact, and verification
+  needs, then obtain the required product decision before implementation.
+- When a stronger control is outside the accepted task and does not block its security property,
+  report the evidenced limitation and residual risk as a follow-up without expanding code or
+  tests. Compare only meaningful choices: keep the current accurately stated guarantee, make the
+  smallest naming/documentation correction, or explicitly upgrade the threat model. Security
+  checklists are relevance filters and must not create requirements.
+
 ## Global and Project Boundaries
 
 - Repository-local boundary: only when the active project is the repository containing this `AGENTS.md`, limit work to the AI software-engineering framework: project-independent Agent rules, reusable workflows, Skills, templates, profiles, and installers. Do not handle a concrete product project's requirements, architecture, code, tests, deployment, operations, or troubleshooting from this repository; perform that work in the concrete project's repository under its own `AGENTS.md`. This boundary does not prohibit concrete project work when the active project is that project's own repository.

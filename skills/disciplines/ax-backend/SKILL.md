@@ -15,6 +15,9 @@ description: 项目无关的通用后端实现与审查流程。用于非平凡�
 
 本 Skill 的契约、数据、并发、安全和验证清单均按本次改动的实际影响选择，不得自动扩展为全量审计。
 
+安全相关工作先执行 `AGENTS.md` 的 Security Goal and Complexity Budget，由它确定本次威胁
+模型、保证等级和 material 增量；本 Skill 的安全清单不得扩大该范围。
+
 ## 与其他工程 Skill 的边界
 
 - 若由 `ax-pipeline`、`ax-dev` 或其他已确定的 primary workflow 路由，本 Skill 使用辅助模式：复用已经确认的需求、设计与验证计划，只补充契约、数据、事务、并发、外部调用、安全和运行边界，不重复生命周期门禁或另做一份交付报告。
