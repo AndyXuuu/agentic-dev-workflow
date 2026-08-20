@@ -92,6 +92,7 @@ skills/
     ax-structure-review/
   repository/
     git-workflow/
+    ax-sdd/
     ax-project-bootstrap/
     ax-project-adapter/
   integrations/
@@ -109,6 +110,7 @@ scaffolds/
 bin/
   create-admin-dashboard.sh
   install.sh
+  validate-sdd.sh
   validate-scaffolds.sh
   validate-skills.sh
   install-tapd-mcp.sh
@@ -140,6 +142,29 @@ Agent workflow for a greenfield application:
 
 Do not start with project-specific Agent rules and then invent an application structure to match them. If no registered scaffold is compatible, record the material mismatch and enter architecture design without creating a partial copy.
 
+## Experimental Reconstruction SDD
+
+`$ax-sdd` is an opt-in experiment for projects that want a current system definition capable of
+driving an independent implementation without the original source tree. It supports:
+
+- initializing an explicit draft instead of pretending an empty template is complete;
+- validating manifest coverage, registered artifacts, Requirement-to-Oracle traceability,
+  unresolved placeholders, hidden source/history dependencies, and process-material pollution;
+- producing a deterministic isolated ZIP that contains only manifest-registered current inputs.
+
+It does not replace `$ax-pipeline`, migrate project documentation automatically, store Proposal or
+tasks, or claim that static checks prove reconstruction. Clean reconstruction remains a periodic
+independent evaluation.
+
+```bash
+python3 skills/repository/ax-sdd/scripts/sdd.py init /path/to/project/sdd \
+  --system-id example-system --name "Example System"
+python3 skills/repository/ax-sdd/scripts/sdd.py validate /path/to/project/sdd --level structure
+python3 skills/repository/ax-sdd/scripts/sdd.py validate /path/to/project/sdd
+python3 skills/repository/ax-sdd/scripts/sdd.py bundle \
+  /path/to/project/sdd /path/to/output/example-system-sdd.zip
+```
+
 ## Install
 
 Run:
@@ -156,11 +181,12 @@ This creates symlinks for the Skills registered in `skills/catalog.tsv`:
 - `~/.codex/test.config.toml`
 - `~/.codex/review.config.toml`
 
-Before changing symlinks, the installer runs `bin/validate-skills.sh` and the structural mode of
-`bin/validate-scaffolds.sh`. They verify catalog uniqueness and coverage, module paths, Skill
-frontmatter through the standard validator when available, UI metadata presence, and scaffold
-registry paths. Scaffold generation is deliberately separate because it installs dependencies;
-run `bin/validate-scaffolds.sh --smoke` explicitly when a generator or scaffold source changes.
+Before changing symlinks, the installer runs `bin/validate-skills.sh`, the structural mode of
+`bin/validate-scaffolds.sh`, and `bin/validate-sdd.sh`. They verify catalog uniqueness and coverage,
+module paths, Skill frontmatter through the standard validator when available, UI metadata,
+scaffold registry paths, and the experimental SDD behavior gates. Scaffold generation is
+deliberately separate because it installs dependencies; run `bin/validate-scaffolds.sh --smoke`
+explicitly when a generator or scaffold source changes.
 
 It does not overwrite `~/.codex/AGENTS.md`. Instead, it installs:
 
@@ -217,6 +243,10 @@ $ax-pipeline
 When intentionally working stage by stage, use `$ax-prd` -> `$ax-arch` -> `$ax-dev` + the affected
 domain Skill -> `$ax-test` -> `$ax-review`. `$ax-structure-review` remains an optional, explicitly
 requested structure audit; domain Skills do not become additional lifecycle stages.
+
+For a project that explicitly adopts reconstruction-grade SDD, use `$ax-sdd` in supporting mode to
+initialize, validate, or bundle the converged current definition. Stage notes remain owned by the
+lifecycle and do not become SDD artifacts.
 
 To generate or refresh a thin project-specific adapter skill from a repository's
 actual architecture, owners, canonical documents, and verification commands:

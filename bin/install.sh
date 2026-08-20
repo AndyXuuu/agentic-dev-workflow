@@ -15,6 +15,7 @@ fi
 
 sh "$ROOT/bin/validate-skills.sh"
 sh "$ROOT/bin/validate-scaffolds.sh"
+sh "$ROOT/bin/validate-sdd.sh"
 
 for old_skill in ax_pipeline ax_prd ax_arch ax_dev ax_test ax_review software-engineering-pipeline prd-analyst architect developer tester delivery-reviewer; do
   old_dst="$HOME/.agents/skills/$old_skill"

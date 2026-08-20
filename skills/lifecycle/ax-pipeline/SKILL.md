@@ -64,6 +64,11 @@ they add domain decisions without repeating requirement, design, test, or delive
 
 Project stack, paths, commands, and business rules come only from the target project's `AGENTS.md`, adapters, canonical docs, and source code. Do not add project facts to global Skills.
 
+When a project explicitly opts into reconstruction-grade SDD, use `ax-sdd` only in supporting
+mode: the lifecycle still owns requirement, design, implementation, verification, and delivery;
+SDD owns the converged current system definition, traceability, and isolated Builder bundle.
+Never copy stage notes, Proposal, tasks, rejected alternatives, or Agent reasoning into current SDD.
+
 ## 4. Architecture / Design
 
 State only items that affect implementation:
@@ -118,3 +123,8 @@ same suites.
 
 Report outcome, files, verification, and material residual risk. Add design, migration, or rollback
 details only when relevant.
+
+For an opted-in reconstruction SDD, reconcile the accepted behavior and oracles into its current
+artifacts, remove the temporary change packet from the default repository search space, and run the
+selected SDD validation. Do not report static validation or bundle creation as a successful clean
+reconstruction.
