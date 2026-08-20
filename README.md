@@ -4,6 +4,9 @@
 
 能力路线图：[ROADMAP.md](./ROADMAP.md)
 
+> This README is a non-normative overview. `AGENTS.md` owns global engineering gates; an explicitly
+> invoked Skill owns its task-specific workflow. Examples here must not override either source.
+
 > A project-independent engineering governance and delivery framework for AI coding agents.
 
 This repository turns Codex from an isolated code generator into an accountable participant
@@ -28,6 +31,9 @@ The framework is designed to make Agent-assisted development:
 - **Governed** — classify risk before editing and apply proportionate delivery gates.
 - **Evidence-led** — separate user goals from technical premises, verify current state,
   and recommend no change when it is better.
+- **Assumption-disciplined** — resolve material assumptions as verified facts, explicit user
+  decisions, or removed dependencies before they reach implementation, tests, canonical docs,
+  or archives.
 - **Traceable** — connect requirements, design decisions, code, tests, and delivery evidence.
 - **Locally understandable** — give each behavior a clear Owner, boundary, and verification path.
 - **Verifiable** — test expected behavior instead of mirroring the current implementation.
@@ -86,6 +92,7 @@ skills/
     ax-structure-review/
   repository/
     git-workflow/
+    ax-project-bootstrap/
     ax-project-adapter/
   integrations/
     tapd-query/
@@ -95,12 +102,14 @@ templates/
   TEST_PLAN.md
   DELIVERY.md
 scaffolds/
+  catalog.tsv
   admin-dashboard/
     AGENTS.md
     README.md
 bin/
   create-admin-dashboard.sh
   install.sh
+  validate-scaffolds.sh
   validate-skills.sh
   install-tapd-mcp.sh
   apply-global-agent.sh
@@ -109,6 +118,7 @@ bin/
 
 ## Standalone Scaffolds
 
+- Canonical registry: [`scaffolds/catalog.tsv`](./scaffolds/catalog.tsv). New-project Agents use `$ax-project-bootstrap` to select only registered scaffolds.
 - [Admin Dashboard Scaffold](./scaffolds/admin-dashboard/README.md) — independently installable React administration workspace with responsive navigation, dashboard analytics, resource-list patterns, theme support, and replaceable mock data boundaries.
 
 Create a verified copy at any non-existing target directory:
@@ -118,6 +128,17 @@ Create a verified copy at any non-existing target directory:
 ```
 
 Relative targets are resolved from the current working directory. The generator refuses to overwrite an existing path, validates the copy in a temporary sibling directory, and only exposes the final target after validation succeeds.
+
+Agent workflow for a greenfield application:
+
+```text
+1. $ax-project-bootstrap selects a compatible registered scaffold.
+2. The official generator copies the complete source and organization baseline and verifies it once.
+3. $ax-project-adapter adapts the copied Agent navigation to verified project facts.
+4. $ax-pipeline plans and implements business changes from the generated Owners.
+```
+
+Do not start with project-specific Agent rules and then invent an application structure to match them. If no registered scaffold is compatible, record the material mismatch and enter architecture design without creating a partial copy.
 
 ## Install
 
@@ -135,8 +156,11 @@ This creates symlinks for the Skills registered in `skills/catalog.tsv`:
 - `~/.codex/test.config.toml`
 - `~/.codex/review.config.toml`
 
-Before changing symlinks, the installer runs `bin/validate-skills.sh` to verify catalog
-uniqueness, module paths, Skill names, UI metadata, and catalog coverage.
+Before changing symlinks, the installer runs `bin/validate-skills.sh` and the structural mode of
+`bin/validate-scaffolds.sh`. They verify catalog uniqueness and coverage, module paths, Skill
+frontmatter through the standard validator when available, UI metadata presence, and scaffold
+registry paths. Scaffold generation is deliberately separate because it installs dependencies;
+run `bin/validate-scaffolds.sh --smoke` explicitly when a generator or scaffold source changes.
 
 It does not overwrite `~/.codex/AGENTS.md`. Instead, it installs:
 
@@ -160,6 +184,11 @@ reload the rules.
 To roll back, remove the symlink and restore the backup reported by the script,
 if one was created.
 
+`bin/uninstall.sh` removes the Skill/Profile links installed by this repository and also removes
+`~/.codex/AGENTS.md` only when it is a symlink that resolves exactly to this repository's
+`AGENTS.md`. It preserves unrelated global rules and all `AGENTS.md.backup.*` files so a prior
+configuration can be restored manually.
+
 ## Usage
 
 From any project:
@@ -177,17 +206,17 @@ For explicit skill use:
 $ax-pipeline Analyze this feature and create PRD, design, implementation plan, tests, and delivery checklist.
 ```
 
-Common flow:
+Use one primary workflow. For an end-to-end change, prefer:
 
 ```text
-1. $ax-prd
-2. $ax-arch
-3. $ax-dev
-4. $ax-frontend and/or $ax-backend (by affected domain)
-5. $ax-test
-6. $ax-structure-review (optional structure audit)
-7. $ax-review
+$ax-pipeline
+  -> routes $ax-frontend and/or $ax-backend in supporting mode
+  -> completes risk-selected verification and delivery review
 ```
+
+When intentionally working stage by stage, use `$ax-prd` -> `$ax-arch` -> `$ax-dev` + the affected
+domain Skill -> `$ax-test` -> `$ax-review`. `$ax-structure-review` remains an optional, explicitly
+requested structure audit; domain Skills do not become additional lifecycle stages.
 
 To generate or refresh a thin project-specific adapter skill from a repository's
 actual architecture, owners, canonical documents, and verification commands:
@@ -200,11 +229,12 @@ The generated adapter should contain only project navigation and project-specifi
 constraints. Global engineering gates and reusable domain workflows stay in this
 directory's global rules and Skills.
 
-Project adapter targets are discovered from the active repository or paths explicitly
-provided for the current task. This repository does not persist machine-specific project
-paths or synchronization status. When a request such as “sync all adapters” has no
-unambiguous target set, provide the repository paths or a bounded parent directory when
-prompted.
+Project adapter targets come from the active repository or paths explicitly provided for the
+current task. For “all registered/controlled projects,” the canonical machine-local target set is
+`$HOME/.codex/project-registry.yaml`, limited to entries with `sync_rules: true`; do not infer
+registration by scanning parent or sibling directories. A bounded parent directory is used only
+when the user explicitly asks to discover candidate repositories, and discovery does not register
+or authorize synchronization. This repository itself does not persist machine-specific paths.
 
 All AX Skills use lowercase hyphenated names. The installer removes obsolete
 underscore-named symlinks; update saved prompts to use names such as

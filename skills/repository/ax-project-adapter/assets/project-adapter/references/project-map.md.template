@@ -32,13 +32,14 @@
 
 | 验证层 | 目的 | 命令 | 适用条件/Owner |
 | --- | --- | --- | --- |
-| 本地 focused | 最小行为/回归测试 | `{{focused-test-command}}` | {{focused-test-condition}} |
-| 本地 focused | Scoped Lint/类型检查 | `{{scoped-static-command}}` | {{scoped-static-condition}} |
+| Focused | 最小行为/回归测试 | `{{focused-test-command}}` | {{focused-test-condition}} |
+| Focused | Scoped Lint/类型检查 | `{{scoped-static-command}}` | {{scoped-static-condition}} |
 | 整体/集成 | 模块、package/workspace 或全仓测试 | `{{integration-test-command}}` | {{integration-test-condition}} |
 | CI/发布 | 覆盖率、审计、E2E、全量检查、构建或部署 | `{{ci-release-command-or-config}}` | {{ci-release-owner-and-condition}} |
 | 人工/运行时 | 本地预览 | `{{preview-command}}` | {{preview-condition}} |
 
 删除不存在的命令，不自行发明替代命令。不要把 CI 持有的完整门禁默认复制为每次本地改动的验证步骤；同时不得用 focused 本地通过替代 CI/发布状态。
+注明聚合目标实际包含哪些检查、各层应在哪个边界运行，以及真正需要特定主机/平台/凭证的命令。若一个门禁包含另一门禁，同一交付输入默认只运行所选的更强门禁；若 focused 回归不能被其可靠替代，则明确保留原因。不要把真实服务或部署环境限制泛化到 hermetic 测试。
 
 ## 项目特有风险
 

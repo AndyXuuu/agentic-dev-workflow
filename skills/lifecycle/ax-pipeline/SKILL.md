@@ -5,19 +5,24 @@ description: 全流程：需求 → 架构 → 开发 → 测试 → 交付。�
 
 # Software Engineering Pipeline
 
-Use this workflow for non-trivial software changes. Do not start coding immediately.
+Use this workflow for non-trivial changes. Keep one active critical-path step. Gates and domain
+Skills support delivery; do not turn them into parallel outputs. Stop when acceptance and every
+verification selected by the changed risks and applicable project gates pass. Focused verification
+is the default feedback layer, not the universal completion condition.
 
 ## Fast Path Routing
 
-Before starting the pipeline, apply the current global or project Fast Path criteria.
-When every criterion is satisfied, do not run the stages below: confirm the existing
-owner, make the localized change, run the smallest meaningful validation, and report
-concisely. If the user explicitly requests the full pipeline, or any eligibility condition
-is uncertain, use the full workflow below.
+Apply the current `AGENTS.md` routing. Use the full workflow only for a confirmed risk boundary,
+material unresolved uncertainty, or an explicit request. Otherwise use Fast Path.
+
+If the request creates a new project or application package and no corresponding Owner exists,
+invoke `ax-project-bootstrap` before this pipeline. Resume requirement and architecture planning
+from the fully generated baseline; do not design an equivalent framework from an empty directory
+when a compatible registered scaffold exists.
 
 ## 1. Requirement Analysis
 
-Produce:
+Produce one compact note, not separate stage artifacts:
 
 - Goal
 - In scope
@@ -25,12 +30,20 @@ Produce:
 - Acceptance criteria
 - Ambiguities
 - Risk areas
+- Material assumptions and their disposition
 
-Ask clarification if ambiguity affects behavior, data model, API contract, permissions, billing, security, or user workflow.
+Ask only if ambiguity materially affects behavior or risk and it cannot be resolved from
+authoritative evidence or an explicit user decision. Do not continue by relabeling a material
+ambiguity as reversible.
+
+Treat assumptions as temporary working hypotheses. Before implementation or test planning, every
+material assumption must be verified from an authoritative source, converted into an explicit user
+decision/constraint, or removed together with dependent plan content. Do not carry an unresolved
+assumption into a canonical document, archive, or delivery report.
 
 ## 2. Codebase Discovery
 
-Before implementation:
+Inspect until the owner, reuse point, smallest change, and risk-selected verification plan are known:
 
 - Search for existing similar logic.
 - Identify owner modules.
@@ -42,7 +55,8 @@ Do not create a parallel implementation without explaining why.
 
 ## 3. Domain Routing
 
-Classify the affected scope before design:
+Route only the affected scope. When this pipeline is primary, Domain Skills run in supporting mode:
+they add domain decisions without repeating requirement, design, test, or delivery gates.
 
 - Frontend-only: use `ax-frontend` for UI, state, design-system, accessibility, and browser boundaries.
 - Backend-only: use `ax-backend` for contracts, domain/data ownership, consistency, security, and runtime boundaries.
@@ -52,7 +66,7 @@ Project stack, paths, commands, and business rules come only from the target pro
 
 ## 4. Architecture / Design
 
-State:
+State only items that affect implementation:
 
 - Files/modules to change
 - New modules/classes/functions
@@ -60,30 +74,15 @@ State:
 - Where business logic will live
 - Where side effects will live
 - How duplication will be avoided
-- Rollback or migration concerns
+- Rollback or migration concerns when present
 
 ## 5. Change Control
 
-Before implementation, handle any requirement or architecture change through these rules.
+Apply local explicit changes directly. For a material requirement or architecture change, pause
+once to state the delta, impact, and revised plan; ask only when a decision or approval is needed.
 
-If requirements change during implementation:
-
-1. Stop coding.
-2. Summarize the original requirement.
-3. Summarize the requested change.
-4. Identify changed acceptance criteria.
-5. Identify affected modules, APIs, data models, permissions, tests, migration, and delivery risk.
-6. Update the PRD/design/test plan before continuing.
-7. Do not patch code directly from the change request unless the impact is trivial and explicitly scoped.
-
-If architecture changes during implementation:
-
-1. Stop coding.
-2. Explain why the current design is insufficient.
-3. Compare current design vs proposed design.
-4. List files already changed that must be revised, kept, or reverted.
-5. Update the implementation plan and regression test plan.
-6. Continue only after the revised design is explicit.
+If evidence invalidates a material assumption, pause the dependent path, identify derived work, and
+re-verify it, obtain an explicit decision, or clean up the derived work before continuing.
 
 ## 6. Implementation
 
@@ -101,21 +100,21 @@ Rules:
 For bug fixes:
 
 - Reproduce the bug or explain why it cannot be automated.
-- Add a regression test that would fail before the fix.
+- Preserve a pre-fix check; add a permanent test only when it protects a stable behavior or known
+  regression better than existing coverage.
 
 For features:
 
-- Test behavior and edge cases.
+- Test the changed behavior and affected risks only.
 - Avoid tests that only mirror implementation details.
-- Include invalid input and state/permission boundaries when relevant.
+- Do not expand into unrelated edge, permission, security, or failure scenarios.
+
+Choose one verification owner for each risk. Inspect aggregate target composition, reuse valid
+evidence for unchanged inputs, and run broader or release gates once at the coherent close boundary.
+Do not stack focused, integration, full, and release commands when later targets simply repeat the
+same suites.
 
 ## 8. Delivery Review
 
-Final answer must include:
-
-- Requirement matched
-- Design used
-- Files changed
-- Tests run
-- Remaining risks
-- Rollback/recovery notes when relevant
+Report outcome, files, verification, and material residual risk. Add design, migration, or rollback
+details only when relevant.

@@ -19,6 +19,9 @@ Before proposing design:
 - Identify existing helpers/services/classes/hooks.
 - Identify current tests and verification commands.
 - Note any duplication or architectural debt relevant to the task.
+- List material assumptions separately from verified facts. Resolve each one as evidence or an
+  explicit user decision before using it as a design premise; otherwise remove the dependent
+  proposal instead of carrying speculation into implementation.
 
 ## Output
 
@@ -48,3 +51,5 @@ Produce a design:
 - Design for local reasoning: give each behavior one searchable owner, explicit contracts and dependencies, localized changes, and a direct verification path.
 - Treat code-size thresholds as review signals; avoid both all-in-one modules and fragmentation into needless forwarding layers or tiny files.
 - Call out tradeoffs explicitly.
+- Do not encode unresolved material assumptions in contracts, data models, migration plans, test
+  oracles, or canonical architecture documents.

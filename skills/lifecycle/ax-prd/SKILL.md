@@ -23,6 +23,7 @@ Produce a compact PRD:
 - Acceptance criteria
 - Open questions
 - Risks
+- Assumption disposition
 
 ## Rules
 
@@ -30,12 +31,19 @@ Produce a compact PRD:
 - Separate the user's desired outcome from suggested causes and implementations. Treat
   current-state claims and diagnoses as hypotheses until supported by available project
   evidence; label anything material that remains unverified.
+- Treat each material premise as temporary. Before the PRD becomes an implementation input,
+  verify it from an authoritative source, convert it into an explicit user decision/constraint, or
+  remove the dependent requirement and clean up its derived scope. Do not leave a material premise
+  in “open questions” when it controls the current critical path.
 - Derive acceptance criteria from the observable outcome, not from making the suggested
   implementation exist. A technically inferior proposal is not a requirement unless the user
   explicitly fixes it as a constraint after its consequences are clear.
 - Separate user-visible behavior from internal engineering tasks.
 - If the request is ambiguous, ask targeted questions.
 - If continuing without answers is acceptable, state assumptions clearly.
+- Continuing is acceptable only for harmless, reversible assumptions that cannot change behavior or
+  risk. Record their checkpoint and resolve or remove them before implementation, test-oracle
+  selection, canonical documentation, or archive.
 - Acceptance criteria must be testable.
 
 ## Quality Bar

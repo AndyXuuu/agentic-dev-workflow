@@ -11,11 +11,14 @@ description: 项目无关的通用后端实现与审查流程。用于非平凡�
 
 在读取项目接入资料或质量检查表前，先读取适用的 `AGENTS.md`，检查工作树、目标文件、附近现有 Owner 与最小验证入口。
 
-若完全满足 Fast Path，停止加载本 Skill 的其余内容及 `references/backend-project-adoption.md`、质量检查表：直接在现有 Owner 内完成局部修改和最小验证。若范围不明确，或涉及契约、数据、事务、并发、权限、安全、依赖、生成、外部集成或部署，则继续标准流程。
+若满足 Fast Path，停止加载其余内容和引用资料，直接局部修改和最小验证。只在确认触及契约、数据、事务、并发、权限、安全、依赖、生成、外部集成或部署风险时进入标准流程。其余未知只有在不影响行为或风险、无害、可逆且有检查点时才可作为临时工作假说继续；material assumption 必须先证实、转为用户明确决策，或退出并清理依赖。
+
+本 Skill 的契约、数据、并发、安全和验证清单均按本次改动的实际影响选择，不得自动扩展为全量审计。
 
 ## 与其他工程 Skill 的边界
 
-- 非平凡改动由 `ax-pipeline` 管端到端阶段，`ax-prd`/`ax-arch` 管需求与架构，`ax-backend` 管后端专项决策与质量。
+- 若由 `ax-pipeline`、`ax-dev` 或其他已确定的 primary workflow 路由，本 Skill 使用辅助模式：复用已经确认的需求、设计与验证计划，只补充契约、数据、事务、并发、外部调用、安全和运行边界，不重复生命周期门禁或另做一份交付报告。
+- 用户直接调用本 Skill 且当前没有其他 primary workflow 时，本 Skill 使用主模式：执行下文紧凑的需求、设计、实现、验证和交付闭环。
 - 已有明确需求和设计时，可与 `ax-dev` 同时使用；本 Skill 补充契约、数据、并发、外部调用和运行边界。
 - 纯前端视觉任务不使用本 Skill；跨端契约任务同时使用 `ax-frontend` 并以源契约 Owner 为准。
 
@@ -34,7 +37,7 @@ description: 项目无关的通用后端实现与审查流程。用于非平凡�
 
 ## 2. 通过需求门禁
 
-不符合 Fast Path 时，编辑前输出简短需求理解：
+不符合 Fast Path 时，主模式在编辑前输出简短需求理解；辅助模式复用 primary workflow 已确认的内容，只补充缺失的后端影响：
 
 - Goal
 - In scope
@@ -47,7 +50,7 @@ description: 项目无关的通用后端实现与审查流程。用于非平凡�
 
 ## 3. 通过设计门禁
 
-不符合 Fast Path 时，搜索并报告：
+不符合 Fast Path 时执行以下搜索；主模式紧凑报告结果，辅助模式只把后端增量决策返回给 primary workflow：
 
 - 现有 Owner、相似实现和依赖方向
 - 可复用 service、repository、client、validator、mapper、policy、error 和 test fixture
@@ -75,7 +78,7 @@ description: 项目无关的通用后端实现与审查流程。用于非平凡�
 - 超阈值时检查协议映射、业务规则、事务、持久化、权限和外部 I/O 是否混合，以及修改一个用例需要加载多少无关上下文；只按真实 Owner、事务或测试边界拆分。
 - 生成契约、迁移、Schema 和静态映射先分类再判断。历史巨型文件采用行为测试、禁止无关增长和逐边界提取，不用机械分层或无意义单实现接口换取行数下降。
 
-实施和 Review 时读取 [references/backend-quality-checklist.md](references/backend-quality-checklist.md)。
+仅当本次改动触及相应契约、数据、并发、安全或运行边界时，按需读取 [references/backend-quality-checklist.md](references/backend-quality-checklist.md)。
 
 ## 5. 维护跨端契约
 
@@ -87,9 +90,9 @@ description: 项目无关的通用后端实现与审查流程。用于非平凡�
 
 ## 6. 验证行为
 
-Bug 修复按顺序执行：复现或说明无法自动复现的原因、添加修复前会失败的回归测试、实现最小修复、确认回归测试通过。
+Bug 修复先保留修复前失败证据，再实现最小修复并重复同一验证。只当回归测试通过全局 Test Admission Gate 时才作为永久用例保留。
 
-Feature 按相关性覆盖：
+Feature 从下列类别中只选择被改动实际影响的场景，不按清单机械补齐：
 
 - Happy path、Invalid input、Edge case
 - Authentication、authorization 和 tenant/state boundary
@@ -99,9 +102,11 @@ Feature 按相关性覆盖：
 
 本地先运行能证明改动行为和邻近风险的最小测试、scoped 静态检查或类型检查。跨服务/模块 Owner、公开契约、迁移、事务或高风险改动再升级到模块、契约、迁移或整体集成测试；项目全量测试、覆盖率、审计和构建若由 CI/发布门禁持有，按该门禁执行，不机械重复到每次本地实现循环。Fast Path 只运行与局部改动直接相关的最小检查。只报告真实运行结果；远程环境、生产数据或付费调用需要额外授权。
 
+运行聚合命令前检查其包含关系；同一交付输入上若完整门禁已包含目标集成、Agent、race 或合同套件，不再把被包含命令单独重复执行。只有依赖特定主机、平台、凭证或副作用的检查才绑定该环境，不把真实服务验收限制扩大到纯单元、合同或临时数据库测试。
+
 ## 7. 交付
 
-交付时报告：
+主模式交付时报告以下相关项；辅助模式只把后端决策、验证证据和剩余风险合并回 primary workflow，不生成第二份交付：
 
 - Requirement match
 - Contract, ownership, transaction and reuse decisions

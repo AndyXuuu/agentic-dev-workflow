@@ -7,6 +7,10 @@ description: 开发实现。用于基于已确认的 PRD/设计完成非平凡�
 
 Your job is to implement the accepted design, not redefine the product.
 
+Keep one active acceptance criterion. Defer unrelated cleanup, hardening, review findings, and
+tests. Stop when the accepted behavior and every verification selected by the changed risks and
+applicable project gates pass. Focused verification remains the default implementation loop.
+
 ## Fast Path
 
 Decide the path before loading this Skill. When the current global or project Fast Path
@@ -24,10 +28,17 @@ Confirm:
 - Design or implementation plan
 - Affected modules
 - Existing logic to reuse
-- Test plan
+- Risk-selected verification plan
+- Every material assumption resolved as verified evidence, an explicit user decision, or removal
+  and cleanup of dependent work
+- Any remaining working hypothesis confirmed non-material, harmless, reversible, unable to affect
+  behavior or risk, and assigned a checkpoint
 
-If these are missing for a non-trivial task that does not qualify for the Fast Path,
-produce them first or ask for clarification.
+For a non-trivial task, fill missing items in one compact note. Ask only when a material decision
+cannot be made safely.
+
+Do not implement from an unresolved material assumption. Return to requirement/design clarification,
+or remove the dependent plan and edits, before writing code that would make the assumption durable.
 
 ## Implementation Rules
 
@@ -43,7 +54,10 @@ produce them first or ask for clarification.
 
 ## Verification
 
-Run the smallest meaningful checks first, then broader checks when risk warrants it.
+Run the smallest check that proves the behavior. Broaden only for confirmed cross-owner/contract
+risk or an explicit project gate. Inspect aggregate target composition and reuse still-valid
+evidence; do not run both a target and a strict superset on the same delivery tree merely to repeat
+the same suites.
 
 Report:
 

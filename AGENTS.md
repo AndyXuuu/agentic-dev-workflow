@@ -8,6 +8,30 @@ These rules are for personal Codex behavior across software engineering projects
 - 先给结论，再给关键依据和下一步。
 - 对风险、假设、无法验证的地方要明确说明。
 
+## Critical-Path Priority
+
+- Subject to higher-priority safety and explicit approval requirements, prioritize the next
+  unmet acceptance criterion. Process, tests, review, documentation, and hardening support it;
+  they are not separate deliverables.
+- Keep one active critical-path step. Finish the smallest working vertical slice before moving to
+  later risk-selected broader verification, and before optional hardening, cleanup, documentation
+  expansion, or refactoring.
+- Interrupt only for a confirmed material risk, missing required approval, or a failure in the
+  changed behavior or its direct dependency. Uncertainty alone is not a blocker only when the
+  assumption is harmless, reversible, and cannot affect behavior or risk; otherwise resolve it at
+  the next assumption checkpoint before continuing.
+- Stop discovery when the owner, reuse point, smallest change, and risk-selected verification plan
+  are known.
+- Record unrelated defects, debt, security findings, and test gaps as follow-ups; do not investigate
+  or fix them unless they block acceptance.
+- Apply one primary workflow. Supporting Skills add only task-relevant domain decisions; do not
+  repeat requirement, design, test, or review gates.
+- Select tests and quality checks only from behavior and risks changed by the patch. Checklists are
+  relevance filters, not mandatory coverage lists.
+- When acceptance criteria and every verification selected by the changed risks and applicable
+  project gates pass, stop and deliver. Focused verification is the default feedback layer, not the
+  universal completion condition.
+
 ## Evidence and Engineering Judgment
 
 - Within higher-priority instructions and safety boundaries, respect the user's authority over
@@ -32,15 +56,26 @@ These rules are for personal Codex behavior across software engineering projects
   uncertain, compare only the meaningful options—often keeping the current state, making the
   smallest correction, and the proposed change—and say when no change is the best engineering
   choice. Do not manufacture alternatives or objections when they would not affect the result.
-- For fixes, refactors, and quality improvements, establish the relevant baseline and success
-  signal before editing. Afterward, compare the same signal and nearby regressions; passing
+- For fixes, refactors, and quality improvements, establish the narrowest relevant baseline and
+  success signal before editing; do not build unrelated instrumentation. Afterward, compare the
+  same signal and nearby regressions; passing
   tests alone proves constraints still hold, not that the result is better. If the change is
   worse or the benefit remains unproven, stop expanding patches and recommend revising or
   keeping/restoring the prior design, subject to the user's authorization for destructive work.
 - Keep verification proportional. Do not challenge subjective preferences, investigate facts
   that cannot affect the decision, or turn an explicit low-risk request into performative
-  debate. If a material premise cannot be verified, label it, choose a reversible path when
-  safe, and ask only when the uncertainty would materially change behavior, risk, or scope.
+  debate. If a material premise cannot be verified, obtain an explicit user decision or stop and
+  remove the dependent path; ask only when the unresolved choice materially changes behavior,
+  risk, or scope. Reversibility does not make a material assumption safe to implement.
+- Treat assumptions as temporary working hypotheses, never as facts. At the first checkpoint where
+  an assumption could affect behavior, scope, contracts, permissions, data, tests, security, or
+  delivery, do exactly one of the following: (1) verify it against an authoritative source and
+  record the evidence and scope as a fact, (2) obtain the user's explicit decision and record it as
+  a requirement or design constraint rather than current-state fact, or (3) stop depending on it,
+  remove the assumption, and clean up any plan, test, documentation, or code that relied on it.
+  Do not carry an unresolved material assumption into implementation, test expectations, a
+  canonical document, an archive, or a persistent follow-up. A non-blocking unknown may remain
+  only as an open question or evidence gap without a presumed answer or derived requirement.
 - Never alter tests, documentation, metrics, or acceptance criteria merely to make an
   unsupported premise or implementation appear correct.
 
@@ -51,11 +86,29 @@ These rules are for personal Codex behavior across software engineering projects
 - Never place a specific project's framework choices, paths, commands, endpoints, credentials, deployment topology, or business rules into global `AGENTS.md` or global Skills.
 - Lifecycle Skills (`ax-pipeline`, `ax-prd`, `ax-arch`, `ax-dev`, `ax-test`, `ax-review`) own delivery stages.
 - Discipline Skills (`ax-frontend`, `ax-backend`, `ax-structure-review`) own reusable engineering practices and structural quality.
-- Repository Skills (`git-workflow`, `ax-project-adapter`) own source-control and project-adoption workflows.
+- Repository Skills (`git-workflow`, `ax-project-bootstrap`, `ax-project-adapter`) own source-control, scaffold bootstrap, and project-adoption workflows.
 - Integration Skills (`tapd-query`) own external tool access and must keep credentials outside the repository.
 - A project's `AGENTS.md` owns its stack, commands, hard constraints, and canonical sources.
 - A project adapter Skill only maps global workflows to verified project owners and entry points; it must not copy global gates or become a second project rule source.
 - For cross-repository contracts, record one source contract owner and keep provider projections and consumer copies/generated clients explicitly derived.
+
+## Scaffold-First Project Bootstrap
+
+- When creating a new project or application package with no existing Owner, inspect only the
+  registered scaffold catalog through `ax-project-bootstrap` before designing or implementing a
+  framework from scratch.
+- Before copying, confirm the target, application kind, material stack/security constraints, and
+  license compatibility. This is a bootstrap selection gate, not the project's full PRD or design.
+- When a compatible scaffold exists and the target does not, use its official generator to copy
+  the complete baseline, including source, lockfiles, `AGENTS.md`, design contracts, project
+  Adapter, Owner maps, and verification entry points. Do not cherry-pick only code or organization
+  files and do not recreate an equivalent framework manually.
+- After generation succeeds, treat the copied files and generator verification as the baseline.
+  Then adapt the project Agent workflow and plan business changes from the real generated Owners;
+  do not immediately repeat unchanged aggregate validation.
+- Never overlay a scaffold onto an existing non-empty target. For a material mismatch or migration,
+  record the verified incompatibility and use the normal requirement/architecture workflow instead
+  of silently bypassing the registered scaffold.
 
 ## Registered Project Synchronization
 
@@ -70,8 +123,9 @@ Use the Fast Path instead of the full requirement/design pipeline only when all 
 the following are true:
 
 - The request and expected result are explicit, unambiguous, and locally verifiable.
-- Any factual premise that materially affects the localized change is confirmed by direct
-  inspection, or is explicitly recorded as a harmless assumption.
+- Every current-state premise that could materially affect the localized change is confirmed by
+  direct inspection, and every behavior choice is explicit. Any remaining working hypothesis is
+  non-material, harmless, reversible, and cannot affect behavior or risk.
 - The change stays inside one existing owner or a small set of directly adjacent files.
 - It does not change architecture, ownership, public API/event contracts, data models,
   migrations, permissions, billing, security/privacy boundaries, analytics semantics,
@@ -98,14 +152,19 @@ Fast Path execution:
 6. Report the changed files and validation result concisely; add risks or recovery notes
    only when they are material.
 
-If any eligibility condition is uncertain or becomes false during the change, stop the
-Fast Path and apply the standard requirement, design, test, and delivery gates below.
-Explicit project rules may impose stricter handling.
+Resolve uncertainty that can materially change behavior or risk. Leave Fast Path only when a risk
+boundary is confirmed or material uncertainty remains. A remaining unknown may be recorded only
+when it is non-material, harmless, reversible, cannot affect behavior or risk, and has a stated
+checkpoint. Explicit project rules may impose stricter handling.
+
+Every material assumption must be resolved before implementation, test-oracle selection, canonical
+documentation, archive, or delivery. If it cannot be resolved safely, stop the dependent path and
+clean up its derived work; do not preserve it as a stale plan or speculative fallback.
 
 ## Requirement Gate
 
-For work that does not qualify for the Fast Path, before editing code for a feature,
-bug fix, or refactor, Codex must produce a short requirement understanding:
+For work that does not qualify for the Fast Path, before editing code, produce one compact
+requirement note. Do not create a separate artifact unless requested:
 
 - Goal
 - Observable problem or desired outcome, separated from any suggested cause or solution
@@ -114,15 +173,19 @@ bug fix, or refactor, Codex must produce a short requirement understanding:
 - Acceptance criteria
 - Affected modules/files
 - Verified baseline and supporting evidence when changing existing behavior
+- Material assumptions and their disposition: verified fact, explicit user decision, or removed
 - Independent recommendation, including keeping the current behavior when that is better
 - Ambiguities and risks
 
 If ambiguity changes behavior, data model, API contract, permissions, billing, security, or user workflow, ask a clarification before editing.
 
+Do not start implementation with an unresolved material assumption. Resolve it as evidence,
+explicit decision, or removal and cleanup; a vague “follow-up” is not a valid disposition when the
+assumption controls the current change.
+
 ## Design Gate
 
-For work that does not qualify for the Fast Path, before implementation, Codex must
-inspect the existing codebase and identify:
+For work that does not qualify for the Fast Path, inspect only enough code to identify:
 
 - Existing owner modules
 - Similar implementations
@@ -131,6 +194,10 @@ inspect the existing codebase and identify:
 - Test locations and verification commands
 - Why the change is preferable to the verified baseline, plus meaningful alternatives when
   the tradeoff is not obvious
+
+Design decisions may depend only on verified facts or explicit user decisions. Any remaining
+assumption must be harmless and reversible, with a stated checkpoint; otherwise stop design and
+resolve or remove the dependent proposal.
 
 Do not implement parallel logic without explaining why.
 
@@ -149,26 +216,16 @@ Do not implement parallel logic without explaining why.
 
 ## Change Control
 
-If requirements change during implementation:
-
-1. Stop coding.
-2. Separate the new desired outcome from any factual claim, diagnosis, or proposed solution,
-   and verify the material current-state premise.
-3. Summarize the original requirement.
-4. Summarize the requested change.
-5. Identify changed acceptance criteria.
-6. Identify affected modules, APIs, data models, permissions, tests, migration, and delivery risk.
-7. Update the PRD/design/test plan before continuing.
-8. Do not patch code directly from the change request unless the impact is trivial and explicitly scoped.
-
-If architecture changes during implementation:
-
-1. Stop coding.
-2. Explain why the current design is insufficient.
-3. Compare current design vs proposed design.
-4. List files already changed that must be revised, kept, or reverted.
-5. Update the implementation plan and regression test plan.
-6. Continue only after the revised design is explicit.
+- Incorporate explicit local requirement changes and continue.
+- If new evidence invalidates a material assumption, pause the dependent path once, identify the
+  derived requirements/design/tests/code that are no longer trustworthy, and either re-verify the
+  assumption, obtain an explicit decision, or remove and clean up the dependent work before
+  continuing.
+- If a change materially alters acceptance criteria, ownership, contracts, data, permissions,
+  migration, or delivery risk, pause once: state the requirement delta, affected scope, and
+  revised plan. Ask only when a user decision or approval is required.
+- Apply the same rule to architecture changes. Do not regenerate full PRD, design, and test
+  documents unless requested.
 
 ## Code Organization
 
@@ -185,14 +242,24 @@ If architecture changes during implementation:
 - A size finding needs evidence of mixed responsibilities, excessive dependency/context fan-out, hidden state or side effects, poor change locality, duplication, or weak testability. Do not report line count alone as the defect.
 - Do not split code mechanically or introduce needless interfaces, forwarding layers, tiny files, deep inheritance, or generic abstractions merely to meet a threshold; these also harm human and AI navigation.
 - Identify generated, vendored, migration, schema, static-data, fixture, and substantially declarative artifacts before applying thresholds. Exempt them when splitting would not improve ownership or verification, and record the reason.
-- For oversized legacy files, avoid broad rewrites and unrelated growth. Establish a baseline, add behavior tests, keep new responsibilities in the correct owner, and extract one verified boundary at a time so size and complexity do not increase.
+- For oversized legacy files, avoid broad rewrites and unrelated growth. Establish a behavioral
+  baseline, add a permanent test only when it passes the Test Admission Gate, keep new
+  responsibilities in the correct owner, and extract one verified boundary at a time so size and
+  complexity do not increase.
 
 ## Documentation Rules
 
-- Each topic must have one canonical document. Search before creating and update it in place.
-- Other documents must link to the canonical source instead of copying its content.
+- Each normative topic must have one canonical document. Search before creating and update it in
+  place.
+- Other documents must link to the canonical source instead of copying its normative content. A
+  README, usage guide, template, or example may contain a concise, explicitly non-normative summary
+  for discoverability, but it must defer conflicts to the canonical source and must not redefine
+  gates or exhaustive requirements.
 - Document verified current behavior; label assumptions, plans, and unverified claims explicitly.
 - Update documentation with behavior changes. Remove or mark stale and conflicting content.
+- Do not promote an unresolved assumption into a canonical document or archive. When a premise is
+  disproved or expires, remove dependent copies and link the replacement fact instead of leaving a
+  historical-looking statement that can be read as current behavior.
 - When documents conflict, identify the authoritative source and resolve the conflict before continuing.
 
 ## Git Branch Control
@@ -220,13 +287,17 @@ Tests must verify expected behavior, not mirror current implementation.
 
 ### Test Admission Gate
 
-Before adding a permanent automated test, identify:
+Before adding a permanent automated test, determine internally:
 
 - the observable behavior, stable contract, invariant, boundary, or known regression it protects;
 - an independent oracle from requirements, protocol, domain rules, standards, or an established
   public interface—not expected values copied from the implementation;
 - a credible defect that would make the test fail while the code still compiles;
 - why existing tests at the same or a more stable boundary do not already protect that risk.
+
+Test expectations must come from verified contracts, domain rules, explicit user decisions, or a
+reproduced behavior—not from an unresolved assumption. If the oracle is uncertain, resolve or
+remove the dependent test rather than freezing the assumption into the suite.
 
 Do not create a test solely because a new method, helper, hook, class, or component was added.
 Direct method-level tests are appropriate only when that unit is itself a stable owner of
@@ -244,11 +315,11 @@ rewrite or remove tests that fail under valid internal refactoring without behav
 For bug fixes:
 
 1. Reproduce the bug or describe why reproduction cannot be automated.
-2. Add a regression test that would fail before the fix.
-3. Implement the fix.
-4. Verify the regression test passes.
+2. Add a permanent regression test only when it passes the admission gate; otherwise preserve a
+   focused pre-fix check.
+3. Implement the fix and repeat the same check.
 
-For features, cover:
+For features, select only affected categories:
 
 - Happy path
 - Invalid input
@@ -262,6 +333,8 @@ Do not make tests pass by changing expectations to match broken behavior.
 
 Choose the verification layer before running commands. Project rules and CI configuration own
 the actual commands; do not infer that every available command belongs in every local iteration.
+Test admission and execution frequency are separate decisions: a permanent regression test may be
+valuable without belonging in every focused loop or every aggregate gate.
 
 1. **Focused behavior checks**: run the smallest unit, component, regression, contract, or scoped
    static check that proves the changed behavior and its nearest regression risk. This is the
@@ -275,10 +348,29 @@ the actual commands; do not infer that every available command belongs in every 
    repeat the same full commands locally merely because CI will run them; run them locally when
    CI is unavailable, the change is high-risk, or a CI failure needs diagnosis.
 
-Focused local checks and CI are complementary: CI does not replace change-specific behavioral
-or manual evidence, and a local pass must not be reported as CI/release success. If a project has
-no CI or release gate, identify that gap and follow its documented local pre-release equivalent;
-do not silently omit broader verification.
+Before running aggregate targets, inspect their command/dependency graph. When one selected gate
+already contains another with the same inputs, environment, and mode, run the superset once at the
+appropriate close boundary; do not run both merely because both names appear in a checklist. A
+broader suite does not replace a focused regression check when it cannot fail specifically for the
+changed behavior.
+
+Reuse successful evidence while the code, configuration, dependencies, generated inputs, execution
+mode, and relevant environment remain unchanged. Later unrelated documentation or formatting
+edits do not invalidate it; later behavior-affecting changes invalidate only the impacted evidence.
+Record reused evidence honestly instead of describing it as newly run.
+
+Restrict a check to a canonical host or special environment only when its dependency, oracle,
+platform behavior, credential boundary, or side effect requires that environment. Keep hermetic
+unit, component, contract, static, and temporary-database checks in the closest capable feedback
+loop unless an explicit project rule has a verified reason to be stricter. Do not generalize a live
+acceptance or deployment-host restriction to unrelated tests.
+
+Release-only work such as artifact assembly, SBOM generation, full supply-chain audit, packaging,
+deployment, and production smoke belongs to the release gate, not the ordinary edit loop, unless
+the patch directly changes that behavior.
+
+Focused local checks and CI are complementary. A local pass is not CI/release success. If no CI or
+release gate exists, report the gap; run broader checks only when risk or project rules require it.
 
 For a fix, refactor, or claimed improvement to existing behavior, repeat the relevant baseline
 observation after the change and report whether it improved, stayed equivalent, or remains
@@ -290,15 +382,8 @@ run only the narrowest relevant validation; do not require unrelated full test s
 
 ## Delivery Criteria
 
-For standard work, a task is not done until Codex reports:
-
-- Requirement match
-- Design used
-- Baseline-to-result comparison when the task intended to improve existing behavior
-- Files changed
-- Tests run
-- Remaining risks
-- Rollback or recovery notes when relevant
+For standard work, report outcome, files changed, verification run, and remaining material risks.
+Add design, baseline comparison, migration, and rollback details only when relevant.
 
 For Fast Path work, report only the changed files, validation performed, and any material
 risk or recovery note. Do not expand the response into a full pipeline report.

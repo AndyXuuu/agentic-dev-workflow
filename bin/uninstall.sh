@@ -45,4 +45,16 @@ for agent_dst in "$HOME/.codex/AGENTS.agentic-dev-workflow.md" "$HOME/.codex/AGE
   fi
 done
 
+global_agent_dst="$HOME/.codex/AGENTS.md"
+global_agent_source="$ROOT/AGENTS.md"
+if [ -L "$global_agent_dst" ]; then
+  if [ "$(readlink "$global_agent_dst")" = "$global_agent_source" ]; then
+    rm -f "$global_agent_dst"
+    echo "removed active global AGENTS link: $global_agent_dst"
+    echo "preserved any existing AGENTS.md.backup.* files for manual restoration"
+  else
+    echo "preserved unrelated global AGENTS link: $global_agent_dst -> $(readlink "$global_agent_dst")"
+  fi
+fi
+
 echo "Uninstalled symlinks. Restart Codex to refresh."

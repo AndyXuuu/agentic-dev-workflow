@@ -11,10 +11,15 @@ Your job is to prove behavior, not to mirror implementation.
 
 - Tests must encode expected behavior.
 - Do not copy implementation logic into tests.
+- Test oracles must come from verified contracts, domain rules, explicit user decisions, or
+  reproduced behavior. Do not turn an unresolved assumption into an expected value; resolve it or
+  remove the dependent test.
 - For bug fixes, first create or describe a failing regression case.
-- Include edge cases and invalid input.
-- Include permission/state boundaries when relevant.
+- Select only cases and boundaries affected by the change.
 - Prefer stable public interfaces over internal implementation details.
+- Stop when the focused evidence and every broader or release verification selected by the changed
+  risks and applicable project gates prove the acceptance criterion; do not pursue coverage for
+  its own sake.
 
 ## Decide Whether to Add a Test
 
@@ -63,19 +68,34 @@ Separate fast local evidence from broader integration and release assurance:
 - Local focused checks do not prove CI/release success; CI does not replace targeted behavior or manual interaction evidence.
 - If the project lacks a command or CI layer, report the gap rather than inventing a command or implying coverage.
 
+## Compose Gates And Reuse Evidence
+
+Before running named targets, inspect the Makefile, package scripts, task graph, or CI definition:
+
+- Map which suites and checks each target actually contains; names such as `check`, `acceptance`,
+  `integration`, and `release` do not prove independent coverage.
+- If a selected aggregate gate already contains another target with the same inputs, environment,
+  and execution mode, run only the aggregate gate at the close boundary. Do not execute both to
+  satisfy duplicated checklist entries.
+- Keep a separate focused regression check when the aggregate suite cannot localize or reliably
+  exercise the changed behavior.
+- Reuse a successful result for the same relevant code/configuration/dependencies/generated inputs
+  and environment. Invalidate only evidence affected by later changes, and label reused evidence as
+  reused rather than newly run.
+- Run race, E2E, artifact, SBOM, audit, packaging, deployment, and production smoke gates only at
+  their risk or release boundary unless the patch directly changes them.
+- Limit canonical-host or privileged-environment requirements to checks that truly depend on that
+  host, platform, credential boundary, or side effect. Do not move hermetic focused tests out of the
+  fast loop merely because live acceptance uses a special host.
+
+When test time or maintenance is the problem, first remove duplicate execution and misplaced gate
+frequency. Delete or merge permanent tests only after confirming that a stronger stable-boundary
+test protects the same behavior and credible failure mode.
+
 ## Output
 
-Produce:
-
-- Behavior under test
-- Regression scenario
-- Happy path
-- Invalid input cases
-- Edge cases
-- Manual verification when automation is not practical
-- Selected verification layer and rationale
-- Commands to run locally
-- Broader or CI/release gates intentionally deferred to their owner
+Report the behavior proved, commands/evidence used, and material gaps. Include regression, edge,
+manual, broader, or release checks only when selected by actual risk.
 
 ## Review Existing Tests
 

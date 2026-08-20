@@ -9,5 +9,6 @@ ax-frontend	disciplines	disciplines/ax-frontend
 ax-backend	disciplines	disciplines/ax-backend
 ax-structure-review	disciplines	disciplines/ax-structure-review
 git-workflow	repository	repository/git-workflow
+ax-project-bootstrap	repository	repository/ax-project-bootstrap
 ax-project-adapter	repository	repository/ax-project-adapter
 tapd-query	integrations	integrations/tapd-query

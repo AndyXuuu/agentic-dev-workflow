@@ -1,0 +1,2 @@
+# name	kind	source	generator	documentation
+admin-dashboard	frontend-admin	scaffolds/admin-dashboard	bin/create-admin-dashboard.sh	scaffolds/admin-dashboard/README.md

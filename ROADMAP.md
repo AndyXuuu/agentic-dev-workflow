@@ -2,6 +2,10 @@
 
 本文是 Agentic Development Workflow 后续能力建设的唯一规划来源。目标是在现有工程治理基础上，逐步形成“通用工程方法、技术栈规范、标准脚手架、项目适配、验证交付”的完整体系。
 
+状态基线：2026-08-20。脚手架 catalog、`ax-project-bootstrap` 和 Admin Dashboard 的首个
+完整生成/验证纵向切片已经落地；通用 `stacks` 分类及 Go、TypeScript、Java 技术栈 Skill
+仍未完成。下文将已交付基线与后续计划分开，避免把当前能力写成未来假设。
+
 ## 能力地图
 
 ```mermaid
@@ -11,7 +15,7 @@ flowchart TB
     subgraph Existing["现有通用能力"]
         L["生命周期<br/>PRD · 架构 · 开发 · 测试 · Review"]
         D["工程领域<br/>前端 · 后端 · 结构质量"]
-        R["仓库治理<br/>Git Workflow · Project Adapter"]
+        R["仓库治理<br/>Git Workflow · Project Adapter · Project Bootstrap"]
         I["外部集成<br/>TAPD · 后续 GitHub/Jira"]
     end
 
@@ -22,6 +26,7 @@ flowchart TB
     end
 
     subgraph Scaffolds["标准脚手架 Skills"]
+        ADS["admin-dashboard<br/>已登记并可验证生成"]
         GOS["go-service-scaffold"]
         GZS["go-zero-service-scaffold"]
         SBS["spring-boot-service-scaffold"]
@@ -49,6 +54,8 @@ flowchart TB
     JAVA --> SBS
     TS --> RVA
     TS --> NJS
+
+    ADS --> CODE
 
     GOS --> CODE
     GZS --> CODE
@@ -85,7 +92,7 @@ flowchart LR
 
     P0 --> P1 --> P2 --> P3 --> P4 --> P5
 
-    P0 --- P0D["新增 stacks/scaffolds 分类<br/>定义参数、生成、验证、回滚规范"]
+    P0 --- P0D["scaffolds catalog/Bootstrap 已交付<br/>stacks 分类与通用合同待收敛"]
     P1 --- P1D["go-engineering<br/>go-service-scaffold<br/>go-zero-service-scaffold"]
     P2 --- P2D["typescript-engineering<br/>react-vite-app-scaffold<br/>nextjs-app-scaffold"]
     P3 --- P3D["java-engineering<br/>spring-boot-service-scaffold"]
@@ -95,14 +102,14 @@ flowchart LR
 
 ## 阶段交付
 
-| 阶段 | 核心交付 | 完成标准 |
-|---|---|---|
-| Phase 0 | `stacks`、`scaffolds` 分类与统一脚手架契约 | catalog、安装、验证和回滚边界明确 |
-| Phase 1 | Go 规范与服务脚手架 | 临时工程可生成，并通过 build、test 与项目适配验收 |
-| Phase 2 | TypeScript 规范与前端脚手架 | React/Vite、Next.js 变体边界明确且可独立构建 |
-| Phase 3 | Java 规范与 Spring Boot 脚手架 | Maven/Gradle 选择、事务和测试边界可验证 |
-| Phase 4 | 可组合工程模块 | 数据库、缓存、队列、可观测性与 CI 不复制基础脚手架 |
-| Phase 5 | 持续兼容治理 | 版本矩阵、冒烟测试和依赖升级流程可执行 |
+| 阶段 | 状态 | 核心交付 | 完成标准 |
+|---|---|---|---|
+| Phase 0 | 进行中 | Scaffold catalog、Bootstrap、统一脚手架合同与后续 `stacks` 分类 | Admin 纵向切片已验证；剩余 stacks 分类和通用合同收敛 |
+| Phase 1 | 待开始 | Go 规范与服务脚手架 | 临时工程可生成，并通过 build、test 与项目适配验收 |
+| Phase 2 | 部分先行 | Admin Dashboard 已交付；通用 TypeScript 规范、React/Vite 与 Next.js 脚手架待建设 | 各前端变体边界明确且可独立构建 |
+| Phase 3 | 待开始 | Java 规范与 Spring Boot 脚手架 | Maven/Gradle 选择、事务和测试边界可验证 |
+| Phase 4 | 待开始 | 可组合工程模块 | 数据库、缓存、队列、可观测性与 CI 不复制基础脚手架 |
+| Phase 5 | 待开始 | 持续兼容治理 | 版本矩阵、冒烟测试和依赖升级流程可执行 |
 
 ## 脚手架统一门禁
 
@@ -116,9 +123,10 @@ flowchart LR
 - 失败不留下半成品，并提供精确恢复方式。
 - 框架脚手架显式命名，不把单一框架定义成通用标准。
 
-## 第一优先级
+## 当前第一优先级
 
-先完成 Go 的完整黄金路径：
+Admin Dashboard 已经证明 catalog → Bootstrap → 临时验证 → 原子交付的第一条路径。下一步
+完成 Go 的完整黄金路径，并把可复用的生成合同从已验证实现中提炼出来：
 
 ```text
 scaffold contract

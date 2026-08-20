@@ -1,0 +1,4 @@
+interface:
+  display_name: "AX Project Bootstrap"
+  short_description: "优先复用已验证脚手架并建立可独立运行的项目工程基线"
+  default_prompt: "使用 $ax-project-bootstrap 为这个新项目选择并完整复制合适的脚手架，再规划项目适配。"
