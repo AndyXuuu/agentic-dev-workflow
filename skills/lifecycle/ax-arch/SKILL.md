@@ -51,5 +51,8 @@ Produce a design:
 - Design for local reasoning: give each behavior one searchable owner, explicit contracts and dependencies, localized changes, and a direct verification path.
 - Treat code-size thresholds as review signals; avoid both all-in-one modules and fragmentation into needless forwarding layers or tiny files.
 - Call out tradeoffs explicitly.
+- Apply `AGENTS.md` Security Goal and Complexity Budget to security design. Implement the confirmed
+  guarantee; present a materially stronger attacker model only as an explicit alternative with
+  its operating, migration, and verification cost, not as required architecture.
 - Do not encode unresolved material assumptions in contracts, data models, migration plans, test
   oracles, or canonical architecture documents.

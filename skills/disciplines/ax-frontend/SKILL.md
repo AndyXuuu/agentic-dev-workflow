@@ -15,6 +15,10 @@ description: 项目无关的通用前端实现与审查流程。用于非平凡�
 
 本 Skill 的状态、设计系统、可访问性和验证清单均按本次改动的实际影响选择，不得自动扩展为全量审计。
 
+涉及前端身份、权限、确认或安全表达时，先执行 `AGENTS.md` 的 Security Goal and Complexity
+Budget；UI 提示、隐藏控件或请求方填写的角色标签不得被描述成后端强制、独立审批或更强的
+安全保证，本 Skill 也不得因此扩大威胁模型。
+
 ## 与其他工程 Skill 的边界
 
 - 新建前端项目、Admin Console 或独立前端包且目标 Owner 尚不存在时，先使用 `ax-project-bootstrap` 选择并完整生成已登记脚手架；本 Skill 从生成后的设计系统和源码 Owner 开始实施，不从空目录重建同类框架。

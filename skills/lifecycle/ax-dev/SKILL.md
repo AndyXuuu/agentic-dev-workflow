@@ -17,7 +17,8 @@ Decide the path before loading this Skill. When the current global or project Fa
 criteria are fully satisfied, use `AGENTS.md`, target files, and nearby project navigation
 without this Skill. If it was already loaded, stop here: confirm the existing owner and
 narrow scope, implement the localized change, run the smallest meaningful validation,
-and report concisely. Escalate as soon as a listed risk boundary appears.
+and report concisely. Leave Fast Path as soon as a listed risk boundary appears, but route only
+the confirmed affected scope; this does not authorize a broader audit or stronger threat model.
 
 ## Before Editing
 
@@ -51,6 +52,9 @@ or remove the dependent plan and edits, before writing code that would make the 
 - Avoid duplicate validators, mappers, formatters, API wrappers, permission checks, and business logic.
 - Keep business rules in the correct layer.
 - Keep changes scoped to the request.
+- Do not add a stronger security mechanism than the accepted requirement and design. Apply
+  `AGENTS.md` Security Goal and Complexity Budget and leave unrelated defenses as evidenced
+  residual risk.
 
 ## Verification
 

@@ -86,15 +86,19 @@ These rules are for personal Codex behavior across software engineering projects
   control, identify the protected asset, credible threat or failure, attacker capability, trust
   boundary, and observable security property. A broad request such as "make it secure" does not
   by itself authorize the strongest possible threat model.
+- This scope control does not waive established security baselines such as boundary validation,
+  authorization, secret handling, or mandatory project policy. It limits unrequested increases in
+  the claimed protection level, not controls already required by the accepted task or environment.
 - Do not silently upgrade protection against mistakes or program bugs into protection against
   compromised administrator credentials, malicious insiders, collusion, or supply-chain
   substitution. A stronger attacker model is a requirement and architecture change, not an
   automatic completion condition for the current task.
-- Describe controls by the guarantee they actually provide. Request-supplied actor or
-  `approved_by` text is audit attribution, not independent approval; a digest of metadata or a
-  source identifier is not content-integrity verification unless trusted bytes are verified.
-  Correct materially overstated names, specifications, or acceptance claims within the current
-  documentation scope; do not use the correction as authority to build the stronger mechanism.
+- Describe controls by the guarantee they actually provide. A request-supplied actor or approver
+  label is audit attribution, not independent approval; a digest of metadata or a source
+  identifier is not content-integrity verification unless trusted bytes are verified.
+  Report materially overstated names, specifications, or acceptance claims; correct them only
+  when the current task authorizes that documentation or naming scope. Do not use the correction
+  as authority to build the stronger mechanism.
 - Treat new principals, roles, separation of duties, approval state machines, permission
   boundaries, content digests, signatures, attestations, key lifecycles, schema migrations, or
   cross-Owner enforcement as material scope when they were not already required. State the

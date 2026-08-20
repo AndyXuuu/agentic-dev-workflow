@@ -16,8 +16,9 @@ description: 实验性维护可重建级 SDD：为没有源码的独立 Agent �
 - 每项当前 Requirement 必须连接到规格 Artifact 和独立 Oracle；测试通过不能补偿规格缺失。
 - Bundle 只包含 manifest 明确登记的当前 Artifact；源码、Git 历史和仓库其他文档不得被顺带打包。
 - SDD 内所有实质假设必须在封装前成为已验证事实、明确需求/约束，或连同依赖内容一起删除。
+- 安全 Requirement 必须写明保护资产、可信边界、要防的故障或攻击、攻击者能力和可观察保证；控制名称或现有字段不能替代这份合同。不得从“审批”“摘要”“受控”等字样推导独立身份、内容完整性或更强攻击者模型。
 - `current` 表示 Owner 已裁决的目标合同，不表示盲目复制某一份材料。源契约、源码、运行证据或测试互相冲突时不得封装；先区分 intended contract 与 actual behavior，由 Owner 选择目标并同步另一侧及 Oracle。
-- 清洁重建默认复现已声明行为，不复刻未声明的偶然缺陷。隐藏 Evaluator 只能变化已声明 Requirement 的反例和组合，不能把原实现独有行为作为秘密需求。
+- 清洁重建默认复现已声明行为，不复刻未声明的偶然缺陷。隐藏 Evaluator 只能变化已声明 Requirement 的反例和组合，不能把原实现独有行为或更强威胁模型作为秘密需求。
 
 设计或审核 SDD 模型时读取 [references/reconstruction-model.md](references/reconstruction-model.md)。
 

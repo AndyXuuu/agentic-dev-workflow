@@ -28,6 +28,10 @@ a checkpoint.
 
 ## Non-Functional Requirements
 
+For security requirements, state the protected asset, threat or failure, attacker capability,
+trust boundary, and observable guarantee. Do not promote a stronger possible defense into scope
+without an explicit decision; keep mandatory project security baselines separate from this scope.
+
 ## Acceptance Criteria
 
 ## Open Questions

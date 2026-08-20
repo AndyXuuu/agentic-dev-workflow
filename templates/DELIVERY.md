@@ -18,4 +18,8 @@ a current fact, or a persistent follow-up.
 
 ## Risks
 
+For security-related changes, distinguish the accepted guarantee from residual defenses not in
+scope. Do not report a metadata label, self-attributed approver, or local bundle digest as a
+stronger security property than the evidence supports.
+
 ## Rollback

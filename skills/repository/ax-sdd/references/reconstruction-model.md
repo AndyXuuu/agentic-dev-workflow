@@ -20,6 +20,11 @@
 
 如果要求新实现采用与原系统相同的内部代码结构，必须把该结构声明成约束并解释可观察价值；否则只要求行为和质量属性等价。
 
+安全等价只覆盖 SDD 已声明的威胁模型和保证等级。相关 Requirement 必须说明保护资产、
+故障或攻击、攻击者能力、信任边界以及可观察保证；自填的责任人标签不等于独立审批，
+元数据或来源摘要不等于受信内容字节的完整性验证。不得仅因现有实现出现某个安全命名，
+就让 Builder 增加新的身份、角色、审批状态、签名、密钥生命周期或迁移。
+
 ## 知识分层
 
 | 层 | 内容 | SDD bundle |
@@ -40,7 +45,7 @@ Git 历史可以解释“当时怎么变化”，但不是 Builder 的输入。�
 - 运行时偶然缺陷只有在 Owner 明确把它升级为兼容合同后才进入 SDD；否则清洁重建不负责复制该缺陷。
 - 证据矩阵、差分探针结果和裁决过程属于 bundle 外的临时变更或审计材料；SDD 只保留裁决后的当前合同及可观察原因。
 
-隐藏 Evaluator 可保留未公开的输入值、状态组合和安全反例，但只能判定 bundle 已声明的 Requirement。用原实现独有而 SDD 未声明的行为让 Builder 失败，证明的是评估污染，不是 SDD 缺口。
+隐藏 Evaluator 可保留未公开的输入值、状态组合和安全反例，但只能判定 bundle 已声明的 Requirement 和攻击者能力。用更强威胁模型、原实现独有而 SDD 未声明的行为让 Builder 失败，证明的是评估污染，不是 SDD 缺口。
 
 隐藏失败必须先归因再行动：
 
@@ -68,6 +73,9 @@ Git 历史可以解释“当时怎么变化”，但不是 Builder 的输入。�
 夹带历史过程。外部输入 kind 只允许 `asset`、`dataset`、`dependency`、`platform`、`service`
 和 `toolchain`，不得把原项目源码声明成重建依赖。
 
+Manifest 的 SHA-256 只证明 bundle 中登记资产的字节与清单一致；除非系统 Requirement 另行
+声明并由运行时验证，它不代表远端来源、部署资源或业务内容具有同等级的完整性保证。
+
 Artifact kind 只允许：
 
 ```text
@@ -89,7 +97,7 @@ specification contract data architecture ui operation quality acceptance asset t
 | `architecture` | 模块、依赖、数据流、外部边界 |
 | `ui` | 路由、页面状态、交互、视觉与无障碍 |
 | `operations` | 配置、部署、观测、备份、恢复、回滚 |
-| `quality` | 安全、性能、可靠性、容量、兼容目标 |
+| `quality` | 安全威胁模型与保证等级、性能、可靠性、容量、兼容目标 |
 | `acceptance` | 行为 Oracle、契约校验和验收入口 |
 | `assets` | 不可推导资产、摘要、来源、许可证 |
 

@@ -23,6 +23,8 @@ Check relevant items only:
 - Oversized legacy files did not gain unrelated responsibilities and have a verified incremental treatment when touched
 - Tests verify behavior
 - Regression risk is covered
+- Security claims match the implemented guarantee and accepted threat model; an unrelated stronger
+  defense is a follow-up, not a delivery blocker or automatic patch expansion
 - Material assumptions are resolved or removed; no speculative content was promoted to a current
   fact, canonical document, archive, or test oracle
 - Migration/release notes are present when needed

@@ -8,6 +8,12 @@ evidence，不得为了填模板进入永久套件。
 
 ## Oracle / Contract Source
 
+## Security Threat Model / Guarantee（相关时）
+
+Test only the accepted attacker capability and claimed guarantee. Do not make stronger approval,
+identity, integrity, or trust-boundary behavior a hidden test requirement; record it as residual
+risk unless explicitly in scope.
+
 ## Permanent-Test Admission / Focused-Evidence Decision
 
 ## Regression Scenario（相关时）

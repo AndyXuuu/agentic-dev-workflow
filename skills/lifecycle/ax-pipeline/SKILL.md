@@ -41,6 +41,10 @@ material assumption must be verified from an authoritative source, converted int
 decision/constraint, or removed together with dependent plan content. Do not carry an unresolved
 assumption into a canonical document, archive, or delivery report.
 
+When security is in scope, apply `AGENTS.md` Security Goal and Complexity Budget before design:
+fix the required security property and attacker capability without creating a separate broad audit
+or upgrading the threat model from an implementation observation.
+
 ## 2. Codebase Discovery
 
 Inspect until the owner, reuse point, smallest change, and risk-selected verification plan are known:

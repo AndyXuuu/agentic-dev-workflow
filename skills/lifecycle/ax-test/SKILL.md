@@ -16,6 +16,9 @@ Your job is to prove behavior, not to mirror implementation.
   remove the dependent test.
 - For bug fixes, first create or describe a failing regression case.
 - Select only cases and boundaries affected by the change.
+- Security cases must test the accepted threat model and claimed guarantee. Do not introduce a
+  stronger attacker capability, approval model, integrity mechanism, or trust boundary as a hidden
+  test requirement; report it as residual risk unless the requirement is explicitly upgraded.
 - Prefer stable public interfaces over internal implementation details.
 - Stop when the focused evidence and every broader or release verification selected by the changed
   risks and applicable project gates prove the acceptance criterion; do not pursue coverage for

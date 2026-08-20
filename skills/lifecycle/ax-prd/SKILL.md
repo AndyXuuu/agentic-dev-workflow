@@ -38,6 +38,10 @@ Produce a compact PRD:
 - Derive acceptance criteria from the observable outcome, not from making the suggested
   implementation exist. A technically inferior proposal is not a requirement unless the user
   explicitly fixes it as a constraint after its consequences are clear.
+- For a security requirement, apply `AGENTS.md` Security Goal and Complexity Budget. State only
+  the protected asset, credible threat or failure, attacker capability, trust boundary, and
+  observable property needed by the accepted outcome; do not turn a stronger possible defense
+  into an implicit non-functional requirement.
 - Separate user-visible behavior from internal engineering tasks.
 - If the request is ambiguous, ask targeted questions.
 - If continuing without answers is acceptable, state assumptions clearly.

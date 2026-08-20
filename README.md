@@ -34,6 +34,8 @@ The framework is designed to make Agent-assisted development:
 - **Assumption-disciplined** — resolve material assumptions as verified facts, explicit user
   decisions, or removed dependencies before they reach implementation, tests, canonical docs,
   or archives.
+- **Security-bounded** — preserve mandatory baselines while tying new controls to an explicit
+  threat model and preventing unrequested guarantee or complexity escalation.
 - **Traceable** — connect requirements, design decisions, code, tests, and delivery evidence.
 - **Locally understandable** — give each behavior a clear Owner, boundary, and verification path.
 - **Verifiable** — test expected behavior instead of mirroring the current implementation.
@@ -300,7 +302,8 @@ $tapd-query List stories and bugs for workspace 123456.
 
 Apply the evidence and engineering-judgment gate in `AGENTS.md` before accepting a technical
 premise or proposed solution. Then use the Fast Path for explicit, localized, low-risk changes.
-Use PRD and design gates for work that does not meet every Fast Path condition, and escalate
-immediately when a risk boundary appears. Decide this before loading optional role or
-domain Skills; an eligible Fast Path change uses project instructions and local Owner
-navigation without loading the full `ax-dev`, `ax-frontend`, or `ax-backend` workflow.
+Use PRD and design gates for work that does not meet every Fast Path condition, and leave Fast
+Path when a risk boundary appears while routing only its confirmed affected scope. Decide this
+before loading optional role or domain Skills; an eligible Fast Path change uses project
+instructions and local Owner navigation without loading the full `ax-dev`, `ax-frontend`, or
+`ax-backend` workflow.

@@ -24,6 +24,10 @@ non-material, harmless working hypotheses with a checkpoint.
 
 ## Failure Modes
 
+When security affects the accepted task, record the confirmed protected asset, threat or failure,
+attacker capability, trust boundary, claimed guarantee, and residual risk here. Do not design a
+stronger attacker model or new approval/integrity mechanism unless it is an accepted requirement.
+
 ## Rollback Plan
 
 ## Implementation Plan
