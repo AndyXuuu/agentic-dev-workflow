@@ -68,10 +68,15 @@ they add domain decisions without repeating requirement, design, test, or delive
 
 Project stack, paths, commands, and business rules come only from the target project's `AGENTS.md`, adapters, canonical docs, and source code. Do not add project facts to global Skills.
 
-When a project explicitly opts into reconstruction-grade SDD, use `ax-sdd` only in supporting
+When a project explicitly opts into current-system SDD, use `ax-sdd` only in supporting
 mode: the lifecycle still owns requirement, design, implementation, verification, and delivery;
-SDD owns the converged current system definition, traceability, and isolated Builder bundle.
+SDD owns task-aware current navigation, the converged current system definition, traceability, and
+the isolated Builder bundle. Query its context route first and load only the selected current slice.
 Never copy stage notes, Proposal, tasks, rejected alternatives, or Agent reasoning into current SDD.
+After the project has cut over to `current`, route normative changes directly to the owning SDD
+Artifact at the applicable lifecycle checkpoint; legacy docs may only link to it or be checked
+generated projections. Do not edit a legacy canonical document and later synchronize a handwritten
+SDD copy. Before cutover, keep the SDD `draft` and continue using the verified existing Owner.
 
 ## 4. Architecture / Design
 
@@ -128,7 +133,8 @@ same suites.
 Report outcome, files, verification, and material residual risk. Add design, migration, or rollback
 details only when relevant.
 
-For an opted-in reconstruction SDD, reconcile the accepted behavior and oracles into its current
-artifacts, remove the temporary change packet from the default repository search space, and run the
-selected SDD validation. Do not report static validation or bundle creation as a successful clean
-reconstruction.
+For an opted-in current-system SDD, verify that the accepted behavior and oracles are present in
+their canonical current Artifacts, update a stable context route only when task routing changed,
+remove the temporary change packet from the default repository search space, and run the selected
+SDD validation. Do not use delivery as a second handwritten synchronization pass, and do not report
+static validation or bundle creation as a successful clean reconstruction.

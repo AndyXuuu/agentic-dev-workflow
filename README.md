@@ -144,27 +144,39 @@ Agent workflow for a greenfield application:
 
 Do not start with project-specific Agent rules and then invent an application structure to match them. If no registered scaffold is compatible, record the material mismatch and enter architecture design without creating a partial copy.
 
-## Experimental Reconstruction SDD
+## Experimental Current-system SDD
 
-`$ax-sdd` is an opt-in experiment for projects that want a current system definition capable of
-driving an independent implementation without the original source tree. It supports:
+`$ax-sdd` is an opt-in experiment for projects that want one current system definition to help an
+Agent understand a task quickly and to drive an independent implementation without the original
+source tree. It supports:
 
 - initializing an explicit draft instead of pretending an empty template is complete;
+- querying a validated context route for the smallest relevant Owners, Artifacts,
+  Requirements/Oracles, and verification entrypoints instead of loading every document;
 - validating manifest coverage, registered artifacts, Requirement-to-Oracle traceability,
   unresolved placeholders, hidden source/history dependencies, and process-material pollution;
 - producing a deterministic isolated ZIP that contains only manifest-registered current inputs.
 
+Keep only one current ZIP near the project. Iteration bundles belong in a temporary directory;
+superseded bundles move outside default Agent search only when an independent experiment, release,
+signature, or external reference needs reproduction. Git is the ordinary specification history.
+Within its declared system boundary, an adopted SDD replaces, rather than duplicates, each previous
+canonical document: migration stays draft until old handwritten copies are retired, linked, or made
+checked generated projections. Project rules and Owners outside that boundary remain authoritative.
+
 It does not replace `$ax-pipeline`, migrate project documentation automatically, store Proposal or
-tasks, or claim that static checks prove reconstruction. Clean reconstruction remains a periodic
+task instances, or claim that static checks prove reconstruction. Clean reconstruction remains a periodic
 independent evaluation.
 
 ```bash
 python3 skills/repository/ax-sdd/scripts/sdd.py init /path/to/project/sdd \
   --system-id example-system --name "Example System"
+python3 skills/repository/ax-sdd/scripts/sdd.py context /path/to/project/sdd \
+  --query "change an API permission"
 python3 skills/repository/ax-sdd/scripts/sdd.py validate /path/to/project/sdd --level structure
 python3 skills/repository/ax-sdd/scripts/sdd.py validate /path/to/project/sdd
 python3 skills/repository/ax-sdd/scripts/sdd.py bundle \
-  /path/to/project/sdd /path/to/output/example-system-sdd.zip
+  /path/to/project/sdd /path/to/output/example-system-sdd-0.1.0.zip
 ```
 
 ## Install
@@ -246,9 +258,9 @@ When intentionally working stage by stage, use `$ax-prd` -> `$ax-arch` -> `$ax-d
 domain Skill -> `$ax-test` -> `$ax-review`. `$ax-structure-review` remains an optional, explicitly
 requested structure audit; domain Skills do not become additional lifecycle stages.
 
-For a project that explicitly adopts reconstruction-grade SDD, use `$ax-sdd` in supporting mode to
-initialize, validate, or bundle the converged current definition. Stage notes remain owned by the
-lifecycle and do not become SDD artifacts.
+For a project that explicitly adopts current-system SDD, use `$ax-sdd` in supporting mode to query,
+initialize, validate, or bundle the converged current definition. Stage notes and task instances
+remain owned by the lifecycle and do not become SDD artifacts.
 
 To generate or refresh a thin project-specific adapter skill from a repository's
 actual architecture, owners, canonical documents, and verification commands:

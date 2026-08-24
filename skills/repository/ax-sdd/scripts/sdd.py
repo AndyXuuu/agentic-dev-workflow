@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Initialize, validate, and bundle an experimental reconstruction-grade SDD."""
+"""Initialize, navigate, validate, and bundle an experimental current-system SDD."""
 
 from __future__ import annotations
 
@@ -15,7 +15,8 @@ from pathlib import Path, PurePosixPath
 from typing import Any, Iterable, Optional, Union
 
 
-PROFILE = "reconstruction-sdd/experimental-v1"
+PROFILE = "current-system-sdd/experimental-v2"
+SUPPORTED_PROFILES = {PROFILE, "reconstruction-sdd/experimental-v1"}
 MANIFEST_NAME = "manifest.json"
 REQUIRED_COVERAGE = {
     "product": {"specification"},
@@ -29,7 +30,7 @@ REQUIRED_COVERAGE = {
     "acceptance": {"acceptance", "traceability"},
     "assets": {"asset"},
 }
-ALLOWED_KINDS = set().union(*REQUIRED_COVERAGE.values())
+ALLOWED_KINDS = set().union(*REQUIRED_COVERAGE.values()) | {"context"}
 EXTERNAL_INPUT_KINDS = {"asset", "dataset", "dependency", "platform", "service", "toolchain"}
 PROHIBITED_PATH_PARTS = {
     "archive",
@@ -58,6 +59,20 @@ PLACEHOLDER_PATTERNS = (
     re.compile(r"\b(?:TODO|TBD|FIXME)\b", re.IGNORECASE),
     re.compile(r"\{\{[^}]+\}\}"),
     re.compile(r"待定|待补充?|待确认|未确认"),
+)
+ASSUMPTION_PATTERNS = (
+    re.compile(
+        r"\b(?:we|i|the system|the builder|the evaluator|the agent|this specification)\s+"
+        r"(?:currently\s+|temporarily\s+)?assum(?:e|es|ed)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(r"\b(?:assumption|assumptions)\s*[:：]", re.IGNORECASE),
+    re.compile(r"\b(?:is|are|was|were)\s+(?:currently\s+|temporarily\s+)?assumed\b", re.IGNORECASE),
+    re.compile(r"(?:我们|我方|本文)\s*(?:当前|暂时|先)?(?:假设|假定|推定)"),
+    re.compile(
+        r"(?:^|[\n：:；;。])\s*(?:[-*]\s*)?(?:当前|暂时|先)?(?:假设|假定|推定)"
+        r"(?:\s|[：:，,]|为|是|该|此|系统|用户|输入)"
+    ),
 )
 HIDDEN_DEPENDENCY_PATTERNS = (
     re.compile(r"参考(?:原|现有)?(?:源码|实现|代码|proposal|提案)", re.IGNORECASE),
@@ -94,6 +109,13 @@ class ValidatedSdd:
     manifest_path: Path
     manifest: dict[str, Any]
     artifacts: dict[str, Artifact]
+    context: Optional[dict[str, Any]]
+
+
+@dataclass(frozen=True)
+class TraceabilityIndex:
+    requirements: dict[str, tuple[set[str], set[str]]]
+    oracles: dict[str, str]
 
 
 def read_json(path: Path, label: str) -> Any:
@@ -293,7 +315,11 @@ def validate_coverage(manifest: dict[str, Any], artifacts: dict[str, Artifact], 
                     raise SddError(f"coverage.{area}.rationale contains unresolved placeholder: {placeholder}")
         else:
             raise SddError(f"coverage.{area}.status must be specified or not-applicable")
-    uncovered = sorted(set(artifacts) - covered_artifact_ids)
+    uncovered = sorted(
+        artifact_id
+        for artifact_id, artifact in artifacts.items()
+        if artifact.kind != "context" and artifact_id not in covered_artifact_ids
+    )
     if uncovered:
         raise SddError(f"artifacts are not assigned to a coverage area: {uncovered}")
 
@@ -326,7 +352,7 @@ def validate_external_inputs(manifest: dict[str, Any], level: str) -> None:
                 raise SddError(f"{label} contains unresolved placeholder: {placeholder}")
 
 
-def validate_traceability(manifest: dict[str, Any], artifacts: dict[str, Artifact]) -> None:
+def validate_traceability(manifest: dict[str, Any], artifacts: dict[str, Artifact]) -> TraceabilityIndex:
     traceability_id = require_string(manifest.get("traceability_artifact"), "manifest.traceability_artifact")
     traceability_artifact = artifacts.get(traceability_id)
     if traceability_artifact is None:
@@ -360,7 +386,7 @@ def validate_traceability(manifest: dict[str, Any], artifacts: dict[str, Artifac
             raise SddError(f"oracle id {oracle_id} is absent from artifact {artifact_id}")
         oracles[oracle_id] = artifact
 
-    requirements: set[str] = set()
+    requirements: dict[str, tuple[set[str], set[str]]] = {}
     referenced_oracles: set[str] = set()
     for index, raw_requirement in enumerate(raw_requirements):
         requirement = require_mapping(raw_requirement, f"traceability.requirements[{index}]")
@@ -374,31 +400,35 @@ def validate_traceability(manifest: dict[str, Any], artifacts: dict[str, Artifac
             raise SddError(f"invalid requirement id: {requirement_id}")
         if requirement_id in requirements:
             raise SddError(f"duplicate requirement id: {requirement_id}")
-        requirements.add(requirement_id)
         artifact_ids = require_list(requirement.get("artifacts"), f"requirement {requirement_id}.artifacts", nonempty=True)
+        requirement_artifacts: set[str] = set()
         for artifact_id_value in artifact_ids:
             artifact_id = require_string(artifact_id_value, f"requirement {requirement_id}.artifacts[]")
             artifact = artifacts.get(artifact_id)
             if artifact is None:
                 raise SddError(f"requirement {requirement_id} references unknown artifact: {artifact_id}")
-            if artifact.kind in {"acceptance", "traceability", "asset"}:
+            if artifact.kind in {"acceptance", "traceability", "asset", "context"}:
                 raise SddError(f"requirement {requirement_id} must reference a specification artifact: {artifact_id}")
             if requirement_id.encode("ascii") not in artifact.path.read_bytes():
                 raise SddError(f"requirement id {requirement_id} is absent from artifact {artifact_id}")
+            requirement_artifacts.add(artifact_id)
         oracle_ids = require_list(requirement.get("oracles"), f"requirement {requirement_id}.oracles", nonempty=True)
+        requirement_oracles: set[str] = set()
         for oracle_id_value in oracle_ids:
             oracle_id = require_string(oracle_id_value, f"requirement {requirement_id}.oracles[]")
             if oracle_id not in oracles:
                 raise SddError(f"requirement {requirement_id} references unknown oracle: {oracle_id}")
             referenced_oracles.add(oracle_id)
+            requirement_oracles.add(oracle_id)
+        requirements[requirement_id] = (requirement_artifacts, requirement_oracles)
 
     discovered_requirements: set[str] = set()
     for artifact in artifacts.values():
-        if artifact.kind not in {"acceptance", "traceability", "asset"}:
+        if artifact.kind not in {"acceptance", "traceability", "asset", "context"}:
             discovered_requirements.update(
                 match.decode("ascii") for match in REQUIREMENT_SCAN_PATTERN.findall(artifact.path.read_bytes())
             )
-    untraced = sorted(discovered_requirements - requirements)
+    untraced = sorted(discovered_requirements - set(requirements))
     if untraced:
         raise SddError(f"requirements appear in artifacts but not traceability: {untraced}")
     discovered_oracles: set[str] = set()
@@ -413,6 +443,217 @@ def validate_traceability(manifest: dict[str, Any], artifacts: dict[str, Artifac
     orphaned_oracles = sorted(set(oracles) - referenced_oracles)
     if orphaned_oracles:
         raise SddError(f"oracles do not protect any requirement: {orphaned_oracles}")
+    return TraceabilityIndex(
+        requirements=requirements,
+        oracles={oracle_id: artifact.artifact_id for oracle_id, artifact in oracles.items()},
+    )
+
+
+def require_unique_strings(value: Any, label: str, *, nonempty: bool = False) -> list[str]:
+    raw_values = require_list(value, label, nonempty=nonempty)
+    values: list[str] = []
+    seen: set[str] = set()
+    for index, raw_value in enumerate(raw_values):
+        item = require_string(raw_value, f"{label}[{index}]")
+        if item in seen:
+            raise SddError(f"{label} contains duplicate value: {item}")
+        seen.add(item)
+        values.append(item)
+    return values
+
+
+def keyword_matches(query: str, keyword: str) -> bool:
+    normalized_keyword = keyword.casefold()
+    if normalized_keyword.isascii():
+        return bool(
+            re.search(
+                rf"(?<![a-z0-9]){re.escape(normalized_keyword)}(?![a-z0-9])",
+                query,
+            )
+        )
+    return normalized_keyword in query
+
+
+def validate_context(
+    manifest: dict[str, Any],
+    artifacts: dict[str, Artifact],
+    traceability: TraceabilityIndex,
+) -> Optional[dict[str, Any]]:
+    context_id_value = manifest.get("context_artifact")
+    if context_id_value is None:
+        if manifest.get("profile") == PROFILE:
+            raise SddError("manifest.context_artifact is required for the current-system SDD profile")
+        return None
+    context_id = require_string(context_id_value, "manifest.context_artifact")
+    context_artifact = artifacts.get(context_id)
+    if context_artifact is None:
+        raise SddError(f"context artifact is not registered: {context_id}")
+    if context_artifact.kind != "context":
+        raise SddError(f"context artifact must have kind context: {context_id}")
+
+    context = require_mapping(read_json(context_artifact.path, "context artifact"), "context")
+    reject_extra_keys(
+        context,
+        {"schema_version", "role", "system_summary", "default_route", "glossary", "owners", "routes"},
+        "context",
+    )
+    if context.get("schema_version") != 1:
+        raise SddError("context.schema_version must be 1")
+    if context.get("role") != "non-normative-navigation":
+        raise SddError("context.role must be non-normative-navigation")
+    require_string(context.get("system_summary"), "context.system_summary")
+
+    raw_glossary = require_list(context.get("glossary"), "context.glossary")
+    glossary_terms: set[str] = set()
+    for index, raw_entry in enumerate(raw_glossary):
+        entry = require_mapping(raw_entry, f"context.glossary[{index}]")
+        reject_extra_keys(entry, {"term", "definition", "artifacts"}, f"context.glossary[{index}]")
+        term = require_string(entry.get("term"), f"context.glossary[{index}].term")
+        normalized_term = term.casefold()
+        if normalized_term in glossary_terms:
+            raise SddError(f"duplicate context glossary term: {term}")
+        glossary_terms.add(normalized_term)
+        require_string(entry.get("definition"), f"context.glossary[{index}].definition")
+        for artifact_id in require_unique_strings(
+            entry.get("artifacts"), f"context.glossary[{index}].artifacts", nonempty=True
+        ):
+            if artifact_id not in artifacts or artifact_id == context_id:
+                raise SddError(f"context glossary term {term} references invalid canonical artifact: {artifact_id}")
+
+    raw_owners = require_list(context.get("owners"), "context.owners", nonempty=True)
+    owners: set[str] = set()
+    for index, raw_owner in enumerate(raw_owners):
+        owner = require_mapping(raw_owner, f"context.owners[{index}]")
+        reject_extra_keys(owner, {"id", "responsibility", "entrypoints"}, f"context.owners[{index}]")
+        owner_id = require_string(owner.get("id"), f"context.owners[{index}].id")
+        if owner_id in owners:
+            raise SddError(f"duplicate context owner: {owner_id}")
+        owners.add(owner_id)
+        require_string(owner.get("responsibility"), f"context owner {owner_id}.responsibility")
+        for artifact_id in require_unique_strings(
+            owner.get("entrypoints"), f"context owner {owner_id}.entrypoints", nonempty=True
+        ):
+            artifact = artifacts.get(artifact_id)
+            if artifact is None or artifact_id == context_id:
+                raise SddError(f"context owner {owner_id} references invalid canonical artifact: {artifact_id}")
+            if artifact.owner != owner_id:
+                raise SddError(
+                    f"context owner {owner_id} cannot claim {artifact_id}, whose manifest owner is {artifact.owner}"
+                )
+    manifest_owners = {artifact.owner for artifact in artifacts.values() if artifact.kind != "context"}
+    missing_owners = sorted(manifest_owners - owners)
+    if missing_owners:
+        raise SddError(f"context omits manifest artifact owners: {missing_owners}")
+
+    raw_routes = require_list(context.get("routes"), "context.routes", nonempty=True)
+    route_ids: set[str] = set()
+    routed_artifacts: set[str] = set()
+    routed_requirements: set[str] = set()
+    routed_oracles: set[str] = set()
+    for index, raw_route in enumerate(raw_routes):
+        route = require_mapping(raw_route, f"context.routes[{index}]")
+        reject_extra_keys(
+            route,
+            {"id", "keywords", "glossary", "read", "owners", "requirements", "oracles", "verification"},
+            f"context.routes[{index}]",
+        )
+        route_id = require_string(route.get("id"), f"context.routes[{index}].id")
+        if not SYSTEM_ID_PATTERN.fullmatch(route_id):
+            raise SddError(f"invalid context route id: {route_id}")
+        if route_id in route_ids:
+            raise SddError(f"duplicate context route id: {route_id}")
+        route_ids.add(route_id)
+        require_unique_strings(route.get("keywords"), f"context route {route_id}.keywords", nonempty=True)
+        route_glossary = require_unique_strings(
+            route.get("glossary", []), f"context route {route_id}.glossary"
+        )
+        unknown_glossary = sorted(term for term in route_glossary if term.casefold() not in glossary_terms)
+        if unknown_glossary:
+            raise SddError(f"context route {route_id} references unknown glossary terms: {unknown_glossary}")
+        read_ids = set(require_unique_strings(route.get("read"), f"context route {route_id}.read", nonempty=True))
+        routed_artifacts.update(read_ids)
+        for artifact_id in read_ids:
+            if artifact_id not in artifacts or artifact_id == context_id:
+                raise SddError(f"context route {route_id} reads invalid canonical artifact: {artifact_id}")
+        route_owners = set(
+            require_unique_strings(route.get("owners"), f"context route {route_id}.owners", nonempty=True)
+        )
+        unknown_owners = sorted(route_owners - owners)
+        if unknown_owners:
+            raise SddError(f"context route {route_id} references unknown owners: {unknown_owners}")
+        read_owners = {artifacts[artifact_id].owner for artifact_id in read_ids}
+        if not route_owners <= read_owners:
+            raise SddError(
+                f"context route {route_id} owners are not represented by its read artifacts: "
+                f"{sorted(route_owners - read_owners)}"
+            )
+        primary_read_owners = {
+            artifacts[artifact_id].owner
+            for artifact_id in read_ids
+            if artifacts[artifact_id].kind not in {"acceptance", "traceability"}
+        }
+        if not primary_read_owners <= route_owners:
+            raise SddError(
+                f"context route {route_id} omits owners for selected current artifacts: "
+                f"{sorted(primary_read_owners - route_owners)}"
+            )
+        requirement_ids = set(
+            require_unique_strings(
+                route.get("requirements"), f"context route {route_id}.requirements", nonempty=True
+            )
+        )
+        unknown_requirements = sorted(requirement_ids - set(traceability.requirements))
+        if unknown_requirements:
+            raise SddError(f"context route {route_id} references unknown requirements: {unknown_requirements}")
+        routed_requirements.update(requirement_ids)
+        oracle_ids = set(
+            require_unique_strings(route.get("oracles"), f"context route {route_id}.oracles", nonempty=True)
+        )
+        unknown_oracles = sorted(oracle_ids - set(traceability.oracles))
+        if unknown_oracles:
+            raise SddError(f"context route {route_id} references unknown oracles: {unknown_oracles}")
+        routed_oracles.update(oracle_ids)
+        required_reads: set[str] = set()
+        allowed_oracles: set[str] = set()
+        for requirement_id in requirement_ids:
+            requirement_artifacts, requirement_oracles = traceability.requirements[requirement_id]
+            required_reads.update(requirement_artifacts)
+            allowed_oracles.update(requirement_oracles)
+        required_reads.update(traceability.oracles[oracle_id] for oracle_id in oracle_ids)
+        missing_reads = sorted(required_reads - read_ids)
+        if missing_reads:
+            raise SddError(f"context route {route_id} omits artifacts required by its traceability: {missing_reads}")
+        unrelated_oracles = sorted(oracle_ids - allowed_oracles)
+        if unrelated_oracles:
+            raise SddError(
+                f"context route {route_id} oracles do not protect its declared requirements: {unrelated_oracles}"
+            )
+        missing_oracles = sorted(allowed_oracles - oracle_ids)
+        if missing_oracles:
+            raise SddError(
+                f"context route {route_id} omits oracles for its declared requirements: {missing_oracles}"
+            )
+        require_unique_strings(
+            route.get("verification"), f"context route {route_id}.verification", nonempty=True
+        )
+
+    default_route = require_string(context.get("default_route"), "context.default_route")
+    if default_route not in route_ids:
+        raise SddError(f"context.default_route references unknown route: {default_route}")
+    unrouted_requirements = sorted(set(traceability.requirements) - routed_requirements)
+    if unrouted_requirements:
+        raise SddError(f"context does not route current requirements: {unrouted_requirements}")
+    unrouted_oracles = sorted(set(traceability.oracles) - routed_oracles)
+    if unrouted_oracles:
+        raise SddError(f"context does not route current oracles: {unrouted_oracles}")
+    unrouted_artifacts = sorted(
+        artifact_id
+        for artifact_id, artifact in artifacts.items()
+        if artifact.kind not in {"context", "traceability"} and artifact_id not in routed_artifacts
+    )
+    if unrouted_artifacts:
+        raise SddError(f"context does not route current artifacts: {unrouted_artifacts}")
+    return context
 
 
 def validate_content(manifest: dict[str, Any], artifacts: dict[str, Artifact]) -> None:
@@ -427,6 +668,12 @@ def validate_content(manifest: dict[str, Any], artifacts: dict[str, Artifact]) -
         placeholder = find_pattern(text, PLACEHOLDER_PATTERNS)
         if placeholder:
             raise SddError(f"{label} contains unresolved placeholder: {placeholder}")
+        assumption = find_pattern(text, ASSUMPTION_PATTERNS)
+        if assumption:
+            raise SddError(
+                f"{label} contains an assumption marker that must become a verified fact, "
+                f"explicit requirement/constraint, or be removed: {assumption}"
+            )
         hidden_dependency = find_pattern(text, HIDDEN_DEPENDENCY_PATTERNS)
         if hidden_dependency:
             raise SddError(f"{label} contains hidden implementation/history dependency: {hidden_dependency}")
@@ -446,6 +693,12 @@ def validate_content(manifest: dict[str, Any], artifacts: dict[str, Artifact]) -
         placeholder = find_pattern(text, PLACEHOLDER_PATTERNS)
         if placeholder:
             raise SddError(f"artifact {artifact.artifact_id} contains unresolved placeholder: {placeholder}")
+        assumption = find_pattern(text, ASSUMPTION_PATTERNS)
+        if assumption:
+            raise SddError(
+                f"artifact {artifact.artifact_id} contains an assumption marker that must become a verified fact, "
+                f"explicit requirement/constraint, or be removed: {assumption}"
+            )
         hidden_dependency = find_pattern(text, HIDDEN_DEPENDENCY_PATTERNS)
         if hidden_dependency:
             raise SddError(
@@ -472,13 +725,26 @@ def validate(root_value: Union[str, Path], level: str = "reconstruction") -> Val
     manifest = require_mapping(read_json(manifest_path, "SDD manifest"), "manifest")
     reject_extra_keys(
         manifest,
-        {"schema_version", "profile", "system", "artifacts", "coverage", "traceability_artifact", "external_inputs"},
+        {
+            "schema_version",
+            "profile",
+            "system",
+            "artifacts",
+            "coverage",
+            "context_artifact",
+            "traceability_artifact",
+            "external_inputs",
+        },
         "manifest",
     )
-    if manifest.get("schema_version") != 1:
-        raise SddError("manifest.schema_version must be 1")
-    if manifest.get("profile") != PROFILE:
-        raise SddError(f"manifest.profile must be {PROFILE}")
+    manifest_profile = manifest.get("profile")
+    if manifest_profile not in SUPPORTED_PROFILES:
+        raise SddError(f"manifest.profile must be one of {sorted(SUPPORTED_PROFILES)}")
+    expected_schema_version = 2 if manifest_profile == PROFILE else 1
+    if manifest.get("schema_version") != expected_schema_version:
+        raise SddError(
+            f"manifest.schema_version must be {expected_schema_version} for profile {manifest_profile}"
+        )
     system = require_mapping(manifest.get("system"), "manifest.system")
     reject_extra_keys(system, {"id", "name", "version", "status"}, "manifest.system")
     system_id = require_string(system.get("id"), "manifest.system.id")
@@ -501,14 +767,138 @@ def validate(root_value: Union[str, Path], level: str = "reconstruction") -> Val
 
     validate_coverage(manifest, artifacts, level)
     validate_external_inputs(manifest, level)
-    validate_traceability(manifest, artifacts)
+    traceability = validate_traceability(manifest, artifacts)
+    context = validate_context(manifest, artifacts, traceability)
     if level == "reconstruction":
         validate_content(manifest, artifacts)
-    return ValidatedSdd(root, manifest_path, manifest, artifacts)
+    return ValidatedSdd(root, manifest_path, manifest, artifacts, context)
+
+
+def context_view(root_value: Union[str, Path], query: Optional[str] = None) -> dict[str, Any]:
+    validated = validate(root_value, "reconstruction")
+    if validated.context is None:
+        raise SddError("this legacy SDD has no context artifact; migrate it before using context navigation")
+    context_id = require_string(validated.manifest.get("context_artifact"), "manifest.context_artifact")
+    context_artifact = validated.artifacts[context_id]
+    if validated.manifest["system"]["status"] != "current" or context_artifact.status != "current":
+        raise SddError("context navigation requires current system and context artifact status")
+
+    context = validated.context
+    routes = require_list(context["routes"], "context.routes", nonempty=True)
+    normalized_query = (query or "").strip().casefold()
+    selection = "default"
+    selected_routes: list[dict[str, Any]]
+    if normalized_query:
+        scored: list[tuple[int, dict[str, Any]]] = []
+        for route in routes:
+            score = sum(1 for keyword in route["keywords"] if keyword_matches(normalized_query, keyword))
+            if score:
+                scored.append((score, route))
+        if scored:
+            selected_routes = [route for _, route in sorted(scored, key=lambda item: item[0], reverse=True)]
+            selection = "matched"
+        else:
+            selected_routes = [route for route in routes if route["id"] == context["default_route"]]
+    else:
+        selected_routes = [route for route in routes if route["id"] == context["default_route"]]
+
+    for route in selected_routes:
+        for artifact_id in route["read"]:
+            if validated.artifacts[artifact_id].status != "current":
+                raise SddError(f"context route {route['id']} references non-current artifact: {artifact_id}")
+
+    owners = {owner["id"]: owner for owner in context["owners"]}
+    selected_artifacts = {artifact_id for route in selected_routes for artifact_id in route["read"]}
+    selected_glossary = {
+        term.casefold()
+        for route in selected_routes
+        for term in route.get("glossary", [])
+    }
+    rendered_routes: list[dict[str, Any]] = []
+    for route in selected_routes:
+        rendered_routes.append(
+            {
+                "id": route["id"],
+                "owners": route["owners"],
+                "owner_details": [
+                    {"id": owner_id, "responsibility": owners[owner_id]["responsibility"]}
+                    for owner_id in route["owners"]
+                ],
+                "read": [
+                    {
+                        "id": artifact_id,
+                        "kind": validated.artifacts[artifact_id].kind,
+                        "path": validated.artifacts[artifact_id].relative_path,
+                    }
+                    for artifact_id in route["read"]
+                ],
+                "requirements": route["requirements"],
+                "oracles": route["oracles"],
+                "verification": route["verification"],
+            }
+        )
+    return {
+        "system": {
+            "id": validated.manifest["system"]["id"],
+            "name": validated.manifest["system"]["name"],
+            "version": validated.manifest["system"]["version"],
+            "summary": context["system_summary"],
+        },
+        "query": query,
+        "selection": selection,
+        "glossary": [
+            {
+                "term": entry["term"],
+                "definition": entry["definition"],
+                "artifacts": entry["artifacts"],
+            }
+            for entry in context["glossary"]
+            if entry["term"].casefold() in selected_glossary
+            or (
+                normalized_query
+                and keyword_matches(normalized_query, entry["term"])
+                and set(entry["artifacts"]) & selected_artifacts
+            )
+        ],
+        "routes": rendered_routes,
+        "available_routes": (
+            []
+            if normalized_query and selection == "matched"
+            else [{"id": route["id"], "keywords": route["keywords"]} for route in routes]
+        ),
+    }
+
+
+def print_context(view: dict[str, Any]) -> None:
+    system = view["system"]
+    print(f"{system['name']} ({system['id']} {system['version']}): {system['summary']}")
+    if view["query"]:
+        print(f"Query: {view['query']} [{view['selection']}]")
+    if view["glossary"]:
+        print("Glossary:")
+        for entry in view["glossary"]:
+            print(f"  - {entry['term']}: {entry['definition']}")
+    for route in view["routes"]:
+        print(f"\nRoute: {route['id']}")
+        print("Owners:")
+        for owner in route["owner_details"]:
+            print(f"  - {owner['id']}: {owner['responsibility']}")
+        print("Read:")
+        for artifact in route["read"]:
+            print(f"  - {artifact['id']} [{artifact['kind']}]: {artifact['path']}")
+        print(f"Requirements: {', '.join(route['requirements'])}")
+        print(f"Oracles: {', '.join(route['oracles'])}")
+        print("Verification:")
+        for entry in route["verification"]:
+            print(f"  - {entry}")
+    if view["available_routes"]:
+        print("\nAvailable routes:")
+        for route in view["available_routes"]:
+            print(f"  - {route['id']}: {', '.join(route['keywords'])}")
 
 
 def template_root() -> Path:
-    return Path(__file__).resolve().parent.parent / "assets" / "reconstruction-sdd"
+    return Path(__file__).resolve().parent.parent / "assets" / "current-system-sdd"
 
 
 def init_sdd(target_value: Union[str, Path], system_id: str, name: str) -> Path:
@@ -567,6 +957,24 @@ def bundle_sdd(root_value: Union[str, Path], output_value: Union[str, Path]) -> 
     except FileNotFoundError as exc:
         raise SddError(f"bundle output parent does not exist: {output.parent}") from exc
     output_resolved = parent / output.name
+    system_id = validated.manifest["system"]["id"]
+    system_version = validated.manifest["system"]["version"]
+    expected_name = f"{system_id}-sdd-{system_version}.zip"
+    if output.name != expected_name:
+        raise SddError(
+            "bundle output filename must match the manifest system id and version: "
+            f"expected {expected_name}, got {output.name}"
+        )
+    sibling_bundles = sorted(
+        path.name
+        for path in parent.glob(f"{system_id}-sdd-*.zip")
+        if path != output_resolved
+    )
+    if sibling_bundles:
+        raise SddError(
+            "bundle output directory already contains superseded or competing bundles for "
+            f"{system_id}: {sibling_bundles}; archive or remove them before creating the single current bundle"
+        )
     try:
         output_resolved.relative_to(validated.root)
     except ValueError:
@@ -607,6 +1015,11 @@ def build_parser() -> argparse.ArgumentParser:
     validate_parser.add_argument("root")
     validate_parser.add_argument("--level", choices=("structure", "reconstruction"), default="reconstruction")
 
+    context_parser = subparsers.add_parser("context", help="select the minimum current SDD slice for a task")
+    context_parser.add_argument("root")
+    context_parser.add_argument("--query")
+    context_parser.add_argument("--json", action="store_true", dest="json_output")
+
     bundle_parser = subparsers.add_parser("bundle", help="validate and create an isolated deterministic ZIP")
     bundle_parser.add_argument("root")
     bundle_parser.add_argument("output")
@@ -618,7 +1031,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     try:
         if args.command == "init":
             target = init_sdd(args.target, args.system_id, args.name)
-            print(f"Initialized draft reconstruction SDD: {target}")
+            print(f"Initialized draft current-system SDD: {target}")
             print("Structure validation passed; reconstruction validation is expected to fail until TODOs are resolved.")
         elif args.command == "validate":
             validated = validate(args.root, args.level)
@@ -626,9 +1039,15 @@ def main(argv: Optional[list[str]] = None) -> int:
                 f"Validated {len(validated.artifacts)} artifacts at {args.level} level for "
                 f"{validated.manifest['system']['id']}."
             )
+        elif args.command == "context":
+            view = context_view(args.root, args.query)
+            if args.json_output:
+                print(json.dumps(view, indent=2, ensure_ascii=False))
+            else:
+                print_context(view)
         elif args.command == "bundle":
             output, digest = bundle_sdd(args.root, args.output)
-            print(f"Created reconstruction SDD bundle: {output}")
+            print(f"Created current-system SDD bundle: {output}")
             print(f"SHA-256: {digest}")
         else:
             raise AssertionError(f"unhandled command: {args.command}")

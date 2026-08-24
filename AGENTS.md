@@ -117,7 +117,7 @@ These rules are for personal Codex behavior across software engineering projects
 - Never place a specific project's framework choices, paths, commands, endpoints, credentials, deployment topology, or business rules into global `AGENTS.md` or global Skills.
 - Lifecycle Skills (`ax-pipeline`, `ax-prd`, `ax-arch`, `ax-dev`, `ax-test`, `ax-review`) own delivery stages.
 - Discipline Skills (`ax-frontend`, `ax-backend`, `ax-structure-review`) own reusable engineering practices and structural quality.
-- Repository Skills (`git-workflow`, `ax-sdd`, `ax-project-bootstrap`, `ax-project-adapter`) own source-control, opt-in reconstruction SDD, scaffold bootstrap, and project-adoption workflows.
+- Repository Skills (`git-workflow`, `ax-sdd`, `ax-project-bootstrap`, `ax-project-adapter`) own source-control, opt-in current-system SDD, scaffold bootstrap, and project-adoption workflows.
 - Integration Skills (`tapd-query`) own external tool access and must keep credentials outside the repository.
 - A project's `AGENTS.md` owns its stack, commands, hard constraints, and canonical sources.
 - A project adapter Skill only maps global workflows to verified project owners and entry points; it must not copy global gates or become a second project rule source.
@@ -148,21 +148,40 @@ These rules are for personal Codex behavior across software engineering projects
 - Add or remove registry entries only when the user explicitly requests a registry change. A repository that merely exists locally is not registered.
 - Before changing a registered repository, verify its Git root, applicable `AGENTS.md`, current branch, upstream, and clean/dirty state. Keep each repository's changes, validation, commit, and remote synchronization independent.
 
-## Experimental Reconstruction SDD
+## Experimental Current-system SDD
 
-- A project may explicitly opt into `ax-sdd` to maintain a current system definition that an
-  independent Agent can use without the original source tree. This is an experimental supporting
-  capability; `ax-pipeline` remains the only end-to-end delivery workflow.
-- A reconstruction SDD contains only the current complete system definition, machine-readable
-  contracts, declared assets, and traceable acceptance oracles. Proposal, tasks, exploration,
-  rejected alternatives, Agent reasoning, and historical snapshots belong in Git, PR/Issue, or a
-  separate audit store outside the Builder's default search space.
+- A project may explicitly opt into `ax-sdd` to maintain one current system definition for two
+  uses: task-aware project understanding through a machine-readable context route, and independent
+  reconstruction without the original source tree. This remains an experimental supporting
+  capability; `ax-pipeline` is the only end-to-end delivery workflow.
+- The context route must direct an Agent to the smallest relevant current Artifacts, Owners,
+  Requirements, Oracles, and verification entrypoints. It is a non-normative index, must defer to
+  its referenced canonical Artifacts, and must not cause the Agent to load the complete SDD by
+  default.
+- A current-system SDD contains only the current complete system definition, machine-readable
+  contracts, declared assets, traceable acceptance oracles, and stable task routes. A task instance,
+  Proposal, task list, exploration, rejected alternatives, Agent reasoning, and historical snapshots
+  belong in the active request, Git, PR/Issue, or a separate audit store outside default search.
+- Adoption has one explicit authority cutover within the project's declared SDD boundary. While
+  migration is incomplete, SDD Artifacts remain `draft` and the existing Owner remains authoritative.
+  Before declaring the SDD `current`, move each in-scope normative document, contract, schema, and
+  declared asset to its manifest-registered Owner, update consumers, and remove the former
+  handwritten copy or make it an explicitly derived link/generated projection with a drift check.
+  Do not maintain the same in-scope rule bidirectionally in SDD and `docs/`; project `AGENTS.md`
+  and canonical sources outside the adopted SDD boundary retain their own authority. Source code,
+  runtime evidence, and tests remain implementation/evidence rather than a second normative source.
 - Static SDD validation and an isolated bundle increase reconstruction confidence but do not prove
   completeness. Report clean slice or full reconstruction as passed only after an independent
   Builder used no original source/history and an independent Evaluator accepted the result.
+- Keep exactly one current bundle in a project or its nearby default Agent search space. Generate
+  iterative verification bundles in a temporary directory. Move a superseded bundle to a separate
+  audit store only when an independent experiment, release, signature, or external reference needs
+  reproduction; otherwise remove it. Git owns ordinary specification history, and stale bundles
+  must not compete with the current manifest during discovery.
 - Do not initialize, migrate, or impose SDD files on a project unless the current task explicitly
   adopts the experiment. Existing project canonical sources remain authoritative until that
-  project's migration and replacement boundary is verified and approved.
+  project's migration and replacement boundary is verified and approved; a partially copied SDD
+  must stay `draft` and must not become a competing task route.
 
 ## Risk-Tiered Workflow
 

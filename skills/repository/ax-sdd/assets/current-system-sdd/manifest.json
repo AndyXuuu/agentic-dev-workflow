@@ -1,6 +1,6 @@
 {
-  "schema_version": 1,
-  "profile": "reconstruction-sdd/experimental-v1",
+  "schema_version": 2,
+  "profile": "current-system-sdd/experimental-v2",
   "system": {
     "id": "{{system-id}}",
     "name": "{{system-name}}",
@@ -8,6 +8,13 @@
     "status": "draft"
   },
   "artifacts": [
+    {
+      "id": "CONTEXT-SYSTEM",
+      "kind": "context",
+      "path": "context/navigation.json",
+      "status": "draft",
+      "owner": "system"
+    },
     {
       "id": "SPEC-SYSTEM",
       "kind": "specification",
@@ -79,6 +86,7 @@
       "rationale": "TODO: explain why reconstruction needs no fixed assets or add their artifacts"
     }
   },
+  "context_artifact": "CONTEXT-SYSTEM",
   "traceability_artifact": "TRACEABILITY",
   "external_inputs": []
 }

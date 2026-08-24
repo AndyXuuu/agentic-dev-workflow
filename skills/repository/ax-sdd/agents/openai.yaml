@@ -1,4 +1,4 @@
 interface:
-  display_name: "AX Reconstruction SDD"
-  short_description: "维护可从零重建系统的当前规格、可追踪性与隔离 bundle"
-  default_prompt: "使用 $ax-sdd 为当前项目初始化或验证实验性的可重建级 SDD。"
+  display_name: "AX Current-system SDD"
+  short_description: "用当前系统导航加速 Agent 理解，并维护可重建规格与隔离 bundle"
+  default_prompt: "使用 $ax-sdd 为当前项目初始化、查询或验证实验性的 current-system SDD。"
