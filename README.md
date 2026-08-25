@@ -34,6 +34,9 @@ The framework is designed to make Agent-assisted development:
 - **Assumption-disciplined** — resolve material assumptions as verified facts, explicit user
   decisions, or removed dependencies before they reach implementation, tests, canonical docs,
   or archives.
+- **Terminology-stable** — register behavior-relevant concepts before functional requirements,
+  preserve canonical user/project language, and map translations or code identifiers without
+  letting synonyms fork the object model.
 - **Security-bounded** — preserve mandatory baselines while tying new controls to an explicit
   threat model and preventing unrequested guarantee or complexity escalation.
 - **Traceable** — connect requirements, design decisions, code, tests, and delivery evidence.

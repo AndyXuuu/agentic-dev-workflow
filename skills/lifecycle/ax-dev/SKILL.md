@@ -25,6 +25,8 @@ the confirmed affected scope; this does not authorize a broader audit or stronge
 Confirm:
 
 - Requirement summary
+- Accepted terminology/object registry; confirm every behavior-relevant identifier and user-facing
+  name maps to one registered concept
 - Acceptance criteria
 - Design or implementation plan
 - Affected modules
@@ -45,6 +47,10 @@ or remove the dependent plan and edits, before writing code that would make the 
 
 - Follow existing code style and local patterns.
 - Search before adding new helpers or business rules.
+- Do not introduce a new domain term, state, event, or object name as an implementation shortcut.
+  Map it to the registry, register a distinct concept through the requirement/design checkpoint,
+  or remove the dependent code. Translations and local variable names do not by themselves create
+  a new domain concept.
 - Keep modules single-purpose.
 - Avoid all-in-one files.
 - Apply the global and applicable domain code-size triggers as review signals, not mechanical pass/fail gates; keep each change locally understandable and verifiable.

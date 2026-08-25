@@ -2,6 +2,13 @@
 
 ## Summary
 
+## Terminology Contract
+
+Consume the accepted requirement terminology/object registry. Use canonical labels in prose and
+concept IDs for traceability. Any new behavior-relevant actor, entity, state, event, or operation
+must be mapped or explicitly registered with a distinct identity/lifecycle/ownership/contract
+boundary before it enters this design.
+
 ## Existing System
 
 ## Verified Facts / Assumption Disposition

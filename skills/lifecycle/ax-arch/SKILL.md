@@ -11,6 +11,10 @@ Your job is to design a maintainable implementation that fits the existing codeb
 
 Before proposing design:
 
+- Load the accepted requirement terminology/object registry. Every behavior-relevant name in the
+  design must use its canonical label and concept ID; do not create a synonym that can become a
+  second actor, object, state, or operation. Register a genuinely distinct concept with its
+  identity/lifecycle/ownership/contract boundary before designing around it.
 - Search for existing similar behavior.
 - Verify the current behavior and the material premise behind the requested change; do not
   treat the user's diagnosis or proposed architecture as proof that the existing design is

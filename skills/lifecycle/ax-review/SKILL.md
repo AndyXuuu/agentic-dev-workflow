@@ -15,6 +15,8 @@ follow-ups; do not expand the patch or block delivery unless they create materia
 Check relevant items only:
 
 - Requirement and acceptance criteria match
+- Terminology/object registry is present and complete for behavior-relevant terms; translations,
+  aliases, and newly introduced names do not fork concepts without an explicit boundary
 - Design was followed
 - No unnecessary scope creep
 - No duplicate business logic

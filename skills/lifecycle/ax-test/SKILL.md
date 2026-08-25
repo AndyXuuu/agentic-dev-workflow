@@ -10,6 +10,9 @@ Your job is to prove behavior, not to mirror implementation.
 ## Rules
 
 - Tests must encode expected behavior.
+- Test names, fixtures, and oracles must use the accepted terminology/object registry. If a test
+  needs a new behavior-relevant actor, entity, state, event, or operation, map or register that
+  concept before adding the test; do not freeze an agent-created synonym into the suite.
 - Do not copy implementation logic into tests.
 - Test oracles must come from verified contracts, domain rules, explicit user decisions, or
   reproduced behavior. Do not turn an unresolved assumption into an expected value; resolve it or

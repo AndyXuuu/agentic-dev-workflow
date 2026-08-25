@@ -79,6 +79,34 @@ These rules are for personal Codex behavior across software engineering projects
 - Never alter tests, documentation, metrics, or acceptance criteria merely to make an
   unsupported premise or implementation appear correct.
 
+## Terminology and Object Identity
+
+- At the requirement checkpoint, create a compact terminology/object registry before writing
+  functional requirements, user flows, acceptance criteria, design contracts, or test oracles.
+  Register only behavior-relevant actors, entities/resources, commands/events, states, metrics,
+  and external concepts; ordinary prose does not need an entry.
+- Each entry records a stable concept ID, one canonical label, kind, precise definition and
+  identity/lifecycle/ownership boundary, key relations or invariants, allowed
+  Chinese/English/abbreviation/code aliases, confusable but distinct concept IDs, and its
+  disposition/evidence. A table in the requirement note or PRD is sufficient; do not create a
+  second glossary document unless the project already has a canonical one.
+- Use the verified project/domain term as the canonical label when one exists. Otherwise preserve
+  the user's label and language; an Agent-created translation is only an alias, not a replacement.
+  Normative requirements use the canonical label consistently instead of alternating synonyms.
+- Chinese, English, abbreviations, and code identifiers are labels of one concept only when they
+  share the same identity, lifecycle, ownership, and observable contract. Translation or stylistic
+  variation must not silently create a second object. If those boundaries differ, register two
+  concepts and state the distinction.
+- After the registry is established, every material noun introduced by requirements, architecture,
+  implementation, tests, or delivery must map to an existing concept, be explicitly registered as
+  a new concept with its distinction and disposition, or be removed together with dependent work.
+  Do not use an unregistered term as a hidden synonym, fallback object, or new state transition.
+- When it is materially unclear whether two names denote the same concept, stop the dependent
+  requirement/design path and resolve it from authoritative evidence or an explicit user decision;
+  do not preserve both names as an implicit choice. Only verified facts and explicit user decisions
+  may enter an implementation-ready registry. Delete rejected or expired entries and their derived
+  content; aliases are retained only for active search or compatibility needs.
+
 ## Security Goal and Complexity Budget
 
 - Subject to higher-priority safety requirements and mandatory project policy, derive security
@@ -234,6 +262,9 @@ requirement note. Do not create a separate artifact unless requested:
 
 - Goal
 - Observable problem or desired outcome, separated from any suggested cause or solution
+- Terminology/object registry: canonical concept IDs and labels for behavior-relevant nouns,
+  definitions and identity/lifecycle/ownership boundaries, key relations, active
+  aliases/confusable concepts, and disposition/evidence
 - In scope
 - Out of scope
 - Acceptance criteria
@@ -244,6 +275,11 @@ requirement note. Do not create a separate artifact unless requested:
 - Ambiguities and risks
 
 If ambiguity changes behavior, data model, API contract, permissions, billing, security, or user workflow, ask a clarification before editing.
+
+The terminology/object registry must be established before functional requirements and must be
+used as the naming contract for the rest of the task. A new material term is not an implicit
+extension of an existing term: map it, register it with a distinct boundary, or remove the
+dependent requirement. If the same registry cannot be maintained, stop before implementation.
 
 Do not start implementation with an unresolved material assumption. Resolve it as evidence,
 explicit decision, or removal and cleanup; a vague “follow-up” is not a valid disposition when the
@@ -256,6 +292,8 @@ For work that does not qualify for the Fast Path, inspect only enough code to id
 - Existing owner modules
 - Similar implementations
 - Existing helpers/services/classes/hooks to reuse
+- Accepted terminology/object registry and any existing project glossary or contract that owns the
+  same concepts
 - Boundaries between API, business logic, persistence, and UI
 - Test locations and verification commands
 - Why the change is preferable to the verified baseline, plus meaningful alternatives when

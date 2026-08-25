@@ -14,6 +14,7 @@ Produce a compact PRD:
 - Goal / observable outcome
 - Background
 - Current-state evidence / unverified premises
+- Terminology / object registry
 - Users / actors
 - In scope
 - Out of scope
@@ -26,6 +27,29 @@ Produce a compact PRD:
 - Assumption disposition
 
 ## Rules
+
+### Terminology / Object Registry
+
+Create the registry before functional requirements, user flow, acceptance criteria, or proposed
+solution wording. Include only behavior-relevant concepts and use a compact table with:
+
+- stable concept ID;
+- canonical label, preserving the verified project/domain term or otherwise the user's label and
+  language;
+- kind (actor, entity/resource, command/event, state, metric, or external concept);
+- precise definition, identity/lifecycle/ownership boundary, key relations or invariants, and
+  observable distinction;
+- active Chinese/English/abbreviation/code aliases and confusable but distinct concept IDs; and
+- disposition/evidence (verified fact or explicit user decision).
+
+Treat multilingual labels and abbreviations as aliases of one concept when identity, lifecycle,
+ownership, and observable contract are the same. If the boundary differs, register separate
+concept IDs and state the distinction. A material noun introduced later must map to the registry,
+be explicitly registered with its distinction, or be removed with dependent content; never let a
+translation or an agent-created synonym silently fork an object or state machine. Use canonical
+labels consistently in the PRD and concept IDs for traceability. An unresolved identity boundary
+blocks dependent requirements; rejected or expired entries and their derived content are deleted,
+not retained as historical vocabulary.
 
 - Do not propose implementation details unless they affect requirements.
 - Separate the user's desired outcome from suggested causes and implementations. Treat
@@ -52,4 +76,6 @@ Produce a compact PRD:
 
 ## Quality Bar
 
-A developer should be able to implement from the PRD without guessing product behavior.
+A developer should be able to implement from the PRD without guessing product behavior or whether
+two names denote the same actor, object, state, or operation. The registry must be complete for
+all behavior-relevant terms used by the functional requirements and acceptance criteria.

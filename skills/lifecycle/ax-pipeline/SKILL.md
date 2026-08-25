@@ -27,6 +27,7 @@ Produce one compact note, not separate stage artifacts:
 - Goal
 - In scope
 - Out of scope
+- Terminology / object registry
 - Acceptance criteria
 - Ambiguities
 - Risk areas
@@ -41,6 +42,15 @@ material assumption must be verified from an authoritative source, converted int
 decision/constraint, or removed together with dependent plan content. Do not carry an unresolved
 assumption into a canonical document, archive, or delivery report.
 
+Build the terminology/object registry before writing functional requirements, flows, acceptance
+criteria, or design proposals. Give each behavior-relevant actor, entity/resource, command/event,
+state, metric, or external concept one stable concept ID and canonical label; map Chinese, English,
+abbreviations, technical identifiers, and user wording as aliases only when their identity,
+lifecycle, ownership, and observable contract match. Any new material noun later must be mapped,
+explicitly registered with a distinct boundary, or removed with its dependent work. An unresolved
+same-concept/different-concept decision blocks the dependent path; it is not a harmless wording
+choice.
+
 When security is in scope, apply `AGENTS.md` Security Goal and Complexity Budget before design:
 fix the required security property and attacker capability without creating a separate broad audit
 or upgrading the threat model from an implementation observation.
@@ -52,6 +62,8 @@ Inspect until the owner, reuse point, smallest change, and risk-selected verific
 - Search for existing similar logic.
 - Identify owner modules.
 - Identify existing patterns.
+- Identify the accepted terminology/object registry and any existing project glossary or contract
+  that owns the same concepts.
 - Identify nearby tests.
 - Identify commands for verification.
 
