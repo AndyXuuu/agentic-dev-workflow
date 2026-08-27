@@ -11,6 +11,6 @@ dependencies:
       command: "/bin/zsh"
       args:
         - "-lc"
-        - "TAPD_ACCESS_TOKEN=\"$TAPD_KEY\" TAPD_API_BASE_URL=\"https://api.tapd.cn\" TAPD_BASE_URL=\"https://www.tapd.cn\" exec uvx mcp-server-tapd"
+        - "TAPD_ACCESS_TOKEN=\"$TAPD_KEY\" TAPD_API_BASE_URL=\"https://api.tapd.cn\" TAPD_BASE_URL=\"https://www.tapd.cn\" exec uvx --python 3.13 --from mcp-server-tapd==8.0.81 mcp-server-tapd"
 policy:
   allow_implicit_invocation: true

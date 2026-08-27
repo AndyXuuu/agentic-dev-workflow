@@ -2,7 +2,7 @@
 
 本文说明如何把腾讯云社区提供的 `mcp-server-tapd` 接入 Codex、Claude Desktop、Cursor 等支持 MCP 的客户端。
 
-> 核对日期：2026-07-13。安装前可查看 [TAPD MCP 官方 README](https://github.com/TencentCloudCommunity/mcp-server/tree/main/src/mcp-server-tapd) 确认最新参数。
+> 核对日期：2026-08-25。当前固定使用 Python 3.13 和 `mcp-server-tapd 8.0.81`；升级前应通过 [TAPD MCP 官方 README](https://github.com/TencentCloudCommunity/mcp-server/tree/main/src/mcp-server-tapd) 核对参数并完成启动验证。
 
 ---
 
@@ -45,7 +45,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ```bash
 uv --version
-uvx mcp-server-tapd --help
+uvx --python 3.13 --from mcp-server-tapd==8.0.81 mcp-server-tapd --help
 ```
 
 第二条命令能打印 `mcp-server-tapd` 的参数帮助，即表示运行环境正常。
@@ -75,7 +75,7 @@ codex mcp add tapd \
   --env TAPD_ACCESS_TOKEN="<TAPD_PERSONAL_TOKEN>" \
   --env TAPD_API_BASE_URL="https://api.tapd.cn" \
   --env TAPD_BASE_URL="https://www.tapd.cn" \
-  -- uvx mcp-server-tapd
+  -- uvx --python 3.13 --from mcp-server-tapd==8.0.81 mcp-server-tapd
 ```
 
 `<TAPD_PERSONAL_TOKEN>` 必须替换为真实令牌。此方式会把令牌保存到 Codex 的用户配置中；不要把命令粘贴到会被共享的日志、工单或聊天中。
@@ -88,7 +88,7 @@ codex mcp add tapd \
   --env TAPD_API_PASSWORD="<TAPD_API_PASSWORD>" \
   --env TAPD_API_BASE_URL="https://api.tapd.cn" \
   --env TAPD_BASE_URL="https://www.tapd.cn" \
-  -- uvx mcp-server-tapd
+  -- uvx --python 3.13 --from mcp-server-tapd==8.0.81 mcp-server-tapd
 ```
 
 ### 3.2 手工配置
@@ -98,7 +98,7 @@ codex mcp add tapd \
 ```toml
 [mcp_servers.tapd]
 command = "uvx"
-args = ["mcp-server-tapd"]
+args = ["--python", "3.13", "--from", "mcp-server-tapd==8.0.81", "mcp-server-tapd"]
 
 [mcp_servers.tapd.env]
 TAPD_ACCESS_TOKEN = "<TAPD_PERSONAL_TOKEN>"
@@ -111,7 +111,7 @@ TAPD_BASE_URL = "https://www.tapd.cn"
 ```toml
 [mcp_servers.tapd]
 command = "uvx"
-args = ["mcp-server-tapd"]
+args = ["--python", "3.13", "--from", "mcp-server-tapd==8.0.81", "mcp-server-tapd"]
 env_vars = ["TAPD_ACCESS_TOKEN"]
 
 [mcp_servers.tapd.env]
@@ -138,7 +138,7 @@ Codex 的 MCP 配置格式和管理命令以 [OpenAI Codex MCP 官方文档](htt
   "mcpServers": {
     "tapd": {
       "command": "uvx",
-      "args": ["mcp-server-tapd"],
+      "args": ["--python", "3.13", "--from", "mcp-server-tapd==8.0.81", "mcp-server-tapd"],
       "env": {
         "TAPD_ACCESS_TOKEN": "<TAPD_PERSONAL_TOKEN>",
         "TAPD_API_BASE_URL": "https://api.tapd.cn",
@@ -210,7 +210,7 @@ uv --version
 首次运行需要下载 Python 包，耗时可能较长。先在终端执行一次：
 
 ```bash
-uvx mcp-server-tapd --help
+uvx --python 3.13 --from mcp-server-tapd==8.0.81 mcp-server-tapd --help
 ```
 
 下载完成后重启客户端再试。

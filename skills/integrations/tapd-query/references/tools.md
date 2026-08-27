@@ -1,6 +1,6 @@
 # TAPD MCP Query Tools
 
-当前核对版本：`mcp-server-tapd 8.0.79`。工作区在 TAPD API 中即项目空间，主键为 `workspace_id`。
+当前核对版本：`mcp-server-tapd 8.0.81`。工作区在 TAPD API 中即项目空间，主键为 `workspace_id`。
 
 ## Project discovery
 

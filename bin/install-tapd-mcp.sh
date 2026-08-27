@@ -14,6 +14,8 @@ fi
 token=${TAPD_ACCESS_TOKEN:-}
 tapd_key_available=false
 restore_echo=false
+tapd_python_version=3.13
+tapd_server_package=mcp-server-tapd==8.0.81
 
 restore_terminal() {
   if [ "$restore_echo" = true ]; then
@@ -55,7 +57,7 @@ fi
 uvx_path=$(command -v uvx)
 
 if [ "$tapd_key_available" = true ]; then
-  login_command="TAPD_ACCESS_TOKEN=\"\$TAPD_KEY\" TAPD_API_BASE_URL=\"https://api.tapd.cn\" TAPD_BASE_URL=\"https://www.tapd.cn\" exec \"$uvx_path\" mcp-server-tapd"
+  login_command="TAPD_ACCESS_TOKEN=\"\$TAPD_KEY\" TAPD_API_BASE_URL=\"https://api.tapd.cn\" TAPD_BASE_URL=\"https://www.tapd.cn\" exec \"$uvx_path\" --python \"$tapd_python_version\" --from \"$tapd_server_package\" mcp-server-tapd"
   codex mcp add tapd -- /bin/zsh -lc "$login_command"
   echo "Configured TAPD MCP to load TAPD_KEY from ~/.zprofile at startup."
 else
@@ -63,7 +65,7 @@ else
     --env "TAPD_ACCESS_TOKEN=$token" \
     --env "TAPD_API_BASE_URL=https://api.tapd.cn" \
     --env "TAPD_BASE_URL=https://www.tapd.cn" \
-    -- "$uvx_path" mcp-server-tapd
+    -- "$uvx_path" --python "$tapd_python_version" --from "$tapd_server_package" mcp-server-tapd
 fi
 
 unset token
