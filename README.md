@@ -45,6 +45,12 @@ The framework is designed to make Agent-assisted development:
 - **Recoverable** — preserve user work, expose risk, and define rollback or recovery when needed.
 - **Project-independent** — reuse engineering methods without leaking product-specific rules into the global layer.
 
+## License
+
+The original work in this repository is licensed under the Apache License, Version 2.0. See
+[`LICENSE`](./LICENSE) for the complete terms. Third-party dependencies and integrations retain
+their own licenses; review the relevant notices before redistribution.
+
 Software delivery is separated into explicit responsibilities:
 
 - PRD / requirement analysis
