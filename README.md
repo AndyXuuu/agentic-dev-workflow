@@ -1,8 +1,12 @@
 # Agentic Development Workflow
 
-中文手册：[使用手册.md](./使用手册.md)
+中文手册：[使用手册.md](./docs/使用手册.md)
 
-能力路线图：[ROADMAP.md](./ROADMAP.md)
+能力路线图：[ROADMAP.md](./docs/ROADMAP.md)
+
+模型路由速查：[MODEL_ROUTING.md](./docs/MODEL_ROUTING.md)
+
+TAPD MCP 安装指南：[TAPD-MCP安装指南.md](./docs/TAPD-MCP安装指南.md)
 
 > This README is a non-normative overview. `AGENTS.md` owns global engineering gates; an explicitly
 > invoked Skill owns its task-specific workflow. Examples here must not override either source.
@@ -82,7 +86,12 @@ The intended model split is:
 ## Layout
 
 ```text
-AGENTS.md
+README.md
+docs/
+  使用手册.md
+  ROADMAP.md
+  MODEL_ROUTING.md
+  TAPD-MCP安装指南.md
 profiles/
   arch.config.toml
   dev.config.toml
