@@ -3,10 +3,9 @@
 本文是 Agentic Development Workflow 后续能力建设的唯一规划来源。目标是在现有工程治理基础上，逐步形成“通用工程方法、技术栈规范、标准脚手架、项目适配、验证交付”的完整体系。
 
 状态基线：2026-08-20。脚手架 catalog、`ax-project-bootstrap` 和 Admin Dashboard 的首个
-完整生成/验证纵向切片已经落地；实验性 `ax-sdd` 已提供当前系统任务上下文路由、初始化、
-静态完整性门禁和隔离 bundle，并在受控 GPU Nexus Client/API Key 切片完成核心行为清洁重建，永久测试与批量性能
-Oracle 尚未闭合；通用 `stacks` 分类及 Go、TypeScript、Java 技术栈 Skill 仍未完成。下文将
-已交付基线与后续计划分开，避免把当前能力写成未来假设。
+完整生成/验证纵向切片已经落地；实验性 `ax-sdd` 已提供 Domain Index、领域化当前规格和最小上下文
+闭包规则。它不提供 CLI、生成器、验证器、Bundle 或无源码重建能力。通用 `stacks` 分类及 Go、
+TypeScript、Java 技术栈 Skill 仍未完成。下文将已交付基线与后续计划分开，避免把当前能力写成未来假设。
 
 ## 能力地图
 

@@ -7,7 +7,7 @@
 | 主题 | 要找的来源 | 需要确认 |
 | --- | --- | --- |
 | 工程规则 | `AGENTS.md`、贡献指南、CI | 门禁、禁止事项、验证和交付格式 |
-| 行为 | PRD、acceptance tests、domain specs | 当前行为与计划是否区分 |
+| 行为 | PRD、业务 Test Flow、domain specs | 当前行为与计划是否区分 |
 | 契约 | OpenAPI、GraphQL、protobuf、event schema | 源文件、生成物和兼容策略 |
 | 数据 | DDL、migration、schema registry | 写 Owner、事务、回填与回滚 |
 | 架构 | 模块文档、dependency rules | API/domain/persistence/integration 边界 |
@@ -27,7 +27,7 @@
 - authn/authz、tenant、billing、validation、errors
 - third-party clients and adapters
 - config、secrets、logging、metrics、tracing
-- unit、integration、contract、migration、smoke tests
+- 业务 Test Flow、contract、migration、smoke 与项目既有验证入口
 
 不要按常见目录名猜测 Owner。记录允许的依赖方向、跨模块调用方式和禁止访问边界。
 
@@ -39,7 +39,7 @@
 2. 生成/发布命令
 3. 后端投影或 server stub
 4. 消费者副本/client
-5. 兼容性与契约测试
+5. 兼容性与业务验收证据
 
 若消费者仓库只保存副本，明确它不是源契约 Owner。
 
@@ -53,4 +53,4 @@
 
 ## 验证命令
 
-从项目脚本、构建配置、CI 和文档分别确认：本地最小行为测试与 scoped 静态检查；跨 Owner/模块/契约/迁移的整体测试及触发条件；CI/发布持有的全量测试、覆盖率、审计、构建、打包、部署和环境验证。不要把三层命令合并成每次本地改动都执行的固定清单；缺失时记录为缺口，不自行发明替代命令。
+从项目脚本、构建配置、CI 和文档分别确认：本地最小业务验收与 scoped 静态检查；跨 Owner/模块/契约/迁移的整体门禁及触发条件；CI/发布持有的覆盖率、审计、E2E、构建、打包、部署和环境验证。不要把三层命令合并成每次本地改动都执行的固定清单；缺失时记录为缺口，不自行发明替代命令。

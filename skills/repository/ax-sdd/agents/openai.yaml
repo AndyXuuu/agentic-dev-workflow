@@ -1,4 +1,4 @@
 interface:
-  display_name: "AX Current-system SDD"
-  short_description: "用当前系统导航加速 Agent 理解，并维护可重建规格与隔离 bundle"
-  default_prompt: "使用 $ax-sdd 为当前项目初始化、查询或验证实验性的 current-system SDD。"
+  display_name: "AX Domain SDD"
+  short_description: "维护领域化 current 规格与最小上下文闭包"
+  default_prompt: "使用 $ax-sdd 按 Domain Index 直接定位、迁移或审核当前领域规格；不要调用或创建 SDD CLI。"

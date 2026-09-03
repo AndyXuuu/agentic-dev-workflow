@@ -18,12 +18,11 @@ description: 项目无关的通用后端实现与审查流程。用于非平凡�
 安全相关工作先执行 `AGENTS.md` 的 Security Goal and Complexity Budget，由它确定本次威胁
 模型、保证等级和 material 增量；本 Skill 的安全清单不得扩大该范围。
 
-## 与其他工程 Skill 的边界
+## 与主流程的边界
 
-- 若由 `ax-pipeline`、`ax-dev` 或其他已确定的 primary workflow 路由，本 Skill 使用辅助模式：复用已经确认的需求、设计与验证计划，只补充契约、数据、事务、并发、外部调用、安全和运行边界，不重复生命周期门禁或另做一份交付报告。
-- 用户直接调用本 Skill 且当前没有其他 primary workflow 时，本 Skill 使用主模式：执行下文紧凑的需求、设计、实现、验证和交付闭环。
-- 已有明确需求和设计时，可与 `ax-dev` 同时使用；本 Skill 补充契约、数据、并发、外部调用和运行边界。
-- 纯前端视觉任务不使用本 Skill；跨端契约任务同时使用 `ax-frontend` 并以源契约 Owner 为准。
+- `ax-pipeline`/`ax-dev` 是生命周期 Owner；本 Skill 只补充契约、数据、事务、并发、外部调用、安全和运行边界，不重复需求、设计、业务验收或交付门禁。
+- 已有明确需求和设计时可直接补充上述后端决策。跨端契约同时使用 `ax-frontend`，并以源契约 Owner 为准。
+- 纯前端视觉任务不使用本 Skill。
 
 ## 1. 接入目标项目
 
@@ -33,37 +32,13 @@ description: 项目无关的通用后端实现与审查流程。用于非平凡�
 - API、domain/service、persistence、queue、cache 和外部集成 Owner
 - 权限、身份、计费、错误、日志、指标和追踪 Owner
 - 事务边界、数据所有权、迁移目录和回滚方式
-- 单元、集成、契约、迁移和端到端测试位置
-- Lint、静态分析、测试、构建与部署前验证命令
+- 业务验收入口、运行时 smoke/contract 边界和项目既有验证命令
+- Lint、静态分析、构建与部署前验证命令
 
 若文档、源契约、生成物和源码冲突，先指出冲突并确认 authoritative source。不要手工修补生成文件绕过冲突。
 
-## 2. 通过需求门禁
 
-不符合 Fast Path 时，主模式在编辑前输出简短需求理解；辅助模式复用 primary workflow 已确认的内容，只补充缺失的后端影响：
-
-- Goal
-- In scope
-- Out of scope
-- Acceptance criteria
-- Affected modules/files
-- Ambiguities, assumptions, and risks
-
-若歧义会改变行为、数据模型、API/事件契约、权限、计费、安全、数据保留或用户流程，先请求确认。
-
-## 3. 通过设计门禁
-
-不符合 Fast Path 时执行以下搜索；主模式紧凑报告结果，辅助模式只把后端增量决策返回给 primary workflow：
-
-- 现有 Owner、相似实现和依赖方向
-- 可复用 service、repository、client、validator、mapper、policy、error 和 test fixture
-- API、业务、持久化、消息、缓存与外部 I/O 边界
-- 数据所有权、事务/锁、重复写、并发、部分失败和恢复行为
-- 测试位置、生成命令和验证命令
-
-不得在 handler/controller 复制业务规则，不得跨服务绕过正式接口访问他方数据，不得新建第二套 client、错误或权限实现。
-
-## 4. 设计最小后端改动
+## 2. 设计最小后端改动
 
 - 从源契约开始：OpenAPI/GraphQL/protobuf/event schema/DDL 是源时，先改源再生成。
 - 入口层负责协议、身份、输入校验和响应映射；业务规则留在 domain/service；持久化由 repository/model Owner 管理。
@@ -76,26 +51,27 @@ description: 项目无关的通用后端实现与审查流程。用于非平凡�
 
 ### 后端规模解释
 
-- 继承全局“Code Size and AI Maintainability”口径；适用于类、Go 文件、函数式模块及其他非 OOP 实现，行数只触发审核。
+- 继承全局代码规模审核口径；适用于类、Go 文件、函数式模块及其他非 OOP 实现，行数只触发审核。
 - 默认审核手写 handler/controller、use case/service、domain 或 repository/adapter 实现超过 300 行的职责边界；路由和依赖装配超过 400 行时检查是否仍为单纯声明。项目规则可按语言和架构收紧或覆盖。
-- 超阈值时检查协议映射、业务规则、事务、持久化、权限和外部 I/O 是否混合，以及修改一个用例需要加载多少无关上下文；只按真实 Owner、事务或测试边界拆分。
-- 生成契约、迁移、Schema 和静态映射先分类再判断。历史巨型文件采用行为测试、禁止无关增长和逐边界提取，不用机械分层或无意义单实现接口换取行数下降。
+- 超阈值时检查协议映射、业务规则、事务、持久化、权限和外部 I/O 是否混合，以及修改一个用例需要加载多少无关上下文；只按真实 Owner、事务、业务验收或恢复边界拆分。
+- 生成契约、迁移、Schema 和静态映射先分类再判断。历史巨型文件采用业务验收证据、禁止无关增长和逐边界提取，不用机械分层或无意义单实现接口换取行数下降。
 
 仅当本次改动触及相应契约、数据、并发、安全或运行边界时，按需读取 [references/backend-quality-checklist.md](references/backend-quality-checklist.md)。
 
-## 5. 维护跨端契约
+## 3. 维护跨端契约
 
 - 明确源契约、生成投影、客户端副本和生成代码的单向链路。
 - 后端契约变化先更新源定义与后端验证，再生成 Swagger/schema/client 等派生物。
 - 前端或其他消费者不得成为后端契约 Owner，也不得手工修补派生类型。
 - 兼容性按项目版本策略验证字段新增/删除、枚举、默认值、nullability、错误码和分页语义。
-- 契约变化同步消费者测试与 canonical document；未授权的消费者行为变化先确认。
+- 契约变化同步消费者的业务验收证据和 canonical document；未授权的消费者行为变化先确认。
 
-## 6. 验证行为
+## 4. 验证后端风险
 
-Bug 修复先保留修复前失败证据，再实现最小修复并重复同一验证。只当回归测试通过全局 Test Admission Gate 时才作为永久用例保留。
+Bug 修复先保留修复前失败证据，再实现最小修复并重复同一条业务验收证据。不要因为实现
+了一个内部函数、校验器或适配器就创建实现级验证任务。
 
-Feature 从下列类别中只选择被改动实际影响的场景，不按清单机械补齐：
+Feature 从下列类别中只选择被改动实际影响的业务场景，不按清单机械补齐：
 
 - Happy path、Invalid input、Edge case
 - Authentication、authorization 和 tenant/state boundary
@@ -103,20 +79,16 @@ Feature 从下列类别中只选择被改动实际影响的场景，不按清单
 - Timeout、retry、dependency failure 和 recovery
 - Contract、migration 和 nearby regression risk
 
-本地先运行能证明改动行为和邻近风险的最小测试、scoped 静态检查或类型检查。跨服务/模块 Owner、公开契约、迁移、事务或高风险改动再升级到模块、契约、迁移或整体集成测试；项目全量测试、覆盖率、审计和构建若由 CI/发布门禁持有，按该门禁执行，不机械重复到每次本地实现循环。Fast Path 只运行与局部改动直接相关的最小检查。只报告真实运行结果；远程环境、生产数据或付费调用需要额外授权。
+本地先运行能证明业务结果和邻近风险的最小 smoke、contract、静态检查或类型检查。跨服务/
+模块 Owner、公开契约、迁移、事务或高风险改动再升级到对应项目门禁；项目全量门禁若由 CI/
+发布持有，按其 Owner 执行，不机械重复到每次本地实现循环。只报告真实结果；远程环境、生产
+数据或付费调用需要额外授权。
 
-运行聚合命令前检查其包含关系；同一交付输入上若完整门禁已包含目标集成、Agent、race 或合同套件，不再把被包含命令单独重复执行。只有依赖特定主机、平台、凭证或副作用的检查才绑定该环境，不把真实服务验收限制扩大到纯单元、合同或临时数据库测试。
+运行聚合命令前检查包含关系；同一交付输入上若完整门禁已包含目标检查，不再单独重复执行。
 
-## 7. 交付
 
-主模式交付时报告以下相关项；辅助模式只把后端决策、验证证据和剩余风险合并回 primary workflow，不生成第二份交付：
+## 5. 返回主流程
 
-- Requirement match
-- Contract, ownership, transaction and reuse decisions
-- Files and generated artifacts changed
-- Tests and verification commands run
-- Migration/release ordering
-- Remaining risks and unverified areas
-- Rollback/recovery notes
-
-行为、契约、Schema、权限或部署变化时更新项目既有 canonical document，不创建重复说明。
+只把后端 Owner、契约/数据/事务决策、实际业务验收证据和剩余风险返回 primary workflow；不
+生成第二份需求、设计、业务验收或交付报告。行为、契约、Schema、权限或部署变化时更新项目
+既有 canonical document，不创建重复说明。

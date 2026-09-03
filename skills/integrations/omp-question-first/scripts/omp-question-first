@@ -1,0 +1,193 @@
+#!/bin/sh
+set -eu
+
+SELF_PATH=$0
+while [ -L "$SELF_PATH" ]; do
+  link=$(readlink "$SELF_PATH")
+  case "$link" in
+    /*) SELF_PATH=$link ;;
+    *) SELF_PATH=$(dirname "$SELF_PATH")/$link ;;
+  esac
+done
+SELF_PATH=$(CDPATH= cd -- "$(dirname -- "$SELF_PATH")" && pwd)/$(basename -- "$SELF_PATH")
+SELF_DIR=$(dirname "$SELF_PATH")
+PATCH_FILE="$SELF_DIR/../assets/omp-18.0.11.patch"
+SOURCE_VERSION=18.0.11
+DEFAULT_BIN_DIR=${HOME}/.local/bin
+
+resolve_omp() {
+  if [ -n "${OMP_QUESTION_FIRST_OMP:-}" ]; then
+    case "$OMP_QUESTION_FIRST_OMP" in
+      /*) : ;;
+      *) echo "OMP_QUESTION_FIRST_OMP must be an absolute executable path" >&2; exit 2 ;;
+    esac
+    if [ ! -x "$OMP_QUESTION_FIRST_OMP" ]; then
+      echo "OMP executable is not runnable: $OMP_QUESTION_FIRST_OMP" >&2
+      exit 2
+    fi
+    printf '%s\n' "$OMP_QUESTION_FIRST_OMP"
+    return
+  fi
+  command -v omp || {
+    echo "OMP executable not found; set OMP_QUESTION_FIRST_OMP" >&2
+    exit 2
+  }
+}
+
+supports_question_first() {
+  omp_bin=$1
+  "$omp_bin" config get conversation.questionFirst --json >/dev/null 2>&1
+}
+
+usage() {
+  cat >&2 <<'EOF'
+Usage:
+  omp-question-first status [--json]
+  omp-question-first run [OMP_ARGS...]
+  omp-question-first install [--bin-dir DIR]
+  omp-question-first uninstall [--bin-dir DIR]
+  omp-question-first source-status --source DIR
+  omp-question-first source-apply --source DIR
+  omp-question-first source-revert --source DIR
+
+Environment:
+  OMP_QUESTION_FIRST_OMP=/absolute/path/to/omp
+EOF
+  exit 2
+}
+
+source_command() {
+  command_name=$1
+  shift
+  [ "${1:-}" = "--source" ] && [ "$#" -eq 2 ] || usage
+  source_dir=$2
+  git -C "$source_dir" rev-parse --is-inside-work-tree >/dev/null 2>&1 || {
+    echo "not an OMP Git checkout: $source_dir" >&2
+    exit 2
+  }
+  version=$(sed -n 's/^[[:space:]]*"version":[[:space:]]*"\([^"]*\)".*/\1/p' "$source_dir/packages/coding-agent/package.json" | sed -n '1p')
+  if [ "$version" != "$SOURCE_VERSION" ]; then
+    echo "unsupported OMP source version: ${version:-unknown}; expected $SOURCE_VERSION" >&2
+    exit 1
+  fi
+  if git -C "$source_dir" apply --reverse --check "$PATCH_FILE" >/dev/null 2>&1; then
+    state=applied
+  elif git -C "$source_dir" apply --check "$PATCH_FILE" >/dev/null 2>&1; then
+    state=not-applied
+  else
+    state=drifted
+  fi
+  case "$command_name" in
+    source-status)
+      printf '%s\n' "$state"
+      [ "$state" != drifted ]
+      ;;
+    source-apply)
+      [ "$state" = not-applied ] || { echo "cannot apply patch: $state" >&2; exit 1; }
+      git -C "$source_dir" apply "$PATCH_FILE"
+      echo "applied OMP question-first patch to $source_dir"
+      ;;
+    source-revert)
+      [ "$state" = applied ] || { echo "cannot revert patch: $state" >&2; exit 1; }
+      git -C "$source_dir" apply --reverse "$PATCH_FILE"
+      echo "reverted OMP question-first patch from $source_dir"
+      ;;
+  esac
+}
+
+command_name=${1:-}
+[ -n "$command_name" ] || usage
+shift
+
+case "$command_name" in
+  source-status|source-apply|source-revert)
+    source_command "$command_name" "$@"
+    ;;
+  status)
+    bin_dir=$DEFAULT_BIN_DIR
+    json=false
+    while [ "$#" -gt 0 ]; do
+      case "$1" in
+        --json) json=true ;;
+        --bin-dir) [ "$#" -ge 2 ] || usage; bin_dir=$2; shift ;;
+        *) usage ;;
+      esac
+      shift
+    done
+    omp_bin=$(resolve_omp)
+    version=$("$omp_bin" --version 2>/dev/null || printf '%s' "unavailable")
+    supported=false
+    if supports_question_first "$omp_bin"; then supported=true; fi
+    installed=false
+    target="$bin_dir/omp-question-first"
+    if [ -L "$target" ] && [ "$(readlink "$target")" = "$SELF_PATH" ]; then installed=true; fi
+    if "$json"; then
+      printf '{"adapter":"omp-question-first","omp":"%s","supported":%s,"installed":%s}\n' \
+        "$(printf '%s' "$version" | tr '\n' ' ' | sed 's/"/\\"/g')" "$supported" "$installed"
+    else
+      printf 'omp-question-first\n'
+      printf '  omp: %s\n' "$version"
+      printf '  launcher: %s\n' "$installed"
+      if "$supported"; then
+        printf '  capability: conversation.questionFirst (available)\n'
+      else
+        printf '  capability: conversation.questionFirst (missing)\n'
+        exit 1
+      fi
+    fi
+    ;;
+  run)
+    omp_bin=$(resolve_omp)
+    if ! supports_question_first "$omp_bin"; then
+      echo "OMP does not support conversation.questionFirst; use a compatible OMP build" >&2
+      exit 1
+    fi
+    overlay=$(mktemp "${TMPDIR:-/tmp}/omp-question-first.XXXXXX")
+    trap 'rm -f "$overlay"' EXIT HUP INT TERM
+    printf '%s\n' 'conversation:' '  questionFirst: true' > "$overlay"
+    if [ -n "${PI_CONFIG_FILES:-}" ]; then
+      PI_CONFIG_FILES="$PI_CONFIG_FILES:$overlay" "$omp_bin" "$@"
+    else
+      PI_CONFIG_FILES="$overlay" "$omp_bin" "$@"
+    fi
+    ;;
+  install|uninstall)
+    bin_dir=$DEFAULT_BIN_DIR
+    if [ "${1:-}" = "--bin-dir" ]; then
+      [ "$#" -ge 2 ] || usage
+      bin_dir=$2
+      shift 2
+    fi
+    [ "$#" -eq 0 ] || usage
+    case "$bin_dir" in
+      /*) : ;;
+      *) echo "--bin-dir must be an absolute path" >&2; exit 2 ;;
+    esac
+    target="$bin_dir/omp-question-first"
+    if [ "$command_name" = install ]; then
+      mkdir -p "$bin_dir"
+      if [ -e "$target" ] || [ -L "$target" ]; then
+        if [ -L "$target" ] && [ "$(readlink "$target")" = "$SELF_PATH" ]; then
+          echo "already installed: $target"
+          exit 0
+        fi
+        echo "refusing to replace existing path: $target" >&2
+        exit 1
+      fi
+      ln -s "$SELF_PATH" "$target"
+      echo "installed: $target"
+    else
+      if [ ! -L "$target" ]; then
+        echo "not installed by this adapter: $target"
+        exit 0
+      fi
+      if [ "$(readlink "$target")" != "$SELF_PATH" ]; then
+        echo "refusing to remove unrelated symlink: $target" >&2
+        exit 1
+      fi
+      rm -f "$target"
+      echo "uninstalled: $target"
+    fi
+    ;;
+  *) usage ;;
+esac

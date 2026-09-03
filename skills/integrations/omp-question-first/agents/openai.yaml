@@ -1,0 +1,4 @@
+interface:
+  display_name: "OMP Question-First Adapter"
+  short_description: "安装可逆 OMP 提问优先暂停适配器"
+  default_prompt: "使用 $omp-question-first 检查或接入 OMP 提问优先运行时。"

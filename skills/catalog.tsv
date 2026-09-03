@@ -3,13 +3,14 @@ ax-pipeline	lifecycle	lifecycle/ax-pipeline
 ax-prd	lifecycle	lifecycle/ax-prd
 ax-arch	lifecycle	lifecycle/ax-arch
 ax-dev	lifecycle	lifecycle/ax-dev
-ax-test	lifecycle	lifecycle/ax-test
 ax-review	lifecycle	lifecycle/ax-review
 ax-frontend	disciplines	disciplines/ax-frontend
 ax-backend	disciplines	disciplines/ax-backend
 ax-structure-review	disciplines	disciplines/ax-structure-review
+agent-workflow-measurement	disciplines	disciplines/agent-workflow-measurement
 git-workflow	repository	repository/git-workflow
 ax-sdd	repository	repository/ax-sdd
 ax-project-bootstrap	repository	repository/ax-project-bootstrap
 ax-project-adapter	repository	repository/ax-project-adapter
 tapd-query	integrations	integrations/tapd-query
+omp-question-first	integrations	integrations/omp-question-first

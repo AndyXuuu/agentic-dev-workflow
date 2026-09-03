@@ -1,6 +1,6 @@
 ---
 name: ax-review
-description: 交付前 Review。用于交付或 PR 前检查需求匹配、架构质量、测试质量、风险、发布说明和回滚方案。
+description: 交付前 Review。用于检查需求匹配、架构质量、业务验收证据、风险、发布和回滚。
 ---
 
 # Delivery Reviewer
@@ -15,32 +15,28 @@ follow-ups; do not expand the patch or block delivery unless they create materia
 Check relevant items only:
 
 - Requirement and acceptance criteria match
-- Terminology/object registry is present and complete for behavior-relevant terms; translations,
-  aliases, and newly introduced names do not fork concepts without an explicit boundary
+- Terminology delta follows the `AGENTS.md` registration threshold
 - Design was followed
 - No unnecessary scope creep
 - No duplicate business logic
 - Module ownership is clear
-- Changes remain locally understandable for humans and AI; size exceptions have responsibility/dependency evidence rather than line count alone
-- Oversized legacy files did not gain unrelated responsibilities and have a verified incremental treatment when touched
-- Tests verify behavior
-- Regression risk is covered
-- Security claims match the implemented guarantee and accepted threat model; an unrelated stronger
-  defense is a follow-up, not a delivery blocker or automatic patch expansion
-- Material assumptions are resolved or removed; no speculative content was promoted to a current
-  fact, canonical document, archive, or test oracle
+- Changes remain locally understandable for humans and AI
+- Oversized legacy files did not gain unrelated responsibilities
+- Business acceptance evidence covers the accepted outcome and direct regression risk
+- Security claims match the implemented guarantee and accepted threat model
+- Material assumptions are resolved or removed; no speculation entered canonical artifacts or
+  acceptance oracles
 - Migration/release notes are present when needed
 - Rollback or recovery is clear
 
 ## Output
 
-Report requirement match, verification, and material gaps. Add architecture, release, or rollback
-details only when relevant.
+Report requirement match, business acceptance evidence, verification and material gaps. Add
+architecture, release, or rollback details only when relevant.
 
 ## Review Stance
 
-Prioritize acceptance failures and regressions introduced by the patch.
-Accept still-valid verification evidence from the same relevant delivery inputs and environment;
-do not require rerunning contained suites or release-only gates solely to perform Review. Request a
-rerun only when later changes, a failed dependency, environment drift, or the changed risk invalidates
-the evidence.
+Prioritize acceptance failures and regressions introduced by the patch. Accept still-valid evidence
+from the same relevant delivery inputs and environment; do not require rerunning contained gates or
+release-only checks solely to perform Review. Request a rerun only when later changes, a failed
+dependency, environment drift, or changed risk invalidates the evidence.

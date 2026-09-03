@@ -8,6 +8,5 @@
 | Server/global/local/URL state | {{frontend-state-owner}} | {{frontend-state-boundary}} |
 | API client/adapter | {{frontend-api-owner}} | {{frontend-api-boundary}} |
 | 资产/字体/i18n | {{frontend-asset-owner}} | {{frontend-asset-boundary}} |
-| 前端测试 | {{frontend-test-owner}} | {{frontend-test-boundary}} |
 
 删除不存在的职责，不保留空 Owner。

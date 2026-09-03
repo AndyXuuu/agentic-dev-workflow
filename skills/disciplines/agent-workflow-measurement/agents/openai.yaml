@@ -1,0 +1,4 @@
+interface:
+  display_name: "AX Agent 会话测量"
+  short_description: "只读分析 Agent、OMP 与 Orca 会话耗时和工作流开销"
+  default_prompt: "使用 $agent-workflow-measurement 只读测量当前 Agent 会话的墙钟、工具、回合、等待与重复执行开销；不要测试项目业务行为。"

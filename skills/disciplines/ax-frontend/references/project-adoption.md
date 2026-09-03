@@ -9,7 +9,7 @@
 | 主题 | 要找的来源 | 需要确认 |
 | --- | --- | --- |
 | Agent/开发规则 | `AGENTS.md`、贡献指南、workspace instructions | 语言、门禁、禁止事项、交付格式 |
-| 产品行为 | PRD、route/page docs、acceptance tests | 当前行为与计划是否区分 |
+| 产品行为 | PRD、route/page docs、业务 Test Flow | 当前行为与计划是否区分 |
 | 架构 | architecture/design docs、目录说明 | 模块边界和依赖方向 |
 | UI 视觉标准 | Storybook、design page、design tokens、Figma/library | Token、组件、展示和生产消费各自的 owner、同步方式与验证入口 |
 | API 契约 | OpenAPI/GraphQL/schema/generated clients | 生成目录、同步和验证命令 |
@@ -36,13 +36,13 @@
 - performance budgets, runtime monitoring, image/font loading and large-list/rendering strategies
 - browser-safe utilities and side-effect hooks
 - i18n messages and routing
-- adjacent tests, fixtures and test setup
+- adjacent business acceptance artifacts and runtime setup
 
 不要根据常见目录名猜测 owner；以目标仓库实际 import 和调用关系为证据。
 
 ## 3. 技术栈适配
 
-- React/Next/Vue/Nuxt/Svelte/Angular/Web Components 等只影响实现手段，不改变需求、设计和测试门禁；微前端、组件库、嵌入式 Widget 和无路由应用遵循其真实入口与宿主边界，不强行套页面分层。
+- React/Next/Vue/Nuxt/Svelte/Angular/Web Components 等只影响实现手段，不改变需求、设计和业务验收门禁；微前端、组件库、嵌入式 Widget 和无路由应用遵循其真实入口与宿主边界，不强行套页面分层。
 - Tailwind、CSS Modules、CSS-in-JS 或原生 CSS 都优先使用项目已有 Token 与组合方式。
 - TanStack Query、SWR、Redux、Zustand、Pinia 或 Context 都必须先识别现有状态 owner，避免双写。
 - REST、GraphQL、RPC 或 SDK 都通过项目现有 client/adapter 边界进入 UI。
@@ -55,8 +55,8 @@
 从 package scripts、workspace config、CI 和项目文档中确认：
 
 - 纯只读检查与会写报告、缓存、快照、生成源码或构建产物的命令边界
-- 本地最小单元/组件/回归测试与 scoped Lint/类型检查
-- 跨 Owner、模块、package/workspace 或仓库级整体测试的触发条件
+- 本地最小业务验收与 scoped Lint/类型检查
+- 跨 Owner、模块、package/workspace 或仓库级整体门禁的触发条件
 - CI/发布持有的覆盖率、审计、E2E、全量 Lint、构建、打包、部署和环境验证
 - 项目已有的浏览器兼容、安全扫描、性能预算、Bundle 或 Web Vitals 门禁及其触发条件
 - 本地预览、人工验证和会启动服务或写产物的命令
@@ -71,6 +71,6 @@
 2. 哪些组件、规则、Token、状态和 API 可以复用？
 3. 新逻辑应该落在哪一层，为什么？
 4. 哪些文件和流程明确不应修改？
-5. 哪些测试和手动验证能证明需求成立？
+5. 哪些业务验收和手动验证能证明需求成立？
 6. 哪些证据证明设计系统自身完整，并被目标页面正确采用？
 7. 目标浏览器/宿主、安全边界和性能预算中，哪些与本次改动相关？

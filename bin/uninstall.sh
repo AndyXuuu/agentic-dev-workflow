@@ -30,13 +30,18 @@ for skill in ax_pipeline ax_prd ax_arch ax_dev ax_test ax_review software-engine
   fi
 done
 
-for profile in arch dev test review; do
+for profile in arch dev review; do
   dst="$HOME/.codex/$profile.config.toml"
   if [ -L "$dst" ]; then
     rm -f "$dst"
     echo "removed profile link: $dst"
   fi
 done
+legacy_test_profile="$HOME/.codex/test.config.toml"
+if [ -L "$legacy_test_profile" ]; then
+  rm -f "$legacy_test_profile"
+  echo "removed legacy profile link: $legacy_test_profile"
+fi
 
 for agent_dst in "$HOME/.codex/AGENTS.agentic-dev-workflow.md" "$HOME/.codex/AGENTS.engineering.md"; do
   if [ -L "$agent_dst" ]; then

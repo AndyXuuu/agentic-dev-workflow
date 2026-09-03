@@ -4,10 +4,10 @@
 
 ## Terminology Contract
 
-Consume the accepted requirement terminology/object registry. Use canonical labels in prose and
-concept IDs for traceability. Any new behavior-relevant actor, entity, state, event, or operation
-must be mapped or explicitly registered with a distinct identity/lifecycle/ownership/contract
-boundary before it enters this design.
+Consume the accepted terminology delta and only the existing registry entries needed by this design.
+Use canonical labels for registered concepts. Apply the `AGENTS.md` threshold before introducing a
+new public, persistent, cross-Owner, security, or independently identified concept; local design
+names and standard technical terms do not require registration.
 
 ## Existing System
 

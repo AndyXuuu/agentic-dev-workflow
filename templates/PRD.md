@@ -4,20 +4,18 @@
 
 ## Background
 
-## Terminology / Object Registry
+## Terminology Delta
 
-Define behavior-relevant concepts before functional requirements. Use the verified project/domain
-term as the canonical label, or otherwise preserve the user's label and language. Chinese, English,
-abbreviations, and technical identifiers are active aliases unless the identity, lifecycle,
-ownership, or observable contract differs.
+Apply the registration threshold from `AGENTS.md`. Reuse existing Concept IDs without copying the
+complete registry. State `none` when the task adds or changes no independently identified/lifecycled,
+cross-Owner/public/persistent, security/data-boundary, or demonstrably ambiguous concept.
 
-| Concept ID | Canonical label | Kind | Definition and identity/lifecycle/ownership boundary | Key relations / invariants | Active aliases / identifiers | Confusable but distinct concept IDs | Disposition / evidence |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| Concept ID | Canonical label | Boundary / Owner | Key invariants | Actual aliases / confusables |
+| --- | --- | --- | --- | --- |
 
-Do not use a material term outside this registry. Map it to an existing concept, register a
-distinct concept with its boundary, or remove the dependent requirement and downstream content.
-Only verified facts and explicit user decisions may remain when this PRD becomes implementation
-input; delete rejected or expired entries rather than preserving historical vocabulary.
+Local fields/helpers/types, UI-only states, derived attributes, single-Owner implementation details,
+and standard technical terms remain ordinary prose unless they cross the registration threshold.
+
 
 ## Verified Baseline / Evidence Gaps
 
