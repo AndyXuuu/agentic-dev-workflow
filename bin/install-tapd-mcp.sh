@@ -1,6 +1,10 @@
 #!/bin/sh
 set -eu
 
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ROOT=$(dirname "$SCRIPT_DIR")
+local_env="$ROOT/.local.env"
+
 if ! command -v codex >/dev/null 2>&1; then
   echo "error: codex CLI is not installed or not in PATH" >&2
   exit 1
@@ -11,8 +15,24 @@ if ! command -v uvx >/dev/null 2>&1; then
   exit 1
 fi
 
-token=${TAPD_ACCESS_TOKEN:-}
-tapd_key_available=false
+token=${TAPD_ACCESS_TOKEN:-${TAPD_KEY:-}}
+local_env_available=false
+if [ -r "$local_env" ]; then
+  inherited_token=$token
+  unset TAPD_ACCESS_TOKEN TAPD_KEY
+  set -a
+  # shellcheck source=/dev/null
+  . "$local_env"
+  set +a
+  local_token=${TAPD_ACCESS_TOKEN:-${TAPD_KEY:-}}
+  if [ -n "$local_token" ]; then
+    token=$local_token
+    local_env_available=true
+  else
+    token=$inherited_token
+  fi
+  unset inherited_token local_token
+fi
 restore_echo=false
 tapd_python_version=3.13
 tapd_server_package=mcp-server-tapd==8.0.81
@@ -25,11 +45,9 @@ restore_terminal() {
 
 trap restore_terminal EXIT HUP INT TERM
 
-if /bin/zsh -lc 'test -n "${TAPD_KEY:-}"'; then
-  tapd_key_available=true
-fi
 
-if [ "$tapd_key_available" = false ] && [ -z "$token" ]; then
+
+if [ -z "$token" ]; then
   if [ ! -t 0 ]; then
     echo "error: set TAPD_ACCESS_TOKEN or run this script from an interactive terminal" >&2
     exit 1
@@ -44,7 +62,7 @@ if [ "$tapd_key_available" = false ] && [ -z "$token" ]; then
   printf '\n'
 fi
 
-if [ "$tapd_key_available" = false ] && [ -z "$token" ]; then
+if [ -z "$token" ]; then
   echo "error: TAPD access token cannot be empty" >&2
   exit 1
 fi
@@ -56,10 +74,10 @@ fi
 
 uvx_path=$(command -v uvx)
 
-if [ "$tapd_key_available" = true ]; then
-  login_command="TAPD_ACCESS_TOKEN=\"\$TAPD_KEY\" TAPD_API_BASE_URL=\"https://api.tapd.cn\" TAPD_BASE_URL=\"https://www.tapd.cn\" exec \"$uvx_path\" --python \"$tapd_python_version\" --from \"$tapd_server_package\" mcp-server-tapd"
+if [ "$local_env_available" = true ]; then
+  login_command="set -a; . \"$local_env\"; set +a; TAPD_ACCESS_TOKEN=\"\${TAPD_ACCESS_TOKEN:-\${TAPD_KEY:-}}\" TAPD_API_BASE_URL=\"https://api.tapd.cn\" TAPD_BASE_URL=\"https://www.tapd.cn\" exec \"$uvx_path\" --python \"$tapd_python_version\" --from \"$tapd_server_package\" mcp-server-tapd"
   codex mcp add tapd -- /bin/zsh -lc "$login_command"
-  echo "Configured TAPD MCP to load TAPD_KEY from ~/.zprofile at startup."
+  echo "Configured TAPD MCP to load its token from $local_env at startup."
 else
   codex mcp add tapd \
     --env "TAPD_ACCESS_TOKEN=$token" \

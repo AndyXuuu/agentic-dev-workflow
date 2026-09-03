@@ -319,10 +319,10 @@ interactive terminal:
 $HOME/Documents/codex/agentic-dev-workflow/bin/install-tapd-mcp.sh
 ```
 
-If `TAPD_KEY` exists in `~/.zprofile`, the MCP loads it dynamically and does not
-copy the token into the Codex configuration. Otherwise, the token is entered
-without terminal echo and stored only in the Codex user MCP configuration. Then
-restart Codex / ChatGPT and use:
+If `.local.env` contains `TAPD_ACCESS_TOKEN` or `TAPD_KEY`, the installer configures
+the MCP process to load that ignored project-local file dynamically without copying the
+token into Codex configuration. Otherwise, the token is entered without terminal echo
+and stored only in the Codex user MCP configuration. Then restart Codex / ChatGPT and use:
 
 ```text
 $tapd-query List stories and bugs for workspace 123456.

@@ -5,3 +5,4 @@
 **/*.tsbuildinfo
 **/__pycache__/
 **/*.pyc
+/.local.env

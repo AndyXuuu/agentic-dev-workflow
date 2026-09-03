@@ -29,16 +29,16 @@ MCP 客户端 -> uvx mcp-server-tapd -> TAPD API
 
 ### 2.1 安装 uv
 
-macOS：
-
-```bash
-brew install uv
-```
-
-macOS / Linux 也可以使用 uv 官方安装脚本：
+macOS / Linux 推荐使用 uv 官方独立安装器，避免依赖 Homebrew bottle：
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+如果当前 Homebrew 平台有可用 bottle，也可以使用：
+
+```bash
+brew install uv
 ```
 
 安装后检查：
@@ -66,7 +66,21 @@ uvx --python 3.13 --from mcp-server-tapd==8.0.81 mcp-server-tapd --help
 
 Codex CLI、Codex IDE 扩展和 Codex 桌面端共享 MCP 配置。推荐把个人配置放在 `~/.codex/config.toml`；不要把包含凭据的配置写入仓库。
 
-### 3.1 CLI 一次性添加
+### 3.1 项目本地动态加载（推荐）
+
+在本仓库根目录创建 Git 忽略的 `.local.env`，并限制为当前用户可读：
+
+```bash
+umask 077
+printf '%s\n' 'export TAPD_ACCESS_TOKEN="<TAPD_PERSONAL_TOKEN>"' > .local.env
+chmod 600 .local.env
+bin/install-tapd-mcp.sh
+```
+
+安装脚本会让 MCP 启动命令动态读取该绝对路径，不会把令牌值复制到 Codex 配置。
+不要提交、打印或粘贴 `.local.env` 内容。
+
+### 3.2 CLI 一次性添加
 
 使用个人令牌：
 
@@ -91,7 +105,7 @@ codex mcp add tapd \
   -- uvx --python 3.13 --from mcp-server-tapd==8.0.81 mcp-server-tapd
 ```
 
-### 3.2 手工配置
+### 3.3 手工配置
 
 编辑 `~/.codex/config.toml`：
 
