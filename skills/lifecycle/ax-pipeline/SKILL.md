@@ -1,6 +1,6 @@
 ---
 name: ax-pipeline
-description: 全流程：需求 → 架构 → 开发 → 测试 → 交付。用于非平凡功能、Bug 修复、重构和高风险交付；明确的低风险小改动使用全局 Fast Path，不自动展开完整流水线。
+description: 全流程控制器：按风险选择需求、设计、实现、验证和交付路径；不拥有 Domain SDD 的 Spec 分级、Logic Flow、Requirement/Oracle 或执行 Todo 合同。
 ---
 
 # Software Engineering Pipeline
@@ -20,133 +20,68 @@ invoke `ax-project-bootstrap` before this pipeline. Resume requirement and archi
 from the fully generated baseline; do not design an equivalent framework from an empty directory
 when a compatible registered scaffold exists.
 
-## 1. Requirement Analysis
+## Spec / SDD Routing
 
-Produce one compact note, not separate stage artifacts:
+`ax-pipeline` is the lifecycle controller. It decides the path, orders the lifecycle steps, and
+returns the next executable boundary; it does not own Domain Spec grading, Logic Flow semantics,
+Requirement/Oracle mapping, or execution-Todo decomposition.
 
-- Goal
-- In scope
-- Out of scope
-- Terminology / object registry
-- Acceptance criteria
-- Ambiguities
-- Risk areas
-- Material assumptions and their disposition
+Before requirement or design work, determine whether the target project adopts Domain SDD:
 
-Ask only if ambiguity materially affects behavior or risk and it cannot be resolved from
-authoritative evidence or an explicit user decision. Do not continue by relabeling a material
-ambiguity as reversible.
+- **No adopted SDD**: locate the project's canonical behavior contract and continue through the
+  normal lifecycle without inventing an SDD model.
+- **Adopted SDD**: route Domain selection, Spec acceptance/gap classification, Change Delta,
+  Logic Flow decomposition, temporary Todo creation/freeze, and coverage reconciliation to
+  `ax-sdd`. Do not reproduce those rules in this Skill or create a second execution packet.
 
-Treat assumptions as temporary working hypotheses. Before implementation or test planning, every
-material assumption must be verified from an authoritative source, converted into an explicit user
-decision/constraint, or removed together with dependent plan content. Do not carry an unresolved
-assumption into a canonical document, archive, or delivery report.
+The pipeline consumes the SDD result (`out-of-sdd`, `accepted`, `gap`, or blocked) and controls only the lifecycle
+transition: requirement/design when needed, implementation, risk-selected verification, and
+delivery. A material SDD gap or decision blocks only its dependent path. After implementation,
+return the selected evidence and SDD reconciliation result to the pipeline; do not repeat SDD
+validation or lifecycle gates whose inputs are unchanged.
 
-Build the terminology/object registry before writing functional requirements, flows, acceptance
-criteria, or design proposals. Give each behavior-relevant actor, entity/resource, command/event,
-state, metric, or external concept one stable concept ID and canonical label; map Chinese, English,
-abbreviations, technical identifiers, and user wording as aliases only when their identity,
-lifecycle, ownership, and observable contract match. Any new material noun later must be mapped,
-explicitly registered with a distinct boundary, or removed with its dependent work. An unresolved
-same-concept/different-concept decision blocks the dependent path; it is not a harmless wording
-choice.
+## Lifecycle Controller Contract
 
-When security is in scope, apply `AGENTS.md` Security Goal and Complexity Budget before design:
-fix the required security property and attacker capability without creating a separate broad audit
-or upgrading the threat model from an implementation observation.
+- Keep one active critical-path step.
+- Finish the smallest working vertical slice before optional cleanup or hardening.
+- Route only confirmed affected Owners and risk boundaries.
+- Use focused verification by default; broaden only when the changed risk or project gate requires it.
+- Reuse valid evidence and inspect aggregate command containment before running a broader gate.
+- Do not create duplicate PRD, architecture, Spec, Todo, review, or delivery artifacts.
 
-## 2. Codebase Discovery
+The detailed current-domain model, Spec grading, Logic Flow ownership, Requirement/Oracle mapping,
+temporary execution Todo contract, freeze/rebuild rules, and SDD close reconciliation belong to
+`ax-sdd` and its `domain-sdd-model` reference.
 
-Inspect until the owner, reuse point, smallest change, and risk-selected verification plan are known:
+## Lifecycle Stages
 
-- Search for existing similar logic.
-- Identify owner modules.
-- Identify existing patterns.
-- Identify the accepted terminology/object registry and any existing project glossary or contract
-  that owns the same concepts.
-- Identify nearby tests.
-- Identify commands for verification.
+The controller advances only the stages required by the selected route:
 
-Do not create a parallel implementation without explaining why.
+1. **Route** — classify Fast Path or standard workflow from `AGENTS.md`, identify the primary Owner, and load only the required supporting Skills.
+2. **Clarify** — use `ax-prd` when the canonical behavior contract is missing or incomplete; otherwise consume the accepted contract result.
+3. **Design** — use `ax-arch` only when an architecture, ownership, contract, data, permission, security, concurrency, migration, or failure boundary needs a decision.
+4. **Implement** — use `ax-dev` and the routed domain Skill for the confirmed scope.
+5. **Accept** — consume the business Test Flow and Acceptance Oracle owned by `ax-sdd` or the project's canonical contract; do not invoke a code-test planning Skill.
+6. **Review / deliver** — use `ax-review` when the delivery boundary requires it, then report the result and residual risk.
 
-## 3. Domain Routing
+When the project adopts Domain SDD, `ax-sdd` performs its own Domain/Spec/Todo work between Route and Implement. The controller waits for `accepted`, `gap`, blocked, and reconciliation results; it does not define their internal fields or decisions.
 
-Route only the affected scope. When this pipeline is primary, Domain Skills run in supporting mode:
-they add domain decisions without repeating requirement, design, test, or delivery gates.
+## Change Control
 
-- Frontend-only: use `ax-frontend` for UI, state, design-system, accessibility, and browser boundaries.
-- Backend-only: use `ax-backend` for contracts, domain/data ownership, consistency, security, and runtime boundaries.
-- Fullstack or multi-repo: use both domain Skills, identify one source contract owner, and keep provider projections plus consumer clients derived.
+- Apply local, in-scope decisions without reopening completed stages.
+- Stop only the dependent path for a material requirement, ownership, contract, data, permission, security, migration, or feasibility change.
+- After a material decision, resume from the owning stage rather than restarting the whole pipeline.
 
-Project stack, paths, commands, and business rules come only from the target project's `AGENTS.md`, adapters, canonical docs, and source code. Do not add project facts to global Skills.
+## Acceptance Control
 
-When a project explicitly opts into current-system SDD, use `ax-sdd` only in supporting
-mode: the lifecycle still owns requirement, design, implementation, verification, and delivery;
-SDD owns task-aware current navigation, the converged current system definition, traceability, and
-the isolated Builder bundle. Query its context route first and load only the selected current slice.
-Never copy stage notes, Proposal, tasks, rejected alternatives, or Agent reasoning into current SDD.
-After the project has cut over to `current`, route normative changes directly to the owning SDD
-Artifact at the applicable lifecycle checkpoint; legacy docs may only link to it or be checked
-generated projections. Do not edit a legacy canonical document and later synchronize a handwritten
-SDD copy. Before cutover, keep the SDD `draft` and continue using the verified existing Owner.
+- The business Test Flow and Acceptance Oracle are created from the accepted Spec and frozen Todo before implementation when the project adopts Domain SDD.
+- Verify observable business outcomes at the narrowest stable boundary; do not derive checks from changed files, methods, helpers, mocks, or implementation branches.
+- Reuse valid acceptance evidence while the business contract and relevant inputs are unchanged.
+- Broaden only when the business boundary, Owner, or explicit project gate requires it.
+- Existing project-owned CI/release gates remain under the project's own contract; this controller does not invent or schedule code-test suites.
 
-## 4. Architecture / Design
+## Delivery Control
 
-State only items that affect implementation:
-
-- Files/modules to change
-- New modules/classes/functions
-- Reused modules
-- Where business logic will live
-- Where side effects will live
-- How duplication will be avoided
-- Rollback or migration concerns when present
-
-## 5. Change Control
-
-Apply local explicit changes directly. For a material requirement or architecture change, pause
-once to state the delta, impact, and revised plan; ask only when a decision or approval is needed.
-
-If evidence invalidates a material assumption, pause the dependent path, identify derived work, and
-re-verify it, obtain an explicit decision, or clean up the derived work before continuing.
-
-## 6. Implementation
-
-Rules:
-
-- Keep files single-responsibility.
-- Extract shared behavior when duplication is meaningful.
-- Avoid large all-in-one files.
-- Apply the global and routed domain code-size/AI-maintainability policy; do not use line count alone as a defect or split mechanically to satisfy a threshold.
-- Prefer domain/service/helper modules for business logic.
-- UI/controller/API layers should not own business rules if a service/domain layer exists.
-
-## 7. Testing
-
-For bug fixes:
-
-- Reproduce the bug or explain why it cannot be automated.
-- Preserve a pre-fix check; add a permanent test only when it protects a stable behavior or known
-  regression better than existing coverage.
-
-For features:
-
-- Test the changed behavior and affected risks only.
-- Avoid tests that only mirror implementation details.
-- Do not expand into unrelated edge, permission, security, or failure scenarios.
-
-Choose one verification owner for each risk. Inspect aggregate target composition, reuse valid
-evidence for unchanged inputs, and run broader or release gates once at the coherent close boundary.
-Do not stack focused, integration, full, and release commands when later targets simply repeat the
-same suites.
-
-## 8. Delivery Review
-
-Report outcome, files, verification, and material residual risk. Add design, migration, or rollback
-details only when relevant.
-
-For an opted-in current-system SDD, verify that the accepted behavior and oracles are present in
-their canonical current Artifacts, update a stable context route only when task routing changed,
-remove the temporary change packet from the default repository search space, and run the selected
-SDD validation. Do not use delivery as a second handwritten synchronization pass, and do not report
-static validation or bundle creation as a successful clean reconstruction.
+- Stop when the acceptance criterion and selected business evidence pass.
+- Do not create duplicate PRD, architecture, Spec, Logic Flow, Test Flow, Todo, review, or delivery artifacts.
+- Return only the outcome, affected scope, business evidence, and material residual risk required by the project.

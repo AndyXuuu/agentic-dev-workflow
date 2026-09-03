@@ -1,0 +1,757 @@
+diff --git a/docs/config-usage.md b/docs/config-usage.md
+index 2d6f833..0ccf5a4 100644
+--- a/docs/config-usage.md
++++ b/docs/config-usage.md
+@@ -166,6 +166,20 @@ Write behavior:
+ - `settings.set(...)` writes to the **global** layer (the global YAML file selected at startup) and queues a background save.
+ - Project settings and config overlays are read-only from the settings API.
+
++### Question-first execution gate
++
++`conversation.questionFirst` is opt-in and defaults to `false`. When enabled, a user question,
++challenge, correction, or analysis request pauses model-initiated state changes and autonomous
++continuations for that turn. OMP still permits its narrow observational tool allowlist and
++`todo view`; a later explicit execution prompt or the `.` / `c` continue shortcut resumes work.
++
++Use a config overlay for reversible adoption without changing global settings:
++
++```yaml
++conversation:
++  questionFirst: true
++```
++
+ ### Settings load failures
+
+ - Missing global/project YAML is treated as empty configuration.
+diff --git a/packages/coding-agent/CHANGELOG.md b/packages/coding-agent/CHANGELOG.md
+index 3201eaf..aa1468f 100644
+--- a/packages/coding-agent/CHANGELOG.md
++++ b/packages/coding-agent/CHANGELOG.md
+@@ -1,6 +1,9 @@
+ # Changelog
+
+ ## [Unreleased]
++### Added
++
++- Added opt-in `conversation.questionFirst` runtime gating: question and analysis turns can answer without mutating tools, Todo progression, or autonomous continuations until the user explicitly resumes execution.
+
+ ## [18.0.11] - 2026-08-29
+
+diff --git a/packages/coding-agent/src/config/settings-schema.ts b/packages/coding-agent/src/config/settings-schema.ts
+index 5202909..1fa18af 100644
+--- a/packages/coding-agent/src/config/settings-schema.ts
++++ b/packages/coding-agent/src/config/settings-schema.ts
+@@ -1963,6 +1963,18 @@ export const SETTINGS_SCHEMA = {
+		},
+	},
+
++	"conversation.questionFirst": {
++		type: "boolean",
++		default: false,
++		ui: {
++			tab: "interaction",
++			group: "Input",
++			label: "Question-First Turns",
++			description:
++				"Pause mutating tools and autonomous continuations when a user message asks a question or requests analysis; resume only on an explicit execution prompt.",
++		},
++	},
++
+	"loop.mode": {
+		type: "enum",
+		values: ["prompt", "compact", "reset"] as const,
+diff --git a/packages/coding-agent/src/extensibility/extensions/wrapper.ts b/packages/coding-agent/src/extensibility/extensions/wrapper.ts
+index bd4689d..ddf79f8 100644
+--- a/packages/coding-agent/src/extensibility/extensions/wrapper.ts
++++ b/packages/coding-agent/src/extensibility/extensions/wrapper.ts
+@@ -21,6 +21,7 @@ import {
+ } from "../../tools/approval";
+ import { defaultLoadModeForToolName } from "../../tools/essential-tools";
+ import { withFileMutationSession } from "../../tools/file-write-fallback";
++import { toolAllowedWhileQuestionPaused } from "../../tools/paused-tool-policy";
+ import { normalizeToolEventInput, resolveToolEventInput } from "../tool-event-input";
+ import { applyToolProxy } from "../tool-proxy";
+ import type { ExtensionRunner } from "./runner";
+@@ -198,6 +199,14 @@ export class ExtensionToolWrapper<TParameters extends TSchema = TSchema, TDetail
+		const approvalMode: ApprovalMode = cliAutoApprove ? "yolo" : configuredMode;
+		const userPolicies = (settings?.get("tools.approval") ?? {}) as Record<string, unknown>;
+		const preResolved = resolveApproval(this.tool, approvalArgs(params, context), approvalMode, userPolicies);
++		if (
++			context?.executionPausedForUser === true &&
++			!toolAllowedWhileQuestionPaused(this.tool.name, preResolved.tier, params as Record<string, unknown>)
++		) {
++			throw new Error(
++				"Execution is paused for the current user question. Answer it without mutating state; resume only after an explicit user execution request.",
++			);
++		}
+		if (preResolved.policy === "deny") {
+			throw denyError(preResolved, this.tool.name);
+		}
+@@ -248,6 +257,14 @@ export class ExtensionToolWrapper<TParameters extends TSchema = TSchema, TDetail
+		const resolvedArgs = approvalArgs(effectiveParams, context);
+		const resolved = resolveApproval(this.tool, resolvedArgs, approvalMode, userPolicies);
+		context?.xdevTierResolved?.(resolved.tier);
++		if (
++			context?.executionPausedForUser === true &&
++			!toolAllowedWhileQuestionPaused(this.tool.name, resolved.tier, effectiveParams as Record<string, unknown>)
++		) {
++			throw new Error(
++				"Execution is paused for the current user question. Answer it without mutating state; resume only after an explicit user execution request.",
++			);
++		}
+		if (resolved.policy === "deny") {
+			throw denyError(resolved, this.tool.name);
+		}
+diff --git a/packages/coding-agent/src/prompts/system/question-first.md b/packages/coding-agent/src/prompts/system/question-first.md
+new file mode 100644
+index 0000000..09087be
+--- /dev/null
++++ b/packages/coding-agent/src/prompts/system/question-first.md
+@@ -0,0 +1,6 @@
++<system-notice>
++The current user message is a question, challenge, correction, or request for analysis.
++Answer that message directly. Prior work and unfinished todos are paused for this turn.
++Do not mutate files, run commands, delegate, advance todos, or resume prior implementation.
++After answering, stop. Execution may resume only after a later explicit user execution request.
++</system-notice>
+diff --git a/packages/coding-agent/src/sdk.ts b/packages/coding-agent/src/sdk.ts
+index 4f073be..7911172 100644
+--- a/packages/coding-agent/src/sdk.ts
++++ b/packages/coding-agent/src/sdk.ts
+@@ -2761,7 +2761,7 @@ async function createAgentSessionScoped(options: CreateAgentSessionOptions): Pro
+			localProtocolOptions,
+			autoApprove: options.autoApprove ?? false,
+		});
+-		const toolContextStore = new ToolContextStore(getSessionContext);
++		const toolContextStore = new ToolContextStore(getSessionContext, () => session.executionPausedForUser);
+		toolSession.getToolContext = () => toolContextStore.getContext();
+		const setSessionActiveToolNames = (names: Iterable<string>): void => {
+			const snapshot = Array.from(names);
+diff --git a/packages/coding-agent/src/session/agent-session.ts b/packages/coding-agent/src/session/agent-session.ts
+index cac051a..39d48e7 100644
+--- a/packages/coding-agent/src/session/agent-session.ts
++++ b/packages/coding-agent/src/session/agent-session.ts
+@@ -175,6 +175,7 @@ import planModeReferencePrompt from "../prompts/system/plan-mode-reference.md" w
+ import planModeToolDecisionReminderPrompt from "../prompts/system/plan-mode-tool-decision-reminder.md" with {
+	type: "text",
+ };
++import questionFirstPrompt from "../prompts/system/question-first.md" with { type: "text" };
+ import rewindReportTemplate from "../prompts/system/rewind-report.md" with { type: "text" };
+ import sideChannelNoToolsReminder from "../prompts/system/side-channel-no-tools.md" with { type: "text" };
+ import vibeModeActivePrompt from "../prompts/system/vibe-mode-active.md" with { type: "text" };
+@@ -203,6 +204,7 @@ import { releaseTabsForOwner } from "../tools/browser/tab-supervisor";
+ import type { CheckpointState, CompletedRewindState } from "../tools/checkpoint";
+ import { releaseComputerSessionsForOwner } from "../tools/computer/supervisor";
+ import { normalizeLocalScheme, resolveToCwd } from "../tools/path-utils";
++import { toolAllowedWhileQuestionPaused } from "../tools/paused-tool-policy";
+ import {
+	buildResolveReminderMessage,
+	isPreviewResolutionToolCall,
+@@ -278,6 +280,7 @@ import {
+	shouldEvaluateCodexAutoRedeem,
+	shouldPromptCodexAutoRedeem,
+ } from "./codex-auto-reset";
++import { classifyUserPrompt, isExplicitResumePrompt } from "./conversation-control";
+ import { recordCredentialPin, seedCredentialPins } from "./credential-pin";
+ import { EvalRunner, type EvalRunnerHost } from "./eval-runner";
+ import {
+@@ -352,7 +355,10 @@ import { SessionStatsTracker, type SessionStatsTrackerHost } from "./session-sta
+ import { SessionTools, type SessionToolsHost } from "./session-tools";
+ import type { ShakeMode, ShakeResult } from "./shake-types";
+ import { skillPromptTitleInput } from "./skill-title-input";
++import { LoopGuards, type StreamGuardsHost, StreamingEditGuard } from "./stream-guards";
++import { TodoTracker, type TodoTrackerHost } from "./todo-tracker";
+ import { ToolChoiceQueue } from "./tool-choice-queue";
++import { TtsrCoordinator, type TtsrCoordinatorHost } from "./ttsr-coordinator";
+ import { planTurnPersistence, sameMessageContent, sessionMessagePersistenceKey } from "./turn-persistence";
+ import { TurnRecovery, type TurnRecoveryHost } from "./turn-recovery";
+ import { YieldQueue } from "./yield-queue";
+@@ -363,10 +369,6 @@ export type { AdvisorStats, PerAdvisorStat } from "./session-advisors";
+
+ const SESSION_STOP_CONTINUATION_CAP = 8;
+
+-import { LoopGuards, type StreamGuardsHost, StreamingEditGuard } from "./stream-guards";
+-import { TodoTracker, type TodoTrackerHost } from "./todo-tracker";
+-import { TtsrCoordinator, type TtsrCoordinatorHost } from "./ttsr-coordinator";
+-
+ const PLAN_MODE_REMINDER_MAX = 3;
+ const POST_PROMPT_DRAIN_TIMEOUT_MS = 5_000;
+
+@@ -419,6 +421,7 @@ type PostPromptSkipReason = "aborted" | "stale-generation";
+ type AgentContinueSkipReason =
+	| PostPromptSkipReason
+	| "session-unavailable"
++	| "paused-for-user"
+	| "should-continue-false"
+	| "post-restore-unavailable";
+
+@@ -577,6 +580,8 @@ export class AgentSession {
+	#planModeReminderCount = 0;
+	#planModeReminderAwaitingProgress = false;
+	readonly #todo: TodoTracker;
++	/** True after a question-first user turn until the user explicitly resumes execution. */
++	#executionPausedForUser = false;
+	#replanTitleRefreshInFlight: Promise<void> | undefined = undefined;
+	/** Resolved TITLE_SYSTEM.md override applied to every automatic session-title
+	 *  generation path. Refresh via {@link AgentSession.setTitleSystemPrompt} when
+@@ -1138,8 +1143,9 @@ export class AgentSession {
+			getActiveToolNames: () => this.getActiveToolNames(),
+			getEnabledToolNames: () => this.getEnabledToolNames(),
+			toolRegistry: () => this.#tools.registry,
+-			planModeEnabled: () => this.#planModeState?.enabled === true,
+			consumeLastServedToolChoiceLabel: () => this.#toolChoiceQueue.consumeLastServedLabel(),
++			planModeEnabled: () => this.#planModeState?.enabled === true,
++			isExecutionPaused: () => this.executionPausedForUser,
+		};
+		this.#todo = new TodoTracker(todoHost);
+		this.#ownedAsyncJobManager = config.ownedAsyncJobManager;
+@@ -3473,9 +3479,19 @@ export class AgentSession {
+				// alongside us (e.g. via a scheduler we don't own), refuse to start a fresh
+				// streaming turn — agent.continue() here would race the handoff's session
+				// reset. The first-class fix is in #checkCompaction/the agent_end handler,
+-				// but this guard catches anything that bypasses that path.
+-				if (signal.aborted || this.#isDisposed || this.isCompacting || this.isGeneratingHandoff) {
+-					this.#skipAgentContinue("session-unavailable", request);
++				if (
++					signal.aborted ||
++					this.#isDisposed ||
++					this.isCompacting ||
++					this.isGeneratingHandoff ||
++					(this.executionPausedForUser && !this.#hasQueuedUserMessages())
++				) {
++					this.#skipAgentContinue(
++						this.executionPausedForUser && !this.#hasQueuedUserMessages()
++							? "paused-for-user"
++							: "session-unavailable",
++						request,
++					);
+					return;
+				}
+				if (options.shouldContinue && !options.shouldContinue()) {
+@@ -3674,6 +3690,17 @@ export class AgentSession {
+	 * execution still emit there).
+	 */
+	async #beforeToolCall(ctx: BeforeToolCallContext, signal?: AbortSignal): Promise<BeforeToolCallResult | undefined> {
++		if (
++			this.#executionPausedForUser &&
++			this.settings.get("conversation.questionFirst") &&
++			!toolAllowedWhileQuestionPaused(ctx.tool.name, resolveApproval(ctx.tool, ctx.args, "yolo").tier, ctx.args)
++		) {
++			return {
++				block: true,
++				reason:
++					"Execution is paused for the current user question. Answer it without mutating state; resume only after an explicit user execution request.",
++			};
++		}
+		const runner = this.#extensionRunner;
+		if (!runner?.hasHandlers("tool_call")) return undefined;
+		const metadata = ctx.toolCall.providerMetadata;
+@@ -3705,6 +3732,21 @@ export class AgentSession {
+		}
+		// A computer call's event input is a synthetic {actions, pendingSafetyChecks}
+		// view, not the execution params — a revision cannot map back onto them.
++		const effectiveArgs = callResult?.input !== undefined && !computer ? callResult.input : ctx.args;
++		if (
++			this.executionPausedForUser &&
++			!toolAllowedWhileQuestionPaused(
++				ctx.tool.name,
++				resolveApproval(ctx.tool, effectiveArgs, "yolo").tier,
++				effectiveArgs,
++			)
++		) {
++			return {
++				block: true,
++				reason:
++					"Execution is paused for the current user question. Answer it without mutating state; resume only after an explicit user execution request.",
++			};
++		}
+		if (callResult?.input !== undefined && !computer) {
+			return { args: callResult.input };
+		}
+@@ -3773,7 +3815,7 @@ export class AgentSession {
+		messages: AgentMessage[],
+		lastAssistantMessage = this.getLastAssistantMessage(),
+	): Promise<boolean> {
+-		if (this.#abortInProgress || this.#isDisposed) {
++		if (this.#abortInProgress || this.#isDisposed || this.executionPausedForUser) {
+			this.#resetSessionStopContinuationState();
+			return false;
+		}
+@@ -5180,6 +5222,11 @@ export class AgentSession {
+		return this.#providerBoundary.prepareSimpleStreamOptions(options, provider);
+	}
+
++	/** True when the optional question-first gate has paused model execution. */
++	get executionPausedForUser(): boolean {
++		return this.settings.get("conversation.questionFirst") && this.#executionPausedForUser;
++	}
++
+	/** Current steering mode */
+	get steeringMode(): "all" | "one-at-a-time" {
+		return this.agent.getSteeringMode();
+@@ -5751,11 +5798,22 @@ export class AgentSession {
+		// Expand file-based prompt templates if requested
+		const expandedText = expandPromptTemplates ? expandPromptTemplate(text, [...this.#promptTemplates]) : text;
+
++		this.#updateExecutionPauseForUserPrompt(expandedText, options?.synthetic && options.userInitiated === true);
++		const questionFirstNotice: CustomMessage | undefined = this.executionPausedForUser
++			? {
++					role: "custom",
++					customType: "question-first-turn",
++					content: questionFirstPrompt,
++					display: false,
++					attribution: "agent",
++					timestamp: Date.now(),
++				}
++			: undefined;
++
+		// Magic keywords ("ultrathink", "orchestrate"): append hidden system notices after the
+		// user's message that steer this turn. User-authored prompts only — synthetic /
+		// agent-initiated turns never trigger them.
+		const keywordNotices = options?.synthetic ? [] : this.#createMagicKeywordNotices(expandedText);
+-
+		// A user-initiated prompt (typed message or the `.`/`c` continue shortcut)
+		// re-enables advisor auto-resume that a prior user interrupt suppressed.
+		// Agent-initiated synthetic prompts (auto-continue, plan, reminders) do not.
+@@ -5773,8 +5831,7 @@ export class AgentSession {
+			const streamingBehavior = options?.streamingBehavior;
+			if (!streamingBehavior) throw new AgentBusyError();
+
+-			// Steer/follow-up the keyword notices BEFORE the queued user message so the
+-			// model reads the steering notice ahead of the prompt it modifies.
++			// Queue the execution-pause notice and keyword notices before the user message.
+			for (const notice of keywordNotices) {
+				await this.#queueCustomMessage(notice, streamingBehavior);
+			}
+@@ -5832,6 +5889,7 @@ export class AgentSession {
+			: { role: "user" as const, content: userContent, attribution: promptAttribution, timestamp: submittedAt };
+
+		const preludeMessages: AgentMessage[] = [];
++		if (questionFirstNotice) preludeMessages.push(questionFirstNotice);
+		if (eagerTodoPrelude) {
+			if (eagerTodoPrelude.toolChoice) {
+				this.#toolChoiceQueue.pushOnce(eagerTodoPrelude.toolChoice, {
+@@ -6429,6 +6487,26 @@ export class AgentSession {
+		}
+	}
+
++	#updateExecutionPauseForUserPrompt(text: string, explicitResume = false): void {
++		if (!this.settings.get("conversation.questionFirst")) {
++			this.#executionPausedForUser = false;
++			return;
++		}
++		if (explicitResume || isExplicitResumePrompt(text) || classifyUserPrompt(text) === "execution") {
++			this.#executionPausedForUser = false;
++			return;
++		}
++		this.#executionPausedForUser = true;
++		this.#clearPendingSessionStopContinuations();
++	}
++
++	#hasQueuedUserMessages(): boolean {
++		return (
++			this.agent.peekSteeringQueue().some(isUserQueuedMessage) ||
++			this.agent.peekFollowUpQueue().some(isUserQueuedMessage)
++		);
++	}
++
+	async #queueUserMessage(
+		text: string,
+		images: ImageContent[] | undefined,
+@@ -6439,6 +6517,19 @@ export class AgentSession {
+		// while streaming) is a deliberate resume; re-enable advisor auto-resume that
+		// a user interrupt suppressed.
+		this.#advisors.autoResumeSuppressed = false;
++		this.#updateExecutionPauseForUserPrompt(text);
++		if (this.executionPausedForUser) {
++			const notice: CustomMessage = {
++				role: "custom",
++				customType: "question-first-turn",
++				content: questionFirstPrompt,
++				display: false,
++				attribution: "agent",
++				timestamp: Date.now(),
++			};
++			if (mode === "followUp") this.agent.followUp(notice);
++			else this.agent.steer(notice);
++		}
+		const normalizedImages = await this.#normalizeImagesForModel(images);
+		const content: (TextContent | ImageContent)[] = [{ type: "text", text }];
+		if (normalizedImages?.length) {
+@@ -7243,6 +7334,7 @@ export class AgentSession {
+			this.#clearSessionScopedToolState();
+			this.#clearCheckpointRuntimeState();
+			this.setTodoPhases([]);
++			this.#executionPausedForUser = false;
+			this.#freshProviderSessionId = undefined;
+			this.#clearInheritedProviderPromptCacheKey();
+			this.#syncAgentSessionId();
+@@ -8496,6 +8588,7 @@ export class AgentSession {
+			if (switchingToDifferentSession) {
+				await this.#memory.resetContextForNewTranscript();
+			}
++			if (switchingToDifferentSession) this.#executionPausedForUser = false;
+			if (switchingToDifferentSession || didReloadConversationChange) {
+				this.#clearSessionScopedToolState();
+			}
+diff --git a/packages/coding-agent/src/session/conversation-control.ts b/packages/coding-agent/src/session/conversation-control.ts
+new file mode 100644
+index 0000000..aa232a5
+--- /dev/null
++++ b/packages/coding-agent/src/session/conversation-control.ts
+@@ -0,0 +1,36 @@
++/**
++ * Deterministic user-message classification for the optional question-first gate.
++ *
++ * This is deliberately a conservative lexical boundary: a trailing question mark,
++ * an explicit question opener, or a direct request for analysis/clarification pauses
++ * autonomous tool work. Ambiguous statements remain executable so the feature does
++ * not turn ordinary task prompts into a confirmation ceremony.
++ */
++
++export type UserPromptIntent = "question" | "execution";
++
++const ENGLISH_QUESTION_START_RE =
++	/^(?:what|which|when|where|why|how|who|whom|whose|do|does|did|can|could|would|will|should|is|are|am|may|shall)\b/i;
++const CJK_QUESTION_START_RE =
++	/^(?:为什么|为何|怎么|如何|什么|哪个|哪些|哪里|何时|谁|是否|能否|能不能|可以吗|可不可以|是不是|要不要|需不需要|有没有|怎么回事|什么情况)/u;
++const DISCUSSION_CUE_RE =
++	/(?:分析一下|请分析|帮我分析|判断一下|请判断|评估一下|请评估|对不对|为什么可以|为什么没有|什么情况|解释一下|先回答|不要继续|暂停执行|只回答|有什么问题|有问题吗|需要注意|注意几点|这些约束|这个流程设计|我认为|我觉得|建议先)/u;
++const QUESTION_SUFFIX_RE = /(?:[?？]|吗|呢|么|嘛)\s*$/u;
++
++/** Classify a user prompt without invoking a model or reading project state. */
++export function classifyUserPrompt(text: string): UserPromptIntent {
++	const normalized = text.trim();
++	if (!normalized) return "execution";
++	if (QUESTION_SUFFIX_RE.test(normalized)) return "question";
++	if (ENGLISH_QUESTION_START_RE.test(normalized) || CJK_QUESTION_START_RE.test(normalized)) return "question";
++	if (DISCUSSION_CUE_RE.test(normalized)) return "question";
++	return "execution";
++}
++
++/** Explicit resume phrases clear a previous question pause. */
++export function isExplicitResumePrompt(text: string): boolean {
++	const normalized = text.trim().toLowerCase();
++	return /^(?:(?:请|先|现在)?(?:继续(?:执行|处理|修改)?|恢复执行|执行|实施|落地|改|修改|修复|新增|删除|创建|运行|更新)|按这个方案(?:继续|执行|修改)?|resume|continue|proceed|implement|apply|execute)(?:\s|$|[，,。.!！])/u.test(
++		normalized,
++	);
++}
+diff --git a/packages/coding-agent/src/session/session-maintenance.ts b/packages/coding-agent/src/session/session-maintenance.ts
+index 9d8c171..a208387 100644
+--- a/packages/coding-agent/src/session/session-maintenance.ts
++++ b/packages/coding-agent/src/session/session-maintenance.ts
+@@ -283,6 +283,7 @@ export interface SessionMaintenanceHost {
+				| "aborted"
+				| "stale-generation"
+				| "session-unavailable"
++				| "paused-for-user"
+				| "should-continue-false"
+				| "post-restore-unavailable",
+		) => void;
+diff --git a/packages/coding-agent/src/session/todo-tracker.ts b/packages/coding-agent/src/session/todo-tracker.ts
+index 5817972..04e8864 100644
+--- a/packages/coding-agent/src/session/todo-tracker.ts
++++ b/packages/coding-agent/src/session/todo-tracker.ts
+@@ -58,6 +58,7 @@ export interface TodoTrackerHost {
+	toolRegistry(): Map<string, AgentTool>;
+	planModeEnabled(): boolean;
+	consumeLastServedToolChoiceLabel(): string | undefined;
++	isExecutionPaused(): boolean;
+ }
+
+ /** Owns canonical todo state, eager preludes, and completion reminders. */
+@@ -133,6 +134,7 @@ export class TodoTracker {
+	): { message: AgentMessage; toolChoice?: ToolChoice } | undefined {
+		const mode = this.#host.settings.get("todo.eager");
+		if (mode === "default" || !this.#host.settings.get("todo.enabled")) return undefined;
++		if (this.#host.isExecutionPaused()) return undefined;
+		if (this.#host.planModeEnabled() || this.#phases.length > 0) return undefined;
+		if (promptText !== undefined) {
+			if (this.#host.agent.state.messages.some(message => message.role === "user")) return undefined;
+@@ -169,6 +171,7 @@ export class TodoTracker {
+	createEagerTaskPrelude(promptText: string | undefined): AgentMessage | undefined {
+		if (this.#host.settings.get("task.eager") !== "always") return undefined;
+		if (this.#host.agentKind() === "sub" || this.#host.planModeEnabled()) return undefined;
++		if (this.#host.isExecutionPaused()) return undefined;
+		if (promptText !== undefined) {
+			if (this.#host.agent.state.messages.some(message => message.role === "user")) return undefined;
+			const trimmed = promptText.trimEnd();
+@@ -205,6 +208,7 @@ export class TodoTracker {
+			});
+			return false;
+		}
++		if (this.#host.isExecutionPaused()) return false;
+		if (!this.#host.settings.get("todo.reminders") || !this.#host.settings.get("todo.enabled")) {
+			this.#reminderCount = 0;
+			this.#reminderAwaitingProgress = false;
+@@ -291,6 +295,7 @@ export class TodoTracker {
+	takeMidRunNudge(): AgentMessage | null {
+		if (this.#mutationsSinceLastTouch < MID_RUN_NUDGE_MUTATION_THRESHOLD) return null;
+		if (this.#midRunNudgeCount >= MID_RUN_NUDGE_MAX_PER_CYCLE) return null;
++		if (this.#host.isExecutionPaused()) return null;
+		if (!this.#host.settings.get("todo.enabled") || !this.#host.settings.get("todo.reminders")) return null;
+		if (this.#host.planModeEnabled() || !this.#host.getActiveToolNames().includes("todo")) return null;
+		const incomplete = this.#phases
+diff --git a/packages/coding-agent/src/tools/context.ts b/packages/coding-agent/src/tools/context.ts
+index 69b25bb..17e1dbd 100644
+--- a/packages/coding-agent/src/tools/context.ts
++++ b/packages/coding-agent/src/tools/context.ts
+@@ -8,6 +8,8 @@ declare module "@oh-my-pi/pi-agent-core" {
+		hasUI?: boolean;
+		toolNames?: string[];
+		toolCall?: ToolCallContext;
++		/** True while a question-first turn forbids model-initiated state changes. */
++		executionPausedForUser?: boolean;
+		/** Set on `xd://` device dispatches: the write tool's outer approval gate
+		 *  already resolved this call at the mounted tool's tier, so the inner
+		 *  wrapper must not re-prompt for the same action (explicit per-tool
+@@ -26,7 +28,10 @@ export class ToolContextStore {
+	#hasUI = false;
+	#toolNames: string[] = [];
+
+-	constructor(private readonly getBaseContext: () => CustomToolContext) {}
++	constructor(
++		private readonly getBaseContext: () => CustomToolContext,
++		private readonly isExecutionPausedForUser: () => boolean = () => false,
++	) {}
+
+	getContext(toolCall?: ToolCallContext): AgentToolContext {
+		return {
+@@ -35,6 +40,7 @@ export class ToolContextStore {
+			hasUI: this.#hasUI,
+			toolNames: this.#toolNames,
+			toolCall,
++			executionPausedForUser: this.isExecutionPausedForUser(),
+		};
+	}
+
+diff --git a/packages/coding-agent/src/tools/paused-tool-policy.ts b/packages/coding-agent/src/tools/paused-tool-policy.ts
+new file mode 100644
+index 0000000..7b4acd7
+--- /dev/null
++++ b/packages/coding-agent/src/tools/paused-tool-policy.ts
+@@ -0,0 +1,30 @@
++import type { ToolTier } from "@oh-my-pi/pi-agent-core";
++
++const QUESTION_PAUSE_READ_TOOLS: Record<string, true> = {
++	ast_grep: true,
++	github: true,
++	glob: true,
++	grep: true,
++	inspect_image: true,
++	lsp: true,
++	read: true,
++	recall: true,
++	security_scan: true,
++	think: true,
++	web_search: true,
++};
++
++/**
++ * Whether a model-issued tool call is observational enough to run while the
++ * current user turn has paused execution. The approval tier remains necessary
++ * for argument-dependent tools such as GitHub and LSP; the name allowlist
++ * excludes tools that declare read tier despite changing session state.
++ */
++export function toolAllowedWhileQuestionPaused(
++	toolName: string,
++	tier: ToolTier,
++	args: Record<string, unknown>,
++): boolean {
++	if (toolName === "todo") return args.op === "view";
++	return tier === "read" && QUESTION_PAUSE_READ_TOOLS[toolName] === true;
++}
+diff --git a/packages/coding-agent/test/agent-session-question-first.test.ts b/packages/coding-agent/test/agent-session-question-first.test.ts
+new file mode 100644
+index 0000000..c47f4ea
+--- /dev/null
++++ b/packages/coding-agent/test/agent-session-question-first.test.ts
+@@ -0,0 +1,147 @@
++import { afterAll, afterEach, describe, expect, it, vi } from "bun:test";
++import * as path from "node:path";
++import { type } from "@oh-my-pi/omptype";
++import { Agent, type AgentTool, type AgentToolContext } from "@oh-my-pi/pi-agent-core";
++import { createMockModel, type MockResponse } from "@oh-my-pi/pi-ai/providers/mock";
++import { ModelRegistry } from "@oh-my-pi/pi-coding-agent/config/model-registry";
++import { Settings } from "@oh-my-pi/pi-coding-agent/config/settings";
++import type { ExtensionRunner } from "@oh-my-pi/pi-coding-agent/extensibility/extensions/runner";
++import { ExtensionToolWrapper } from "@oh-my-pi/pi-coding-agent/extensibility/extensions/wrapper";
++import { AgentSession, type AgentSessionEvent } from "@oh-my-pi/pi-coding-agent/session/agent-session";
++import { AuthStorage } from "@oh-my-pi/pi-coding-agent/session/auth-storage";
++import { classifyUserPrompt } from "@oh-my-pi/pi-coding-agent/session/conversation-control";
++import { convertToLlm } from "@oh-my-pi/pi-coding-agent/session/messages";
++import { SessionManager } from "@oh-my-pi/pi-coding-agent/session/session-manager";
++import { TempDir } from "@oh-my-pi/pi-utils";
++
++const mutateSchema = type({ value: type("string") });
++const sharedDir = TempDir.createSync("@pi-question-first-shared-");
++const sharedAuthStorage = await AuthStorage.create(path.join(sharedDir.path(), "auth.db"));
++sharedAuthStorage.setRuntimeApiKey("mock", "test-key");
++const sharedModelRegistry = new ModelRegistry(sharedAuthStorage, path.join(sharedDir.path(), "models.yml"));
++const activeSessions: Array<{ session: AgentSession; tempDir: TempDir }> = [];
++
++function toolCall(id: string): MockResponse {
++	return {
++		content: [{ type: "toolCall", id, name: "mutate", arguments: { value: id } }],
++		stopReason: "toolUse",
++	};
++}
++
++async function createHarness(responses: MockResponse[]) {
++	const tempDir = TempDir.createSync("@pi-question-first-");
++	const mock = createMockModel({ responses });
++	sharedAuthStorage.setRuntimeApiKey(mock.provider, "test-key");
++	let mutations = 0;
++	const mutateTool: AgentTool<typeof mutateSchema> = {
++		name: "mutate",
++		label: "Mutate",
++		description: "Change observable state",
++		parameters: mutateSchema,
++		approval: "write",
++		async execute(_toolCallId, params) {
++			mutations++;
++			return { content: [{ type: "text", text: `mutated:${params.value}` }] };
++		},
++	};
++	const agent = new Agent({
++		getApiKey: () => "test-key",
++		initialState: { model: mock, systemPrompt: ["Test"], tools: [mutateTool], messages: [] },
++		convertToLlm,
++		streamFn: mock.stream,
++	});
++	const session = new AgentSession({
++		agent,
++		sessionManager: SessionManager.inMemory(tempDir.path()),
++		settings: Settings.isolated({
++			"compaction.enabled": false,
++			"retry.enabled": false,
++			"conversation.questionFirst": true,
++			"todo.enabled": true,
++			"todo.reminders": true,
++		}),
++		modelRegistry: sharedModelRegistry,
++		toolRegistry: new Map([[mutateTool.name, mutateTool]]),
++	});
++	activeSessions.push({ session, tempDir });
++	return { session, mutateTool, mutationCount: () => mutations };
++}
++
++afterEach(async () => {
++	vi.restoreAllMocks();
++	for (const harness of activeSessions.splice(0)) {
++		await harness.session.dispose();
++		harness.tempDir.removeSync();
++	}
++});
++
++afterAll(() => {
++	sharedAuthStorage.close();
++	sharedDir.removeSync();
++});
++
++describe("question-first conversation gate", () => {
++	it("classifies direct Chinese analysis requests without punctuation", () => {
++		expect(classifyUserPrompt("你不分析一下我说的对不对吗")).toBe("question");
++		expect(classifyUserPrompt("需要注意几点，任务不能扩展 Spec")).toBe("question");
++		expect(classifyUserPrompt("按这个方案继续修改")).toBe("execution");
++		expect(classifyUserPrompt("先改 OMP runtime")).toBe("execution");
++	});
++
++	it("answers a question without mutation or todo continuation, then resumes explicitly", async () => {
++		const harness = await createHarness([
++			toolCall("blocked"),
++			{ content: ["先回答问题。"], stopReason: "stop" },
++			toolCall("allowed"),
++			{ content: ["执行完成。"], stopReason: "stop" },
++		]);
++		const reminders: number[] = [];
++		harness.session.subscribe((event: AgentSessionEvent) => {
++			if (event.type === "todo_reminder") reminders.push(event.attempt);
++		});
++		harness.session.setTodoPhases([
++			{ name: "Implementation", tasks: [{ content: "Apply change", status: "in_progress" }] },
++		]);
++
++		await harness.session.prompt("你不分析一下我说的对不对吗");
++
++		expect(harness.session.executionPausedForUser).toBe(true);
++		expect(harness.mutationCount()).toBe(0);
++		expect(reminders).toEqual([]);
++
++		harness.session.setTodoPhases([]);
++		await harness.session.prompt("继续执行");
++
++		expect(harness.session.executionPausedForUser).toBe(false);
++		expect(harness.mutationCount()).toBe(1);
++	});
++
++	it("blocks direct wrapped write tools outside the normal agent loop", async () => {
++		let executed = false;
++		const tool: AgentTool<typeof mutateSchema> = {
++			name: "mutate",
++			label: "Mutate",
++			description: "Change observable state",
++			parameters: mutateSchema,
++			approval: "write",
++			async execute() {
++				executed = true;
++				return { content: [{ type: "text", text: "mutated" }] };
++			},
++		};
++		const runner = {
++			consumeToolCallEmitted: () => false,
++			hasHandlers: () => false,
++		} as unknown as ExtensionRunner;
++		const wrapped = new ExtensionToolWrapper(tool, runner);
++		const context = {
++			executionPausedForUser: true,
++			settings: Settings.isolated({ "tools.approvalMode": "yolo" }),
++		} as AgentToolContext;
++
++		await expect(wrapped.execute("direct-write", { value: "x" }, undefined, undefined, context)).rejects.toThrow(
++			"Execution is paused for the current user question",
++		);
++		expect(executed).toBe(false);
++	});
++});
+diff --git a/packages/coding-agent/test/conversation-control.test.ts b/packages/coding-agent/test/conversation-control.test.ts
+new file mode 100644
+index 0000000..5403930
+--- /dev/null
++++ b/packages/coding-agent/test/conversation-control.test.ts
+@@ -0,0 +1,35 @@
++import { describe, expect, it } from "bun:test";
++import { classifyUserPrompt, isExplicitResumePrompt } from "@oh-my-pi/pi-coding-agent/session/conversation-control";
++import { toolAllowedWhileQuestionPaused } from "@oh-my-pi/pi-coding-agent/tools/paused-tool-policy";
++
++describe("question-first prompt classification", () => {
++	it("pauses direct questions, analysis requests, and design-constraint discussions", () => {
++		expect(classifyUserPrompt("这个流程设计层面能改吗")).toBe("question");
++		expect(classifyUserPrompt("你不分析一下我说的对不对吗")).toBe("question");
++		expect(classifyUserPrompt("需要注意几点，任务不能扩展 Spec")).toBe("question");
++	});
++
++	it("keeps explicit implementation requests executable", () => {
++		expect(classifyUserPrompt("先改 OMP runtime")).toBe("execution");
++		expect(isExplicitResumePrompt("继续执行")).toBe(true);
++		expect(isExplicitResumePrompt("按这个方案修改")).toBe(true);
++		expect(isExplicitResumePrompt("继续吗？")).toBe(false);
++	});
++});
++
++describe("question-first tool policy", () => {
++	it("allows observational reads and todo view only", () => {
++		expect(toolAllowedWhileQuestionPaused("read", "read", {})).toBe(true);
++		expect(toolAllowedWhileQuestionPaused("lsp", "read", { action: "diagnostics" })).toBe(true);
++		expect(toolAllowedWhileQuestionPaused("todo", "read", { op: "view" })).toBe(true);
++		expect(toolAllowedWhileQuestionPaused("todo", "read", { op: "done" })).toBe(false);
++	});
++
++	it("blocks writes, execution, delegation, and stateful read-tier tools", () => {
++		expect(toolAllowedWhileQuestionPaused("write", "read", { path: "xd://lsp" })).toBe(false);
++		expect(toolAllowedWhileQuestionPaused("edit", "write", {})).toBe(false);
++		expect(toolAllowedWhileQuestionPaused("bash", "exec", {})).toBe(false);
++		expect(toolAllowedWhileQuestionPaused("task", "exec", {})).toBe(false);
++		expect(toolAllowedWhileQuestionPaused("hub", "read", { op: "send" })).toBe(false);
++	});
++});

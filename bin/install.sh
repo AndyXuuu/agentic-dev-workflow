@@ -15,7 +15,6 @@ fi
 
 sh "$ROOT/bin/validate-skills.sh"
 sh "$ROOT/bin/validate-scaffolds.sh"
-sh "$ROOT/bin/validate-sdd.sh"
 
 for old_skill in ax_pipeline ax_prd ax_arch ax_dev ax_test ax_review software-engineering-pipeline prd-analyst architect developer tester delivery-reviewer; do
   old_dst="$HOME/.agents/skills/$old_skill"
@@ -48,8 +47,13 @@ while IFS="$catalog_separator" read -r skill category relative_path; do
     echo "skip existing non-symlink skill: $dst"
   fi
 done < "$SKILL_CATALOG"
+legacy_test_profile="$HOME/.codex/test.config.toml"
+if [ -L "$legacy_test_profile" ]; then
+  rm -f "$legacy_test_profile"
+  echo "removed old profile link: $legacy_test_profile"
+fi
 
-for profile in arch dev test review; do
+for profile in arch dev review; do
   src="$ROOT/profiles/$profile.config.toml"
   dst="$HOME/.codex/$profile.config.toml"
   if [ -L "$dst" ] || [ ! -e "$dst" ]; then

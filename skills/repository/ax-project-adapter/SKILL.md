@@ -10,7 +10,7 @@ description: 根据已有源码项目或脚手架生成结果的真实技术栈�
 ## 结构边界
 
 - 全局 `AGENTS.md`：个人通用工程、安全、变更控制和交付规则。
-- 通用工程 Skill：前端、后端、测试、架构等可在不同项目复用的工作流。
+- 通用工程 Skill：前端、后端、架构等可在不同项目复用的工作流。
 - 项目 `AGENTS.md`：技术栈、项目命令、强制约束、权威来源，以及脱离个人全局环境时的最小工作门禁。
 - 项目适配 Skill：高频入口、Owner 地图、只读/生成边界和项目特有验证导航。
 
@@ -28,13 +28,13 @@ description: 根据已有源码项目或脚手架生成结果的真实技术栈�
 - API、业务、持久化、UI、状态与副作用边界
 - 设计系统、资产、国际化、权限、分析和错误处理 Owner
 - 生成目录、供应商目录、敏感目录和禁止手改区域
-- 测试、Lint、类型检查、构建、预览和契约同步命令
+- 业务验收、Lint、类型检查、构建、预览和契约同步命令
 - 聚合命令的实际子命令/依赖关系、各验证层的执行频率，以及哪些检查会被更强门禁包含
 - 每项验证真正依赖的执行环境；区分 hermetic focused 检查、平台集成、CI/release 和真实外部验收
 - 权威文档、相似实现和现有项目 Skill
 - 前后端是否同仓、契约源定义位于何处、消费者如何同步
 
-只记录验证过的当前事实。文档与源码冲突时先列出冲突，不生成依赖该冲突结论的规则；未发现 canonical owner、测试、CI 或部署资料时记录为缺口，不用模板补造。
+只记录验证过的当前事实。文档与源码冲突时先列出冲突，不生成依赖该冲突结论的规则；未发现 canonical owner、业务验收、CI 或部署资料时记录为缺口，不用模板补造。
 任何会影响 Owner、边界、命令、生成目录或验证入口的假设，必须在适配层生成前被证实为事实、被用户明确决定为目标/约束，或连同依赖它的导航一起移除；不能把未解决假设写入项目地图或 Skill，也不能把目标/约束伪装成当前项目事实。
 
 ### 已有 AGENTS.md 保护
@@ -93,6 +93,7 @@ description: 根据已有源码项目或脚手架生成结果的真实技术栈�
 5. 只有用户明确要求发现某个有界父目录下的候选仓库时，才在该目录中发现 Git root 和仓库自有 `.agents/skills/`，并排除 `.venv`、`node_modules`、vendor、缓存和第三方依赖。被发现不等于已注册，也不自动获得同步授权。
 6. 新增、删除或改变 registry 条目只在用户明确要求时执行。
 7. 顶层规则变化需要同步时，在本次确定的目标集合内按领域筛选，逐个比较 `AGENTS.md`、适配 Skill、Owner 地图和验证入口；只报告本次实际核验结果。
+8. Domain SDD is opt-in per repository. Synchronize `ax-sdd` routing or SDD-specific fallback clauses only when that target repository's own `AGENTS.md` explicitly adopts Domain SDD and its existing manifest/index are authoritative. Every other registered project may keep one short non-adoption guard, but must not receive an SDD tree, Artifact model, validation command or Domain routing; preserve its existing specification Owner (for example OpenSpec or project documentation).
 
 ## 5. 检查重复与冲突
 
@@ -114,7 +115,7 @@ description: 根据已有源码项目或脚手架生成结果的真实技术栈�
 - 检查所有链接、Owner 和命令均存在或明确标注条件。
 - 比较精简前后，确认项目强约束没有丢失。
 - 若修改已有 `AGENTS.md`，检查 diff 只包含预期增量，没有整文件替换、无关删除、格式重写或已有用户改动丢失。
-- 在不读取个人全局目录、不调用 `ax-*` Skill 的条件下检查需求、安全范围、Owner、测试和交付五个最小入口仍然存在。
+- 在不读取个人全局目录、不调用 `ax-*` Skill 的条件下检查需求、安全范围、Owner、业务验收和交付四个最小入口仍然存在。
 - 用一个真实项目任务做只读前向测试，确认 Agent 会读取正确 Owner 且不会套用错误技术栈。
 - 检查交付报告列出本次用户确认的目标范围和每个目标的实际核验结果，不暗示未检查项目已同步。
 

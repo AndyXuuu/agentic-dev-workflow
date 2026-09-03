@@ -1,11 +1,18 @@
 ---
 name: ax-prd
-description: 需求 / PRD。用于把想法、Bug 或模糊需求整理成范围、验收标准、风险和待确认问题。
+description: 需求 / PRD。用于把想法、Bug 或模糊需求整理成范围、业务流程、验收标准、风险和待确认问题。
 ---
 
 # PRD Analyst
 
 Your job is to clarify what should be built before anyone writes code.
+
+## Spec-First Gate
+
+Before writing a PRD, check whether the project adopts Domain SDD. In an adopted SDD, delegate
+Domain selection, Spec grading, Requirement/Oracle mapping, Change Delta, and execution-Todo
+decisions to `ax-sdd`; this Skill handles only a missing or materially incomplete product
+requirement and must not create a duplicate Domain PRD.
 
 ## Output
 
@@ -14,7 +21,7 @@ Produce a compact PRD:
 - Goal / observable outcome
 - Background
 - Current-state evidence / unverified premises
-- Terminology / object registry
+- Terminology delta, if any
 - Users / actors
 - In scope
 - Out of scope
@@ -28,51 +35,37 @@ Produce a compact PRD:
 
 ## Rules
 
-### Terminology / Object Registry
+### Terminology Delta
 
-Create the registry before functional requirements, user flow, acceptance criteria, or proposed
-solution wording. Include only behavior-relevant concepts and use a compact table with:
+Apply the registration threshold in `AGENTS.md`; do not reproduce its full rule or the project's
+complete registry. The PRD lists only reused Concept IDs needed for clarity plus new, changed, or
+ambiguous concepts that own an identity/lifecycle, cross-Owner/public/persistent contract,
+security/data boundary, or demonstrated naming collision. State `none` when no registry change is
+needed.
 
-- stable concept ID;
-- canonical label, preserving the verified project/domain term or otherwise the user's label and
-  language;
-- kind (actor, entity/resource, command/event, state, metric, or external concept);
-- precise definition, identity/lifecycle/ownership boundary, key relations or invariants, and
-  observable distinction;
-- active Chinese/English/abbreviation/code aliases and confusable but distinct concept IDs; and
-- disposition/evidence (verified fact or explicit user decision).
-
-Treat multilingual labels and abbreviations as aliases of one concept when identity, lifecycle,
-ownership, and observable contract are the same. If the boundary differs, register separate
-concept IDs and state the distinction. A material noun introduced later must map to the registry,
-be explicitly registered with its distinction, or be removed with dependent content; never let a
-translation or an agent-created synonym silently fork an object or state machine. Use canonical
-labels consistently in the PRD and concept IDs for traceability. An unresolved identity boundary
-blocks dependent requirements; rejected or expired entries and their derived content are deleted,
-not retained as historical vocabulary.
+For each delta entry record only the Concept ID, canonical label, boundary/Owner, key invariants,
+and actual aliases/confusables. Standard technical terms, local fields/helpers/types, UI-only state,
+derived attributes, and single-Owner implementation details remain ordinary prose unless they cross
+one of those boundaries. Resolve a material identity ambiguity before the dependent requirement;
+do not block unrelated requirements or exploratory wording.
 
 - Do not propose implementation details unless they affect requirements.
-- Separate the user's desired outcome from suggested causes and implementations. Treat
-  current-state claims and diagnoses as hypotheses until supported by available project
-  evidence; label anything material that remains unverified.
-- Treat each material premise as temporary. Before the PRD becomes an implementation input,
-  verify it from an authoritative source, convert it into an explicit user decision/constraint, or
-  remove the dependent requirement and clean up its derived scope. Do not leave a material premise
-  in “open questions” when it controls the current critical path.
-- Derive acceptance criteria from the observable outcome, not from making the suggested
-  implementation exist. A technically inferior proposal is not a requirement unless the user
-  explicitly fixes it as a constraint after its consequences are clear.
-- For a security requirement, apply `AGENTS.md` Security Goal and Complexity Budget. State only
-  the protected asset, credible threat or failure, attacker capability, trust boundary, and
-  observable property needed by the accepted outcome; do not turn a stronger possible defense
-  into an implicit non-functional requirement.
+- Separate the user's desired outcome from suggested causes and implementations. Treat current-state
+  claims and diagnoses as hypotheses until supported by available project evidence.
+- Treat each material premise as temporary. Before the PRD becomes an implementation input, verify it
+  from an authoritative source, convert it into an explicit user decision/constraint, or remove the
+  dependent requirement and clean up its derived scope.
+- Derive acceptance criteria from the observable outcome, not from making the suggested implementation
+  exist.
+- For a security requirement, apply `AGENTS.md` Security Goal and Complexity Budget. State only the
+  protected asset, credible threat or failure, attacker capability, trust boundary, and observable
+  property needed by the accepted outcome.
 - Separate user-visible behavior from internal engineering tasks.
 - If the request is ambiguous, ask targeted questions.
-- If continuing without answers is acceptable, state assumptions clearly.
 - Continuing is acceptable only for harmless, reversible assumptions that cannot change behavior or
-  risk. Record their checkpoint and resolve or remove them before implementation, test-oracle
-  selection, canonical documentation, or archive.
-- Acceptance criteria must be testable.
+  risk. Resolve or remove them before implementation, business acceptance, canonical documentation,
+  or archive.
+- Acceptance criteria must be observable and verifiable.
 
 ## Quality Bar
 
