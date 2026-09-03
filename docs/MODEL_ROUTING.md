@@ -2,12 +2,10 @@
 
 本文是当前 OMP/Codex 本机配置的速查表，用于避免重复检查多个配置文件。本文不替代配置文件；若内容冲突，以实际配置文件和命令输出为准。
 
-## 当前结论
-
-- OMP 默认、任务执行和设计 Agent 使用 `gpt-5.6-terra:high`。
-- OMP 规划、审查和安全审查使用 `gpt-5.6-sol:high`。
-- `smol`、`tiny` 和提交信息生成使用 `gpt-5.6-luna:max`。
-- Chamoji 下三个 GPT-5.6 模型的 OMP 上下文窗口统一限制为 `550000`，约为模型目录显示的 `1.1M` 的一半。
+- 分析、规划和交付前审查使用 `gpt-5.6-sol:xhigh`。
+- 执行、设计和安全审查使用 `gpt-5.6-terra:high`。
+- 搜索、总结、测试及轻量后台任务使用 `gpt-5.6-luna:max`；提交信息生成也使用 Luna max。
+- Chamoji 下三个 GPT-5.6 模型的 OMP 上下文窗口统一限制为 `272000`，以避免进入更高输入计费区间。
 - Codex 主配置独立于 OMP，当前默认模型为 `gpt-5.6-sol`，推理等级为 `medium`。
 
 ## OMP 全局角色
@@ -19,12 +17,12 @@
 | `default` | `chamoji/gpt-5.6-terra:high` | 普通 OMP 会话默认模型 |
 | `task` | `chamoji/gpt-5.6-terra:high` | 通用任务 Agent |
 | `designer` | `chamoji/gpt-5.6-terra:high` | UI/UX 设计 Agent |
-| `slow` | `chamoji/gpt-5.6-sol:high` | 深度分析与高风险判断 |
-| `plan` | `chamoji/gpt-5.6-sol:high` | 架构规划 |
-| `review` | `chamoji/gpt-5.6-sol:high` | 交付前代码审查 |
-| `security` | `chamoji/gpt-5.6-sol:high` | 安全审查 |
-| `smol` | `chamoji/gpt-5.6-luna:max` | 轻量/快速角色的模型入口；当前按要求使用 `max` |
-| `tiny` | `chamoji/gpt-5.6-luna:max` | 标题、记忆、自动思考分类和异常停止检测等轻量后台任务 |
+| `slow` | `chamoji/gpt-5.6-sol:xhigh` | 深度分析与高风险判断 |
+| `plan` | `chamoji/gpt-5.6-sol:xhigh` | 架构规划 |
+| `review` | `chamoji/gpt-5.6-sol:xhigh` | 交付前代码审查 |
+| `security` | `chamoji/gpt-5.6-terra:high` | 安全审查 |
+| `smol` | `chamoji/gpt-5.6-luna:max` | 搜索、资料查询、测试和轻量任务 |
+| `tiny` | `chamoji/gpt-5.6-luna:max` | 标题、记忆、自动思考分类和异常停止检测等后台任务 |
 | `commit` | `chamoji/gpt-5.6-luna:max` | 提交信息与变更摘要生成 |
 
 ### Agent 类型映射
@@ -47,11 +45,9 @@
 
 配置源：`~/.omp/agent/models.yml` 的 `providers.chamoji.modelOverrides`。
 
-| Provider | 模型 | OMP `contextWindow` |
-| --- | --- | ---: |
-| `chamoji` | `gpt-5.6-luna` | `550000` |
-| `chamoji` | `gpt-5.6-terra` | `550000` |
-| `chamoji` | `gpt-5.6-sol` | `550000` |
+| `chamoji` | `gpt-5.6-luna` | `272000` |
+| `chamoji` | `gpt-5.6-terra` | `272000` |
+| `chamoji` | `gpt-5.6-sol` | `272000` |
 
 该设置是 OMP 模型注册表使用的本地上下文上限，会让 compaction 更早触发；它不是服务端硬限制，也不影响其他 Provider 的同名模型。
 
@@ -76,7 +72,7 @@ model_reasoning_effort = "medium"
 | --- | --- | --- |
 | `arch` | `gpt-5.6-sol` | `high` |
 | `dev` | `gpt-5.6-terra` | `medium` |
-| `test` | `gpt-5.6-luna` | `medium` |
+| `test` | `gpt-5.6-luna` | `max` |
 | `review` | `gpt-5.6-sol` | `high` |
 
 Profiles 与 OMP 全局角色是两套独立配置；修改一套不会同步改写另一套。
