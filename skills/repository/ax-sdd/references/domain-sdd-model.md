@@ -2,24 +2,25 @@
 
 本文件是 `ax-sdd` 的唯一模型定义。工具、模板、项目采用和业务验收必须服从本文件；旧 profile、context route Schema、coverage 和分层校验已删除，不提供兼容路径。
 
-## 目标
+## 目标与适用范围
 
-Domain SDD 只服务一个结果：Agent 根据任务文字命中一个稳定 Domain，并一次获得该 Domain 的 why、what、how、proof、术语、直接技术依赖、Requirement 和 Acceptance Boundary。
-Domain SDD 描述当前系统事实和可验证边界。它不提供 Bundle、生成器或导出工具；项目若已有导出流程，导出物仍由项目自身 Owner 管理，不改变 SDD current truth。
+Domain SDD 定义项目全部 current behavior：可观察行为、公开和内部契约、数据、不变量、运行与运维边界、验收边界以及声明的固定资产。它适用于任何规模的项目，不以大型项目、文件数量、团队规模或单次任务作为采用条件。
+
+Domain 是项目 SDD 的稳定组织、Owner 和导航单位，不是规范覆盖范围。按任务读取“最小充分上下文闭包”只是控制读取预算；未被本次任务读取的项目行为仍由其 current Artifact 定义。
 
 ## 非目标
 
 - 不复制 OpenSpec 或 Spec Kit 的 CLI、分支、目录编号、阶段命令或工作流状态机。
 - 不保存 Proposal、任务清单、进度、会议记录、Agent 推理、被否决方案或历史快照。
 - 不逐行复制源码、函数调用图、代码测试实现或偶然缺陷。
-- 不按文件数量、行数、单次需求或团队临时分工机械建立 Domain。
+- 不以项目规模、文件数量、单次需求或团队临时分工机械决定是否采用 SDD 或建立 Domain；Domain 拆分必须由真实的独立目的和边界驱动。
 - 不维持旧 SDD Schema、别名、自动迁移器或双写兼容层。
 
 ## 术语与身份
 
 | 概念 | 定义与边界 |
 | --- | --- |
-| Domain | 具有稳定业务目的和 Owner 的规范边界。至少拥有独立生命周期、数据/权限、事务、外部副作用、失败恢复、跨团队合同或独立可验证结果之一。 |
+| Domain | 项目 SDD 中具有稳定业务目的和 Owner 的规范边界。它至少拥有独立生命周期、数据/权限、事务、外部副作用、失败恢复、跨团队合同或独立可验证结果之一；Domain 组织整个项目的规范内容，而不是只覆盖一个最小领域。 |
 | Subdomain | 父 Domain 内仍具有独立目的和局部闭包的 Domain。父 Domain 只保存跨子领域结果与编排。 |
 | Domain Index | `index/domains.json`；唯一的 Domain 导航图，登记 Domain 身份、父子关系、Artifact 和依赖，不保存规范正文。 |
 | Supporting lookup roots | Domain Index、Dictionary 和 Traceability 是导航入口；只有 Domain Index 决定 Domain 路由，Dictionary/Traceability 只用于术语与 Requirement/Oracle 反查。 |
@@ -66,12 +67,11 @@ sdd/
 ```
 
 约束：
-
-- `domains/` 是默认人工入口；`index/domains.json` 是机器导航入口。
-- 每个 Domain 必须拥有 PRD、SPEC、至少一个 Logic Flow Artifact 和至少一个 Test Flow Artifact。
-- `contracts/`、`data/`、`architecture/`、`operations/`、`quality/` 保存跨 Domain 或精确技术合同。
-- `acceptance/` 保存公开 Acceptance Boundary；`assets/` 保存不可推导固定字节。
-- 空技术目录允许存在但不登记；所有普通文件必须登记到 manifest。
+- `domains/` is the default human entrypoint; `index/domains.json` is the machine navigation entrypoint. Together with the registered supporting Artifacts, they cover the adopted project's current behavior; task routing may read only a sufficient subset.
+- Each Domain must own PRD, SPEC, at least one Logic Flow Artifact and at least one Test Flow Artifact. The project SDD is complete at the project level even when one small project uses a single Domain.
+- `contracts/`, `data/`, `architecture/`, `operations/`, `quality/` save cross-Domain or precise technical contracts.
+- `acceptance/` saves public Acceptance Boundaries; `assets/` saves non-derivable fixed bytes.
+- Empty technical directories may exist without registration; all ordinary files must be registered in the manifest.
 - `proposal`、`task`、`plan`、`history`、`archive`、`source` 和 `src` 路径段禁止出现在 SDD。
 - 不建立 `diagrams/`、`flows/` 或图索引；Mermaid 源码必须与其投影的 Architecture/Logic Flow 规范同文件。PNG、SVG、截图或外部白板只能是发布展示物，不能成为 SDD current truth。
 
@@ -387,17 +387,16 @@ flowchart LR
 
 Agent 从 Domain Index 开始导航；Dictionary 与 Traceability 只用于术语或 Requirement/Oracle 反查：
 
-1. 先按任务中的操作目标、被改变的 Requirement Owner、持久事实 Owner 和外部副作用 Owner 确定一个 primary Domain；Domain ID、label、purpose 和 Dictionary Term 只提供候选证据，重合 Term 不能单独决定归属；
-2. 若任务明确改变其他 Domain 拥有的行为、状态、不变量、数据、权限或外部副作用，把它们登记为 affected Domains，并分别读取最小闭包；仅调用依赖但不改变其合同，不自动扩大为 affected Domain；
+1. 先按任务中的操作目标、被改变的 Requirement Owner、持久事实 Owner 和外部副作用 Owner 确定一个 primary Domain；Domain ID、label、purpose 和 Dictionary Term 只提供候选证据，重合 Term 不能单独决定归属；primary Domain 是本次导航起点，不是项目 SDD 的全部范围；
+2. 若任务明确改变其他 Domain 拥有的行为、状态、不变量、数据、权限或外部副作用，把它们登记为 affected Domains，并分别读取最小充分上下文闭包；仅调用依赖但不改变其合同，不自动扩大为 affected Domain；
 3. primary 候选并列且会改变编辑或验证范围时，必须从 canonical Owner/Requirement 证据消歧；不得静默使用 `default_domain`。`default_domain` 只用于无匹配的只读初始导航，并必须标记为默认选择；
-4. 对 primary 和每个 affected Domain 读取完整最小闭包：Domain Index、Dictionary、Domain Metadata、PRD、SPEC、Logic Flow、Test Flow、直接 Contract/Data、相关 Acceptance、traceability，以及任务触及的 Manifest `references`；
-5. 不读取其他 Domain 或未触及的资产内容，除非它们是已选 Domain 的直接登记依赖。
+4. 对 primary 和每个 affected Domain 读取完整的最小充分上下文闭包：Domain Index、Dictionary、Domain Metadata、PRD、SPEC、Logic Flow、Test Flow、直接 Contract/Data、相关 Acceptance、traceability，以及任务触及的 Manifest `references`；这是读取范围，不是 SDD 的项目覆盖范围；
 
 只有 `current` SDD 可以作为当前系统导航入口。
 
 ## 采用前置检查与交接结果
 
-进入 Domain SDD 前，先确认目标仓库的 `AGENTS.md` 明确采用 Domain SDD，且现有 `manifest.json` 与 `index/domains.json` 被项目规则声明为 authoritative。任一条件不满足时，结果必须是 `out-of-sdd`，保留项目原有规格 Owner，不创建或同步 SDD 目录、Artifact、校验命令或 Domain 路由。
+- 进入 Domain SDD 前，先确认目标仓库的 `AGENTS.md` 明确采用项目级 Domain SDD，且现有 `manifest.json` 与 `index/domains.json` 被项目规则声明为 authoritative。任一条件不满足时，结果必须是 `out-of-sdd`，保留项目原有规格 Owner，不创建或同步 SDD 目录、Artifact、校验命令或 Domain 路由。
 
 命中已采用的 SDD 后，每次处理返回以下最小交接字段：
 
