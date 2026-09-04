@@ -1,4 +1,4 @@
 interface:
-  display_name: "AX Domain SDD"
-  short_description: "维护领域化 current 规格与最小上下文闭包"
-  default_prompt: "使用 $ax-sdd 按 Domain Index 直接定位、迁移或审核当前领域规格；不要调用或创建 SDD CLI。"
+  display_name: "AX Project SDD"
+  short_description: "定义全项目 current behavior，并按 Domain 提供最小充分上下文"
+  default_prompt: "使用 $ax-sdd 维护项目级 Domain SDD：先按 Domain Index 定位本次任务的 primary/affected Domain，再读取最小充分上下文；Domain 是组织与路由单位，不是项目规范范围。"
